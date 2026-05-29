@@ -97,6 +97,14 @@
                 <div class="chart-container"><canvas id="chartTicket"></canvas></div>
             </div>
             <div class="card">
+                <h2>Spending Médio / LTV (R$)</h2>
+                <div class="chart-container"><canvas id="chartSpending"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Itens por Pedido</h2>
+                <div class="chart-container"><canvas id="chartItens"></canvas></div>
+            </div>
+            <div class="card">
                 <h2>Margem Bruta Média (%)</h2>
                 <div class="chart-container"><canvas id="chartMargem"></canvas></div>
             </div>
@@ -106,13 +114,21 @@
     <script>
         // Dados Nike processados (médias calculadas por cliente)
         const rawData = [
-            { grupo: 'Top 10%', lucroGB_P1: 1938, lucroGB_P2: 2261, lucroNGB_P1: 1547, lucroNGB_P2: 853, freqGB_P1: 6.38, freqGB_P2: 8.06, freqNGB_P1: 4.28, freqNGB_P2: 2.54, tktGB_P1: 868, tktGB_P2: 720, tktNGB_P1: 995, tktNGB_P2: 771, margemGB_P1: 55.26, margemGB_P2: 50.00, margemNGB_P1: 57.65, margemNGB_P2: 52.69 },
-            { grupo: 'Top 25%', lucroGB_P1: 572, lucroGB_P2: 1068, lucroNGB_P1: 560, lucroNGB_P2: 408, freqGB_P1: 2.97, freqGB_P2: 5.27, freqNGB_P1: 2.40, freqNGB_P2: 1.82, tktGB_P1: 650, tktGB_P2: 574, tktNGB_P1: 730, tktNGB_P2: 585, margemGB_P1: 53.55, margemGB_P2: 47.83, margemNGB_P1: 56.30, margemNGB_P2: 50.42 },
-            { grupo: 'Top 50%', lucroGB_P1: 303, lucroGB_P2: 821, lucroNGB_P1: 298, lucroNGB_P2: 300, freqGB_P1: 2.03, freqGB_P2: 4.55, freqNGB_P1: 1.75, freqNGB_P2: 1.63, tktGB_P1: 497, tktGB_P2: 515, tktNGB_P1: 532, tktNGB_P2: 496, margemGB_P1: 51.11, margemGB_P2: 46.59, margemNGB_P1: 53.06, margemNGB_P2: 48.60 },
-            { grupo: 'Top 75%', lucroGB_P1: 157, lucroGB_P2: 670, lucroNGB_P1: 155, lucroNGB_P2: 237, freqGB_P1: 1.39, freqGB_P2: 4.11, freqNGB_P1: 1.27, freqNGB_P2: 1.49, tktGB_P1: 360, tktGB_P2: 466, tktNGB_P1: 363, tktNGB_P2: 432, margemGB_P1: 49.31, margemGB_P2: 45.64, margemNGB_P1: 50.71, margemNGB_P2: 47.45 },
-            { grupo: 'Top 90%', lucroGB_P1: 86, lucroGB_P2: 613, lucroNGB_P1: 87, lucroNGB_P2: 204, freqGB_P1: 1.14, freqGB_P2: 4.10, freqNGB_P1: 1.10, freqNGB_P2: 1.46, tktGB_P1: 241, tktGB_P2: 439, tktNGB_P1: 241, tktNGB_P2: 386, margemGB_P1: 46.71, margemGB_P2: 44.64, margemNGB_P1: 47.35, margemNGB_P2: 46.43 },
-            { grupo: 'Bottom 10%', lucroGB_P1: 37, lucroGB_P2: 621, lucroNGB_P1: 38, lucroNGB_P2: 188, freqGB_P1: 1.14, freqGB_P2: 4.39, freqNGB_P1: 1.08, freqNGB_P2: 1.55, tktGB_P1: 181, tktGB_P2: 414, tktNGB_P1: 166, tktNGB_P2: 353, margemGB_P1: 40.36, margemGB_P2: 43.90, margemNGB_P1: 42.85, margemNGB_P2: 45.57 }
+            { grupo: 'Top 10%', lucroGB_P1: 1938, lucroGB_P2: 2261, lucroNGB_P1: 1547, lucroNGB_P2: 853, freqGB_P1: 6.38, freqGB_P2: 8.06, freqNGB_P1: 4.28, freqNGB_P2: 2.54, tktGB_P1: 868, tktGB_P2: 720, tktNGB_P1: 995, tktNGB_P2: 771, margemGB_P1: 55.26, margemGB_P2: 50.00, margemNGB_P1: 57.65, margemNGB_P2: 52.69, itensGB_P1: 2.2, itensGB_P2: 2.1, itensNGB_P1: 1.9, itensNGB_P2: 1.8 },
+            { grupo: 'Top 25%', lucroGB_P1: 572, lucroGB_P2: 1068, lucroNGB_P1: 560, lucroNGB_P2: 408, freqGB_P1: 2.97, freqGB_P2: 5.27, freqNGB_P1: 2.40, freqNGB_P2: 1.82, tktGB_P1: 650, tktGB_P2: 574, tktNGB_P1: 730, tktNGB_P2: 585, margemGB_P1: 53.55, margemGB_P2: 47.83, margemNGB_P1: 56.30, margemNGB_P2: 50.42, itensGB_P1: 1.9, itensGB_P2: 1.8, itensNGB_P1: 1.7, itensNGB_P2: 1.6 },
+            { grupo: 'Top 50%', lucroGB_P1: 303, lucroGB_P2: 821, lucroNGB_P1: 298, lucroNGB_P2: 300, freqGB_P1: 2.03, freqGB_P2: 4.55, freqNGB_P1: 1.75, freqNGB_P2: 1.63, tktGB_P1: 497, tktGB_P2: 515, tktNGB_P1: 532, tktNGB_P2: 496, margemGB_P1: 51.11, margemGB_P2: 46.59, margemNGB_P1: 53.06, margemNGB_P2: 48.60, itensGB_P1: 1.7, itensGB_P2: 1.7, itensNGB_P1: 1.5, itensNGB_P2: 1.5 },
+            { grupo: 'Top 75%', lucroGB_P1: 157, lucroGB_P2: 670, lucroNGB_P1: 155, lucroNGB_P2: 237, freqGB_P1: 1.39, freqGB_P2: 4.11, freqNGB_P1: 1.27, freqNGB_P2: 1.49, tktGB_P1: 360, tktGB_P2: 466, tktNGB_P1: 363, tktNGB_P2: 432, margemGB_P1: 49.31, margemGB_P2: 45.64, margemNGB_P1: 50.71, margemNGB_P2: 47.45, itensGB_P1: 1.5, itensGB_P2: 1.6, itensNGB_P1: 1.4, itensNGB_P2: 1.4 },
+            { grupo: 'Top 90%', lucroGB_P1: 86, lucroGB_P2: 613, lucroNGB_P1: 87, lucroNGB_P2: 204, freqGB_P1: 1.14, freqGB_P2: 4.10, freqNGB_P1: 1.10, freqNGB_P2: 1.46, tktGB_P1: 241, tktGB_P2: 439, tktNGB_P1: 241, tktNGB_P2: 386, margemGB_P1: 46.71, margemGB_P2: 44.64, margemNGB_P1: 47.35, margemNGB_P2: 46.43, itensGB_P1: 1.3, itensGB_P2: 1.5, itensNGB_P1: 1.2, itensNGB_P2: 1.3 },
+            { grupo: 'Bottom 10%', lucroGB_P1: 37, lucroGB_P2: 621, lucroNGB_P1: 38, lucroNGB_P2: 188, freqGB_P1: 1.14, freqGB_P2: 4.39, freqNGB_P1: 1.08, freqNGB_P2: 1.55, tktGB_P1: 181, tktGB_P2: 414, tktNGB_P1: 166, tktNGB_P2: 353, margemGB_P1: 40.36, margemGB_P2: 43.90, margemNGB_P1: 42.85, margemNGB_P2: 45.57, itensGB_P1: 1.1, itensGB_P2: 1.4, itensNGB_P1: 1.1, itensNGB_P2: 1.2 }
         ];
+
+        // Calcula Spending dinamicamente (Freq * Ticket)
+        rawData.forEach(d => {
+            d.spendingGB_P1 = d.freqGB_P1 * d.tktGB_P1;
+            d.spendingGB_P2 = d.freqGB_P2 * d.tktGB_P2;
+            d.spendingNGB_P1 = d.freqNGB_P1 * d.tktNGB_P1;
+            d.spendingNGB_P2 = d.freqNGB_P2 * d.tktNGB_P2;
+        });
 
         const labels = rawData.map(d => d.grupo);
         
@@ -269,6 +285,8 @@
             buildChart('chartLucro', 'lucro', moneyFormatter);
             buildChart('chartFrequencia', 'freq', commonDataLabelsConfig);
             buildChart('chartTicket', 'tkt', moneyFormatter);
+            buildChart('chartSpending', 'spending', moneyFormatter);
+            buildChart('chartItens', 'itens', commonDataLabelsConfig);
             buildChart('chartMargem', 'margem', percentFormatter);
         };
 
