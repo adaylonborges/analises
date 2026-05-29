@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Giftback NIKE - Análise de Comportamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary-color: #0f172a;
+            --accent-color: #111; /* Nike black */
+        }
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 2rem; min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+        .header-container h1 { font-size: 2rem; margin: 0 0 0.5rem 0; color: var(--primary-color); }
+        .header-container p { margin: 0; color: #64748b; font-size: 1.1rem; }
+        .header-container img { max-height: 50px; }
+        
+        .insights-card { background-color: var(--card-bg); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 30px; border-left: 4px solid var(--accent-color); }
+        .insights-card h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 16px; font-size: 1.25rem; }
+        .insights-card p, .insights-card li { line-height: 1.6; margin-bottom: 12px; color: #334155; }
+        .insights-card ul { margin-top: 0; padding-left: 20px; }
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .card h2 { font-size: 1.25rem; margin-top: 0; margin-bottom: 1.5rem; color: #334155; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; text-align: center; }
+        .chart-container { position: relative; height: 350px; width: 100%; }
+        
+        @media (max-width: 768px) {
+            .header-container { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <div>
+                <h1>Análise de Comportamento NIKE: Impacto do Giftback</h1>
+                <p>Comparativo P1 (Set/24 a Mai/25) vs P2 (Set/25 a Mai/26) para base Puro Digital NIKE.COM</p>
+            </div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike Logo">
+        </div>
+
+        <div class="insights-card">
+            <h2>📋 Metodologia e Regras de Negócio (NIKE)</h2>
+            <ul>
+                <li><strong>Períodos:</strong> P1 (Set/24 a Mai/25) vs P2 (Set/25 a Mai/26).</li>
+                <li><strong>Classificação:</strong> "GB" (fez ao menos uma compra resgatando Giftback) vs "Não GB" (nunca resgatou).</li>
+                <li><strong>Escopo:</strong> Apenas clientes <strong>Puro Digital</strong> (pedidos exclusivos no canal digital contendo produtos da marca Nike).</li>
+                <li><strong>Segmentação:</strong> Percentis baseados na rentabilidade de Lucro Bruto.</li>
+                <li><strong>Margem Bruta (%):</strong> <code>(ROL - CMV) / ROL</code>, onde CMV na Nike inclui custo Fisia, custo fiscal e Royalties.</li>
+            </ul>
+        </div>
+
+        <div class="insights-card">
+            <h2>🧠 Deep Dive Analítico: Racional Matemático e Correlações</h2>
+            
+            <p><strong>1. A Alavanca de Frequência de Compra:</strong><br>
+            O <em>Top 10% GB</em> saltou de 6.38 para incríveis <strong>8.06 pedidos/ano</strong>, enquanto o mesmo perfil <em>Não GB</em> caiu de 4.28 para <strong>2.54</strong>. No meio da base (Top 50%), a frequência <strong>dobrou</strong> (de 2.03 para 4.55). <strong>Racional:</strong> O alto envolvimento com a marca Nike e o saldo preso blindam o cliente de buscar calçados/vestuário esportivo nos concorrentes.</p>
+
+            <p><strong>2. Rentabilidade e Lucro Bruto Unitário (A Virada):</strong><br>
+            Calculando o <strong>Lucro Médio por Cliente</strong> <em>(Lucro Bruto Total / Qtd de Clientes)</em>. O cliente <em>Top 10% GB</em> entregou pesados <strong>R$ 2.261 de Lucro</strong> no P2 (R$ 11.0M / 4.888 clientes) contra apenas <strong>R$ 853</strong> do <em>Não GB</em> (R$ 23.7M / 27.847 clientes). O GB foi quase 2.6x mais rentável. Na cauda (Bottom 10%), o programa transformou um lucro raso de R$ 37 (P1) em vigorosos <strong>R$ 621</strong> por cliente (P2).</p>
+
+            <p><strong>3. Ticket Médio vs LTV:</strong><br>
+            O Ticket Médio no P2 cai para o cliente GB (esperado pelo desconto do carrinho, ex: o Top 10% cai para R$ 720). Entretanto, como a frequência duplica, o <strong>Spending Total cresce dramaticamente</strong>, injetando volume no Lifetime Value.</p>
+
+            <p><strong>4. A Relação Custo de Margem vs ROI:</strong><br>
+            O "custo" real do programa é medido pela diferença de margem entre os dois grupos no P2. Exemplo no Top 50%: a margem Não GB é <strong>48.60%</strong> e a margem GB é <strong>46.59%</strong>. <strong>Racional:</strong> Financiar minúsculos <strong>~2.01%</strong> de margem para garantir que um cliente compre 4.55 vezes no ano ao invés de apenas 1.63 vezes na plataforma Nike. ROI colossal na sustentabilidade do negócio.</p>
+        </div>
+
+        <div class="controls-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <label for="chartTypeToggle" style="margin-right: 10px; font-weight: 600; align-self: center;">Visualização dos Gráficos:</label>
+            <select id="chartTypeToggle" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Inter', sans-serif; outline: none; background-color: white; cursor: pointer;">
+                <option value="radar" selected>Gráfico de Radar</option>
+                <option value="line">Gráfico de Linhas</option>
+            </select>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>Lucro Bruto Médio por Cliente (R$)</h2>
+                <div class="chart-container"><canvas id="chartLucro"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Frequência Média de Compra (Pedidos/Ano)</h2>
+                <div class="chart-container"><canvas id="chartFrequencia"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Ticket Médio (R$)</h2>
+                <div class="chart-container"><canvas id="chartTicket"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Margem Bruta Média (%)</h2>
+                <div class="chart-container"><canvas id="chartMargem"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados Nike processados (médias calculadas por cliente)
+        const rawData = [
+            { grupo: 'Top 10%', lucroGB_P1: 1938, lucroGB_P2: 2261, lucroNGB_P1: 1547, lucroNGB_P2: 853, freqGB_P1: 6.38, freqGB_P2: 8.06, freqNGB_P1: 4.28, freqNGB_P2: 2.54, tktGB_P1: 868, tktGB_P2: 720, tktNGB_P1: 995, tktNGB_P2: 771, margemGB_P1: 55.26, margemGB_P2: 50.00, margemNGB_P1: 57.65, margemNGB_P2: 52.69 },
+            { grupo: 'Top 25%', lucroGB_P1: 572, lucroGB_P2: 1068, lucroNGB_P1: 560, lucroNGB_P2: 408, freqGB_P1: 2.97, freqGB_P2: 5.27, freqNGB_P1: 2.40, freqNGB_P2: 1.82, tktGB_P1: 650, tktGB_P2: 574, tktNGB_P1: 730, tktNGB_P2: 585, margemGB_P1: 53.55, margemGB_P2: 47.83, margemNGB_P1: 56.30, margemNGB_P2: 50.42 },
+            { grupo: 'Top 50%', lucroGB_P1: 303, lucroGB_P2: 821, lucroNGB_P1: 298, lucroNGB_P2: 300, freqGB_P1: 2.03, freqGB_P2: 4.55, freqNGB_P1: 1.75, freqNGB_P2: 1.63, tktGB_P1: 497, tktGB_P2: 515, tktNGB_P1: 532, tktNGB_P2: 496, margemGB_P1: 51.11, margemGB_P2: 46.59, margemNGB_P1: 53.06, margemNGB_P2: 48.60 },
+            { grupo: 'Top 75%', lucroGB_P1: 157, lucroGB_P2: 670, lucroNGB_P1: 155, lucroNGB_P2: 237, freqGB_P1: 1.39, freqGB_P2: 4.11, freqNGB_P1: 1.27, freqNGB_P2: 1.49, tktGB_P1: 360, tktGB_P2: 466, tktNGB_P1: 363, tktNGB_P2: 432, margemGB_P1: 49.31, margemGB_P2: 45.64, margemNGB_P1: 50.71, margemNGB_P2: 47.45 },
+            { grupo: 'Top 90%', lucroGB_P1: 86, lucroGB_P2: 613, lucroNGB_P1: 87, lucroNGB_P2: 204, freqGB_P1: 1.14, freqGB_P2: 4.10, freqNGB_P1: 1.10, freqNGB_P2: 1.46, tktGB_P1: 241, tktGB_P2: 439, tktNGB_P1: 241, tktNGB_P2: 386, margemGB_P1: 46.71, margemGB_P2: 44.64, margemNGB_P1: 47.35, margemNGB_P2: 46.43 },
+            { grupo: 'Bottom 10%', lucroGB_P1: 37, lucroGB_P2: 621, lucroNGB_P1: 38, lucroNGB_P2: 188, freqGB_P1: 1.14, freqGB_P2: 4.39, freqNGB_P1: 1.08, freqNGB_P2: 1.55, tktGB_P1: 181, tktGB_P2: 414, tktNGB_P1: 166, tktNGB_P2: 353, margemGB_P1: 40.36, margemGB_P2: 43.90, margemNGB_P1: 42.85, margemNGB_P2: 45.57 }
+        ];
+
+        const labels = rawData.map(d => d.grupo);
+        
+        Chart.register(ChartDataLabels);
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.font.family = 'Inter, sans-serif';
+
+        const radarLabels = [
+            'Top 10% (P2)', 'Top 10% (P1)',
+            'Top 25% (P2)', 'Top 25% (P1)',
+            'Top 50% (P2)', 'Top 50% (P1)',
+            'Top 75% (P2)', 'Top 75% (P1)',
+            'Top 90% (P2)', 'Top 90% (P1)',
+            'Bottom 10% (P2)', 'Bottom 10% (P1)'
+        ];
+
+        const getRadarDataNike = (isGB, metricPrefix) => {
+            const statusKeyP2 = isGB ? 'GB_P2' : 'NGB_P2';
+            const statusKeyP1 = isGB ? 'GB_P1' : 'NGB_P1';
+            
+            const data = [];
+            rawData.forEach(d => {
+                data.push(d[`${metricPrefix}${statusKeyP2}`]);
+                data.push(d[`${metricPrefix}${statusKeyP1}`]);
+            });
+            return data;
+        };
+
+        const commonDataLabelsConfig = {
+            anchor: 'end',
+            align: 'top',
+            color: '#334155',
+            font: { weight: 'bold', size: 10 },
+            offset: 2,
+            formatter: function(value) {
+                let num = Number(value);
+                if (Math.abs(num) > 10000) return (num / 1000).toFixed(0) + 'k';
+                if (Math.abs(num) > 1000) return (num / 1000).toFixed(1) + 'k';
+                return Number.isInteger(num) ? num : num.toFixed(2);
+            }
+        };
+
+        const moneyFormatter = {
+            ...commonDataLabelsConfig,
+            formatter: (value) => 'R$ ' + commonDataLabelsConfig.formatter(value)
+        };
+
+        const percentFormatter = {
+            ...commonDataLabelsConfig,
+            formatter: (value) => commonDataLabelsConfig.formatter(value) + '%'
+        };
+
+        const colorGBP1 = '#60a5fa';
+        const colorGBP2 = '#2563eb';
+        const colorNGBP1 = '#f87171';
+        const colorNGBP2 = '#dc2626';
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 25 } },
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: { boxWidth: 32, boxHeight: 3, padding: 20, usePointStyle: false }
+                },
+                tooltip: { 
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                    titleColor: '#0f172a', 
+                    bodyColor: '#334155', 
+                    borderColor: '#e2e8f0', 
+                    borderWidth: 1, 
+                    padding: 12 
+                }
+            }
+        };
+
+        let currentChartType = 'radar';
+        const chartInstances = {};
+
+        const createCharts = () => {
+            Object.keys(chartInstances).forEach(id => {
+                if (chartInstances[id]) chartInstances[id].destroy();
+            });
+
+            const type = currentChartType;
+
+            const buildChart = (id, metricPrefix, formatter) => {
+                let chartData = {};
+                let chartOptions = { ...commonOptions };
+
+                if (type === 'line') {
+                    chartData = {
+                        labels: labels,
+                        datasets: [
+                            { label: 'P1 GB', data: rawData.map(d => d[`${metricPrefix}GB_P1`]), borderColor: colorGBP1, backgroundColor: colorGBP1, tension: 0.3, borderWidth: 3, pointRadius: 4, fill: false },
+                            { label: 'P2 GB', data: rawData.map(d => d[`${metricPrefix}GB_P2`]), borderColor: colorGBP2, backgroundColor: colorGBP2, tension: 0.3, borderWidth: 3, pointRadius: 5, fill: false },
+                            { label: 'P1 Não GB', data: rawData.map(d => d[`${metricPrefix}NGB_P1`]), borderColor: colorNGBP1, backgroundColor: colorNGBP1, tension: 0.3, borderDash: [6, 4], borderWidth: 3, pointRadius: 4, fill: false },
+                            { label: 'P2 Não GB', data: rawData.map(d => d[`${metricPrefix}NGB_P2`]), borderColor: colorNGBP2, backgroundColor: colorNGBP2, tension: 0.3, borderDash: [6, 4], borderWidth: 3, pointRadius: 5, fill: false }
+                        ]
+                    };
+                    chartOptions.scales = {
+                        y: { grid: { color: '#f1f5f9' }, beginAtZero: false },
+                        x: { grid: { display: false } }
+                    };
+                    chartOptions.plugins = {
+                        ...commonOptions.plugins,
+                        datalabels: formatter
+                    };
+                } else if (type === 'radar') {
+                    chartData = {
+                        labels: radarLabels,
+                        datasets: [
+                            { 
+                                label: 'Cliente GB', 
+                                data: getRadarDataNike(true, metricPrefix), 
+                                borderColor: colorGBP2, 
+                                backgroundColor: 'rgba(37, 99, 235, 0.2)', 
+                                borderWidth: 2, 
+                                pointRadius: 3,
+                                fill: true
+                            },
+                            { 
+                                label: 'Cliente Não GB', 
+                                data: getRadarDataNike(false, metricPrefix), 
+                                borderColor: colorNGBP2, 
+                                backgroundColor: 'rgba(220, 38, 38, 0.2)', 
+                                borderWidth: 2, 
+                                pointRadius: 3,
+                                fill: true
+                            }
+                        ]
+                    };
+                    chartOptions.scales = {
+                        r: {
+                            angleLines: { color: '#e2e8f0' },
+                            grid: { color: '#e2e8f0' },
+                            pointLabels: { font: { size: 11, family: 'Inter', weight: '500' }, color: '#475569' }
+                        }
+                    };
+                    chartOptions.plugins = {
+                        ...commonOptions.plugins,
+                        datalabels: { display: false } // Too cluttered on radar
+                    };
+                }
+
+                chartInstances[id] = new Chart(document.getElementById(id), {
+                    type: type,
+                    data: chartData,
+                    options: chartOptions
+                });
+            };
+
+            buildChart('chartLucro', 'lucro', moneyFormatter);
+            buildChart('chartFrequencia', 'freq', commonDataLabelsConfig);
+            buildChart('chartTicket', 'tkt', moneyFormatter);
+            buildChart('chartMargem', 'margem', percentFormatter);
+        };
+
+        document.getElementById('chartTypeToggle').addEventListener('change', (e) => {
+            currentChartType = e.target.value;
+            createCharts();
+        });
+
+        createCharts();
+    </script>
+</body>
+</html>
