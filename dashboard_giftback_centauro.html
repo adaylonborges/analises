@@ -63,16 +63,16 @@
             <h2>🧠 Deep Dive Analítico: Racional Matemático e Correlações</h2>
             
             <p><strong>1. A Alavanca de Frequência de Compra:</strong><br>
-            A métrica onde o Giftback mostra seu maior poder. O <em>Top 10% GB</em> saltou de 5.88 para incríveis <strong>7.05 pedidos/ano</strong>, enquanto o mesmo perfil <em>Não GB</em> despencou de 3.40 para <strong>2.18</strong>. Mais impressionante ainda: no meio da base (Top 50%), a frequência mais que <strong>dobrou</strong> (de 2.24 para 4.82). <strong>Racional:</strong> O saldo atua como "dinheiro preso" no ecossistema, blindando o cliente da concorrência e forçando a recompra.</p>
+            A métrica onde o Giftback mostra seu maior poder. O <em>Top 10% GB</em> saltou de 5.88 para incríveis <strong>7.05 pedidos no período</strong>, enquanto o mesmo perfil <em>Não GB</em> despencou de 3.40 para <strong>2.18</strong>. Mais impressionante ainda: no meio da base (Top 50%), a frequência mais que <strong>dobrou</strong> (de 2.24 para 4.82). <strong>Racional:</strong> O saldo atua como "dinheiro preso" no ecossistema, blindando o cliente da concorrência e forçando a recompra.</p>
 
             <p><strong>2. Rentabilidade e Lucro Bruto Unitário (A Virada):</strong><br>
             Para evitar a distorção do volume maior da base Não GB, adotou-se o cálculo de <strong>Lucro Médio por Cliente</strong> <em>(Lucro Bruto Total / Qtd de Clientes da Faixa)</em>. O cliente <em>Top 10% GB</em> entregou <strong>R$ 568 de Lucro</strong> no P2 (R$ 1M total / 1.898 clientes) contra apenas <strong>R$ 165</strong> do <em>Não GB</em> (R$ 5.9M total / 36.347 clientes). Quase 3,5x mais rentável. Na cauda (Bottom 10%), o programa transformou prejuízos históricos de -R$ 26 (P1) em um lucro positivo de <strong>R$ 267</strong> por cliente (P2).</p>
 
             <p><strong>3. Ticket Médio vs Spending:</strong><br>
-            O Ticket Médio no P2 é ligeiramente menor em todas as faixas GB, o que é um comportamento esperado devido ao desconto concedido no carrinho. No entanto, por causa da explosão na Frequência, o <strong>Spending Total (anual) cresceu consideravelmente</strong> nas faixas de meio e base da pirâmide (ex: Bottom 10% GB gastava R$ 161 e subiu para <strong>R$ 220</strong> anuais).</p>
+            O Ticket Médio no P2 é ligeiramente menor em todas as faixas GB, o que é um comportamento esperado devido ao desconto concedido no carrinho. No entanto, por causa da explosão na Frequência, o <strong>Spending Total (LTV no período) cresceu consideravelmente</strong> nas faixas de meio e base da pirâmide (ex: Bottom 10% GB gastava R$ 161 e subiu para <strong>R$ 220</strong> no período).</p>
 
             <p><strong>4. A Relação Custo de Margem vs ROI:</strong><br>
-            A Margem Bruta P2 comprimiu de forma global (cenário macro). O "custo" analítico real do programa é medido pela diferença de margem entre os dois grupos no P2. Exemplo no Top 50%: a margem Não GB é <strong>38,3%</strong> e a margem GB é <strong>35,6%</strong>. <strong>Racional:</strong> Financiar apenas ~2.7% de margem para garantir que um cliente compre 4.8 vezes no ano ao invés de apenas 1.7 vezes, comprova a alta sustentabilidade e o Retorno sobre Investimento (ROI) excepcional do programa.</p>
+            A Margem Bruta P2 comprimiu de forma global (cenário macro). O "custo" analítico real do programa é medido pela diferença de margem entre os dois grupos no P2. Exemplo no Top 50%: a margem Não GB é <strong>38,3%</strong> e a margem GB é <strong>35,6%</strong>. <strong>Racional:</strong> Financiar apenas ~2.7% de margem para garantir que um cliente compre 4.8 vezes no período ao invés de apenas 1.7 vezes, comprova a alta sustentabilidade e o Retorno sobre Investimento (ROI) excepcional do programa.</p>
         </div>
 
         <div class="controls-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
@@ -109,6 +109,61 @@
                 <div class="chart-container"><canvas id="margemChart"></canvas></div>
             </div>
         </div>
+
+        <div class="insights-card" style="margin-top: 40px;">
+            <h2>🔄 Retenção Geral da Base (M-3, M-6 e M-9)</h2>
+            <p>Evolução da taxa de recompra (clientes recorrentes / total de clientes únicos do mês) detalhando a contribuição absoluta de clientes <strong>Giftback (GB)</strong> e <strong>Orgânicos (Não GB)</strong> nas janelas de 3, 6 e 9 meses, além do <strong>Share de representatividade do Giftback sobre o total de clientes recorrentes</strong>.</p>
+            
+            <div style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                <h3 style="color: var(--primary-color); margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                    🚀 Análise do Impacto & Crescimento Pós-Lançamento do Giftback (Lançamento: Set/25)
+                </h3>
+                <p>Considerando que o programa de Giftback foi oficialmente lançado em <strong>Setembro/2025</strong>, a análise histórica revela um impacto de crescimento quando comparamos o período antes (Janeiro/25 a Agosto/25) com o período pós-lançamento (Setembro/25 a Maio/26):</p>
+                
+                <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 0;">
+                    <li>
+                        ⚡ <strong>M-3 (Retenção em 3 meses):</strong> 
+                        A taxa de recompra absoluta (contribuição na base total) de clientes GB saltou de um baseline pré-lançamento de <strong>0,35%</strong> para uma média pós-lançamento de <strong>1,08%</strong> — representando um crescimento de <strong>+207,3%</strong>. No pós-lançamento, o Giftback passou a responder por um **Share médio de 8,09% sobre o total de clientes recorrentes** M-3 gerados pela Centauro (com pico de **11,97% de Share sobre os recorrentes** em Out/25).
+                    </li>
+                    <li>
+                        🔄 <strong>M-6 (Retenção em 6 meses):</strong> 
+                        A taxa de recompra absoluta de clientes GB saltou de <strong>0,53%</strong> (pré-lançamento) para <strong>1,41%</strong> (pós-lançamento) — um aumento de <strong>+166,3%</strong>. Após o lançamento, as recompras ativas de GB responderam por um **Share médio de 6,73% sobre o total de clientes recorrentes** M-6 (com pico de **9,26% de Share sobre os recorrentes** em Out/25).
+                    </li>
+                    <li>
+                        ⏳ <strong>M-9 (Retenção em 9 meses):</strong> 
+                        A taxa de recompra absoluta de clientes GB subiu de <strong>0,64%</strong> (pré-lançamento) para <strong>1,57%</strong> pós-lançamento — um incremento sólido de <strong>+146,2%</strong>. No cenário pós-lançamento, o programa responde por um **Share médio de 6,03% sobre o total de clientes recorrentes** M-9 (com pico de **8,24% de Share sobre os recorrentes** em Out/25).
+                    </li>
+                    <li>
+                        📊 <strong>O motor do crescimento incremental:</strong> 
+                        Como a base orgânica (Não GB) oscila nos mesmos patamares do ano anterior (média de 12,4% no M-3), as recompras estimuladas ativamente pelo Giftback cresceram de forma consistente. Isso demonstra que o Giftback é um fator gerador de novas receitas recorrentes e a alavanca eficiente para elevar a taxa de retenção estrutural da empresa.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="controls-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px; gap: 10px; margin-top: 20px;">
+            <label for="retentionChartTypeToggle" style="font-weight: 600; align-self: center;">Visualização da Retenção:</label>
+            <select id="retentionChartTypeToggle" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Inter', sans-serif; outline: none; background-color: white; cursor: pointer;">
+                <option value="bar" selected>Gráfico de Barras Empilhadas (Composição)</option>
+                <option value="area">Gráfico de Área Empilhada (Evolução Temporal)</option>
+            </select>
+        </div>
+
+        <div class="dashboard-grid" style="grid-template-columns: 1fr; margin-bottom: 40px;">
+            <div class="card">
+                <h2 id="titleM3">Recompra M-3: Composição GB vs Não GB (%)</h2>
+                <div class="chart-container" style="height: 350px;"><canvas id="chartM3"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 id="titleM6">Recompra M-6: Composição GB vs Não GB (%)</h2>
+                <div class="chart-container" style="height: 350px;"><canvas id="chartM6"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 id="titleM9">Recompra M-9: Composição GB vs Não GB (%)</h2>
+                <div class="chart-container" style="height: 350px;"><canvas id="chartM9"></canvas></div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -293,6 +348,236 @@
             buildChart('ticketChart', 'ticket_p1', 'ticket_p2', moneyFormatter);
             buildChart('itensChart', 'itens_p1', 'itens_p2', commonDataLabelsConfig);
             buildChart('margemChart', 'margem_p1', 'margem_p2', percentFormatter);
+
+            // Novos Gráficos de Recompra M3, M6, M9 (GB vs Não GB)
+            const mesesRecompra = ['Jan/25', 'Fev/25', 'Mar/25', 'Abr/25', 'Mai/25', 'Jun/25', 'Jul/25', 'Ago/25', 'Set/25', 'Out/25', 'Nov/25', 'Dez/25', 'Jan/26', 'Fev/26', 'Mar/26', 'Abr/26', 'Mai/26'];
+            
+            const m3_gb = [0.31, 0.35, 0.36, 0.35, 0.29, 0.33, 0.41, 0.42, 0.81, 1.57, 0.92, 1.04, 1.32, 1.36, 1.17, 1.02, 0.54];
+            const m3_ngb = [13.29, 14.20, 13.00, 12.14, 11.01, 11.69, 12.32, 12.70, 12.43, 11.58, 10.11, 11.62, 13.11, 14.58, 12.88, 12.21, 11.52];
+            
+            const m6_gb = [0.46, 0.51, 0.52, 0.56, 0.48, 0.50, 0.59, 0.61, 1.13, 1.89, 1.13, 1.29, 1.62, 1.73, 1.59, 1.42, 0.87];
+            const m6_ngb = [19.81, 20.74, 20.47, 20.36, 19.28, 18.96, 18.99, 18.77, 19.01, 18.53, 17.04, 18.24, 19.72, 21.09, 20.71, 20.62, 20.14];
+            
+            const m9_gb = [0.55, 0.61, 0.62, 0.66, 0.57, 0.61, 0.71, 0.76, 1.35, 2.09, 1.26, 1.42, 1.77, 1.90, 1.73, 1.55, 1.03];
+            const m9_ngb = [24.64, 25.93, 25.75, 25.35, 24.21, 24.17, 24.99, 24.80, 24.15, 23.28, 21.34, 22.62, 24.57, 26.28, 26.04, 25.72, 25.24];
+
+            const buildStackedBar = (id, dataGB, dataNGB, title) => {
+                const ctx = document.getElementById(id).getContext('2d');
+                if(chartInstances[id]) chartInstances[id].destroy();
+
+                chartInstances[id] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: mesesRecompra,
+                        datasets: [
+                            { 
+                                label: 'Impacto Não GB no Total (%)', 
+                                data: dataNGB, 
+                                backgroundColor: 'rgba(225, 29, 72, 0.75)', 
+                                borderColor: '#e11d48',
+                                borderWidth: 1.5,
+                                borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 } 
+                            },
+                            { 
+                                label: 'Impacto GB no Total (%)', 
+                                data: dataGB, 
+                                backgroundColor: 'rgba(37, 99, 235, 0.92)', 
+                                borderColor: '#2563eb',
+                                borderWidth: 1.5,
+                                borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 } 
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            datalabels: { 
+                                color: '#ffffff',
+                                font: { weight: 'bold', size: 10 },
+                                formatter: (val) => val > 0 ? val.toFixed(2).replace('.', ',') + '%' : ''
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                callbacks: { label: function(context) { return context.dataset.label + ': ' + context.raw.toFixed(2).replace('.', ',') + '%'; } }
+                            }
+                        },
+                        scales: {
+                            x: { stacked: true },
+                            y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Taxa sobre Base Total do Mês (%)' }, ticks: { callback: function(value) { return value + "%" } } }
+                        }
+                    }
+                });
+            };
+
+            const buildStackedArea = (id, dataGB, dataNGB, title) => {
+                const ctx = document.getElementById(id).getContext('2d');
+                if(chartInstances[id]) chartInstances[id].destroy();
+
+                chartInstances[id] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: mesesRecompra,
+                        datasets: [
+                            { 
+                                label: 'Impacto Não GB no Total (%)', 
+                                data: dataNGB, 
+                                fill: true,
+                                backgroundColor: 'rgba(225, 29, 72, 0.12)', 
+                                borderColor: '#e11d48',
+                                borderWidth: 3,
+                                pointBackgroundColor: '#e11d48',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 1.5,
+                                pointRadius: 4,
+                                tension: 0.3,
+                                datalabels: {
+                                    align: 'bottom',
+                                    anchor: 'start',
+                                    color: '#b91c1c',
+                                    offset: 4
+                                }
+                            },
+                            { 
+                                label: 'Impacto GB no Total (%)', 
+                                data: dataGB, 
+                                fill: true,
+                                backgroundColor: 'rgba(37, 99, 235, 0.25)', 
+                                borderColor: '#2563eb',
+                                borderWidth: 3,
+                                pointBackgroundColor: '#2563eb',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 1.5,
+                                pointRadius: 4,
+                                tension: 0.3,
+                                datalabels: {
+                                    align: 'top',
+                                    anchor: 'end',
+                                    color: '#1d4ed8',
+                                    offset: 4
+                                }
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            datalabels: { 
+                                color: '#334155',
+                                font: { weight: 'bold', size: 9 },
+                                formatter: (val) => val > 0 ? val.toFixed(2).replace('.', ',') + '%' : ''
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: { 
+                                    label: function(context) { 
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.raw.toFixed(2).replace('.', ',') + '%';
+                                        }
+                                        return label;
+                                    },
+                                    footer: function(tooltipItems) {
+                                        let sum = 0;
+                                        tooltipItems.forEach(function(tooltipItem) {
+                                            sum += tooltipItem.raw;
+                                        });
+                                        return 'Recorrência Total: ' + sum.toFixed(2).replace('.', ',') + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { stacked: true },
+                            y: { 
+                                stacked: true, 
+                                beginAtZero: true, 
+                                title: { display: true, text: 'Taxa sobre Base Total do Mês (%)' }, 
+                                ticks: { callback: function(value) { return value + "%" } } 
+                            }
+                        }
+                    },
+                    plugins: [{
+                        id: 'verticalLine',
+                        beforeDraw: (chart) => {
+                            const ctxLine = chart.ctx;
+                            const xAxis = chart.scales.x;
+                            const yAxis = chart.scales.y;
+                            const set25Index = 8;
+                            
+                            if (xAxis && xAxis.getPixelForTick) {
+                                const xPixel = xAxis.getPixelForTick(set25Index);
+                                
+                                // Sombreamento para Pós GB (Set/25 a Mai/26)
+                                const xStart = xPixel;
+                                const xEnd = xAxis.getPixelForTick(xAxis.ticks.length - 1);
+                                ctxLine.save();
+                                ctxLine.fillStyle = 'rgba(37, 99, 235, 0.03)';
+                                ctxLine.fillRect(xStart, yAxis.top, xEnd - xStart, yAxis.bottom - yAxis.top);
+                                
+                                // Sombreamento para Antes GB (Jan/25 a Ago/25)
+                                const xZero = xAxis.getPixelForTick(0);
+                                ctxLine.fillStyle = 'rgba(71, 85, 105, 0.015)';
+                                ctxLine.fillRect(xZero, yAxis.top, xStart - xZero, yAxis.bottom - yAxis.top);
+                                
+                                // Linha tracejada vermelha divisória de lançamento
+                                ctxLine.strokeStyle = '#ef4444';
+                                ctxLine.lineWidth = 1.5;
+                                ctxLine.setLineDash([5, 5]);
+                                ctxLine.beginPath();
+                                ctxLine.moveTo(xPixel, yAxis.top);
+                                ctxLine.lineTo(xPixel, yAxis.bottom);
+                                ctxLine.stroke();
+                                
+                                // Rotulagem da linha
+                                ctxLine.restore();
+                                ctxLine.save();
+                                ctxLine.fillStyle = '#ef4444';
+                                ctxLine.font = 'bold 10px Inter';
+                                ctxLine.fillText('Lançamento GB (Set/25) 🚀', xPixel + 8, yAxis.top + 15);
+                                ctxLine.restore();
+                            }
+                        }
+                    }]
+                });
+            };
+
+            // Controle de visualização da Retenção (Barras vs Áreas)
+            let currentRetentionType = 'bar';
+
+            const renderRetentionCharts = () => {
+                if (currentRetentionType === 'bar') {
+                    document.getElementById('titleM3').innerText = 'Recompra M-3: Composição GB vs Não GB (%)';
+                    document.getElementById('titleM6').innerText = 'Recompra M-6: Composição GB vs Não GB (%)';
+                    document.getElementById('titleM9').innerText = 'Recompra M-9: Composição GB vs Não GB (%)';
+                    
+                    buildStackedBar('chartM3', m3_gb, m3_ngb, 'M-3');
+                    buildStackedBar('chartM6', m6_gb, m6_ngb, 'M-6');
+                    buildStackedBar('chartM9', m9_gb, m9_ngb, 'M-9');
+                } else {
+                    document.getElementById('titleM3').innerText = 'Evolução M-3: Comportamento Pré vs Pós-Lançamento (Área Empilhada)';
+                    document.getElementById('titleM6').innerText = 'Evolução M-6: Comportamento Pré vs Pós-Lançamento (Área Empilhada)';
+                    document.getElementById('titleM9').innerText = 'Evolução M-9: Comportamento Pré vs Pós-Lançamento (Área Empilhada)';
+                    
+                    buildStackedArea('chartM3', m3_gb, m3_ngb, 'M-3');
+                    buildStackedArea('chartM6', m6_gb, m6_ngb, 'M-6');
+                    buildStackedArea('chartM9', m9_gb, m9_ngb, 'M-9');
+                }
+            };
+
+            renderRetentionCharts();
+
+            document.getElementById('retentionChartTypeToggle').addEventListener('change', (e) => {
+                currentRetentionType = e.target.value;
+                renderRetentionCharts();
+            });
         };
 
         document.getElementById('chartTypeToggle').addEventListener('change', (e) => {
