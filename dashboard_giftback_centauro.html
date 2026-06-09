@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Giftback - Análise de Comportamento</title>
+    <meta name="description"
+        content="Dashboard analítico para acompanhamento da evolução comportamental dos clientes Centauro antes e após a implementação do programa de Giftback.">
+    <meta property="og:title" content="Dashboard Giftback Centauro - Análise de Comportamento">
+    <meta property="og:description"
+        content="Análise detalhada por tiers de rentabilidade sobre a recompra e frequência de compra pós-Giftback.">
+    <meta property="og:type" content="website">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 30px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         :root {
             --bg-color: #f8fafc;
             --text-color: #1e293b;
@@ -15,29 +31,834 @@
             --primary-color: #0f172a;
             --accent-color: #e11d48;
         }
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 2rem; min-height: 100vh; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
-        .header-container h1 { font-size: 2rem; margin: 0 0 0.5rem 0; color: var(--primary-color); }
-        .header-container p { margin: 0; color: #64748b; font-size: 1.1rem; }
-        .header-container img { max-height: 50px; }
-        
-        .insights-card { background-color: var(--card-bg); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 30px; border-left: 4px solid var(--accent-color); }
-        .insights-card h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 16px; font-size: 1.25rem; }
-        .insights-card p, .insights-card li { line-height: 1.6; margin-bottom: 12px; color: #334155; }
-        .insights-card ul { margin-top: 0; padding-left: 20px; }
-        
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem; }
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .card h2 { font-size: 1.25rem; margin-top: 0; margin-bottom: 1.5rem; color: #334155; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; text-align: center; }
-        .chart-container { position: relative; height: 350px; width: 100%; }
-        
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Barra de Navegação por Âncoras */
+        .nav-anchors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .nav-anchor-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .nav-anchor-btn:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            background: #fff1f2;
+            transform: translateY(-1px);
+        }
+
+        .nav-anchor-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Container de Títulos de Seção com Link de Compartilhamento */
+        .section-header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            gap: 12px;
+        }
+
+        .section-header-container h2 {
+            margin: 0 !important;
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            font-size: 1.25rem !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-anchor-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #64748b;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .copy-anchor-btn:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            background-color: #fff1f2;
+            transform: translateY(-1px);
+        }
+
+        .copy-anchor-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .header-container h1 {
+            font-size: 2rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+        }
+
+        .header-container p {
+            margin: 0;
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .header-container img {
+            max-height: 50px;
+        }
+
+        .insights-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .insights-card h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.25rem;
+        }
+
+        .insights-card p,
+        .insights-card li {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #334155;
+        }
+
+        .insights-card ul {
+            margin-top: 0;
+            padding-left: 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #334155;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        /* Estilos do Hub de Cards de KPI por Tier (Opção B) - Grid Estrito, Alinhado e Responsivo */
+        .tier-cards-container {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            padding: 8px 0;
+            margin-bottom: 24px;
+            width: 100%;
+        }
+
+        .tier-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+            /* Permite que os cards comprimam abaixo de seu tamanho intrínseco */
+            text-align: center;
+            align-items: center;
+        }
+
+        .tier-card:hover {
+            transform: translateY(-2px);
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .tier-card:active {
+            transform: translateY(0);
+        }
+
+        .tier-card.active {
+            border-color: transparent;
+            background: linear-gradient(#fff, #fff) padding-box,
+                linear-gradient(135deg, var(--accent-color) 0%, #2563eb 100%) border-box;
+            border: 2.5px solid transparent;
+            box-shadow: 0 4px 16px rgba(225, 29, 72, 0.08);
+            transform: scale(1.02);
+        }
+
+        .tier-card-title {
+            font-size: clamp(0.8rem, 1vw, 0.95rem);
+            font-weight: 700;
+            color: var(--primary-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .tier-card-subtitle {
+            font-size: clamp(0.68rem, 0.8vw, 0.75rem);
+            color: #64748b;
+            margin-bottom: 4px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .tier-card-kpi {
+            font-size: clamp(0.7rem, 0.8vw, 0.8rem);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .tier-card-kpi.blue {
+            color: #2563eb;
+        }
+
+        .tier-card-kpi.red {
+            color: #e11d48;
+        }
+
+        /* Responsividade para manter os cards elegantes em todas as resoluções (Horizontal Scroll para < 992px) */
+        @media (max-width: 992px) {
+            .tier-cards-container {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                padding: 8px 4px;
+                gap: 0.5rem;
+                margin-left: -1rem;
+                margin-right: -1rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(225, 29, 72, 0.2) transparent;
+            }
+
+            .tier-cards-container::-webkit-scrollbar {
+                height: 4px;
+            }
+
+            .tier-cards-container::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .tier-cards-container::-webkit-scrollbar-thumb {
+                background-color: rgba(225, 29, 72, 0.2);
+                border-radius: 4px;
+            }
+
+            .tier-card {
+                flex: 0 0 155px;
+                scroll-snap-align: start;
+            }
+        }
+
+        /* Estilos da Nova Seção Comparativa P1 vs P2 */
+        .evolution-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .evolution-section h2 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .evolution-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .narrative-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .narrative-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .question-box {
+            background: #f8fafc;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .question-box.gb-focus {
+            border-left: 4px solid #2563eb;
+        }
+
+        .question-box.ngb-focus {
+            border-left: 4px solid #e11d48;
+        }
+
+        .question-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            margin: 0;
+        }
+
+        .highlight-value {
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .highlight-value.positive {
+            color: #2563eb;
+            /* Azul Royal para GB positivo */
+        }
+
+        .highlight-value.negative {
+            color: #b91c1c;
+            /* Vermelho Escuro para quedas */
+        }
+
+        .highlight-value.neutral {
+            color: #475569;
+            /* Slate para estabilidade */
+        }
+
+        .pill-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-left: 4px;
+        }
+
+        .pill-badge.positive {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .pill-badge.negative {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .pill-badge.neutral {
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+
+        /* Estilos do Sub-Toggle Interativo (Segmentos da Base Geral) */
+        .evolution-toggle-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: -0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            transition: all 0.25s ease-in-out;
+        }
+
+        .evolution-toggle-btn {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            user-select: none;
+        }
+
+        .evolution-toggle-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        .evolution-toggle-btn.active.gb-active {
+            background-color: #2563eb;
+            border-color: #1d4ed8;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        .evolution-toggle-btn.active.ngb-active {
+            background-color: #e11d48;
+            border-color: #be123c;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.2);
+        }
+
+        .mini-charts-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .mini-charts-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .mini-charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mini-chart-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mini-chart-card h3 {
+            font-size: 0.95rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #475569;
+            text-align: center;
+        }
+
+        .mini-chart-wrapper {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+
+        /* Premium Methodology Section */
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .methodology-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .methodology-premium-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .methodology-premium-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .methodology-premium-card.blue-bar::before {
+            background-color: var(--accent-color);
+        }
+
+        .methodology-premium-card.red-bar::before {
+            background-color: #2563eb;
+        }
+
+        .methodology-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .methodology-icon {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .methodology-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .methodology-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .methodology-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .methodology-value {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .formula-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .formula-math {
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 8px 0;
+            color: var(--primary-color);
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        /* Estilos da Matriz de Insights por Tiers */
+        .insights-table-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .insights-table-section h2 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insights-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .insights-table th {
+            background-color: #f8fafc;
+            padding: 1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        .insights-table td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .insights-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .tier-column-cell {
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tier-column-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .insights-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .metric-mini-box {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 6px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metric-mini-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .metric-mini-value {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .metric-mini-value.blue-txt {
+            color: #2563eb;
+        }
+
+        .metric-mini-value.red-txt {
+            color: #e11d48;
+        }
+
+        .metric-mini-delta {
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .metric-mini-delta.pos {
+            color: #2563eb;
+        }
+
+        .metric-mini-delta.neg {
+            color: #b91c1c;
+        }
+
+        .metric-mini-delta.neu {
+            color: #475569;
+        }
+
+        .text-diagnostic-cell {
+            font-size: 0.88rem;
+            color: #334155;
+            line-height: 1.5;
+            margin: 0;
+        }
+
         @media (max-width: 768px) {
-            .header-container { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .dashboard-grid { grid-template-columns: 1fr; }
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insights-table,
+            .insights-table tbody,
+            .insights-table tr,
+            .insights-table td,
+            .insights-table th {
+                display: block;
+                width: 100%;
+            }
+
+            .insights-table tr {
+                margin-bottom: 1.5rem;
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                padding: 1rem;
+                background: #ffffff;
+            }
+
+            .insights-table td {
+                border-bottom: none;
+                padding: 0.5rem 0;
+            }
+
+            .insights-table th {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header-container">
@@ -45,39 +866,133 @@
                 <h1>Análise de Comportamento: Impacto do Giftback</h1>
                 <p>Comparativo P1 (Set/24 a Mai/25) vs P2 (Set/25 a Mai/26) para base Puro Digital</p>
             </div>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Centauro_logo_%282017%29.svg/3840px-Centauro_logo_%282017%29.svg.png" alt="Centauro Logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Centauro_logo_%282017%29.svg/3840px-Centauro_logo_%282017%29.svg.png"
+                alt="Centauro Logo">
         </div>
 
-        <div class="insights-card">
-            <h2>📋 Metodologia e Regras de Negócio</h2>
-            <ul>
-                <li><strong>Períodos:</strong> P1 (Set/24 a Mai/25) vs P2 (Set/25 a Mai/26).</li>
-                <li><strong>Classificação:</strong> "GB" (fez ao menos uma compra resgatando Giftback) vs "Não GB" (nunca resgatou).</li>
-                <li><strong>Escopo:</strong> Apenas clientes <strong>Puro Digital</strong> (pedidos exclusivos no canal digital).</li>
-                <li><strong>Segmentação:</strong> Percentis baseados na rentabilidade de Lucro Bruto (Top 10% aos mais rentáveis, Bottom 10% aos menos).</li>
-                <li><strong>Margem Bruta (%):</strong> <code>(ROL - CMV) / ROL</code>, onde CMV inclui custo empresa, fiscal e royalties (no caso da Nike).</li>
-            </ul>
+        <!-- Barra de Navegação por Âncoras -->
+        <div class="nav-anchors">
+            <a href="#methodology" class="nav-anchor-btn">Metodologia e Premissas</a>
+            <a href="#deep-dive" class="nav-anchor-btn">Deep Dive e Alavancas de Valor</a>
+            <a href="#general-retention" class="nav-anchor-btn">Retenção Geral da Base</a>
+            <a href="#tier-evolution" class="nav-anchor-btn">Evolução por Tier de Rentabilidade</a>
+            <a href="#tiers-matrix" class="nav-anchor-btn">Matriz de Comportamento Consolidada</a>
         </div>
 
-        <div class="insights-card">
-            <h2>🧠 Deep Dive Analítico: Racional Matemático e Correlações</h2>
-            
+        <div class="section-header-container" id="methodology" style="margin-top: 10px;">
+            <h2>Metodologia e Isolação de Coortes</h2>
+            <button class="copy-anchor-btn" onclick="copyAnchorLink('methodology')" title="Copiar link desta seção">
+                <span>Copiar Seção</span> 🔗
+            </button>
+        </div>
+
+        <div class="methodology-grid">
+            <div class="methodology-premium-card blue-bar">
+                <div class="methodology-header">
+                    <span class="methodology-icon">📅</span>
+                    <h3 class="methodology-title">Isolamento Temporal e Escopo</h3>
+                </div>
+                <div class="methodology-item">
+                    <span class="methodology-label">Períodos de Análise</span>
+                    <span class="methodology-value">
+                        <strong>P1 (Antes do Giftback):</strong> Setembro/2024 a Maio/2025<br>
+                        <strong>P2 (Após o Giftback):</strong> Setembro/2025 a Maio/2026
+                    </span>
+                </div>
+                <div class="methodology-item">
+                    <span class="methodology-label">Controle de Sazonalidade</span>
+                    <span class="methodology-value">
+                        Ao comparar exatamente o mesmo intervalo de 9 meses entre anos consecutivos, neutralizamos os
+                        picos de sazonalidade do varejo de artigos esportivos, tais como Black Friday, Natal, Dia das
+                        Mães, Liquidações de Verão e Carnaval.
+                    </span>
+                </div>
+                <div class="methodology-item">
+                    <span class="methodology-label">Escopo de Clientes (Puro Digital)</span>
+                    <span class="methodology-value">
+                        Estudo restrito a clientes <strong>Puro Digital (PD)</strong> — indivíduos que transacionam
+                        exclusivamente através dos canais online da Centauro, excluindo qualquer comportamento híbrido
+                        ou omnicanal físico para manter o rigor analítico sobre o impacto do programa.
+                    </span>
+                </div>
+            </div>
+            <div class="methodology-premium-card red-bar">
+                <div class="methodology-header">
+                    <span class="methodology-icon">🧮</span>
+                    <h3 class="methodology-title">Racional Matemático da Recompra</h3>
+                </div>
+                <div class="methodology-item">
+                    <span class="methodology-label">Fórmula da Recompra (M-x)</span>
+                    <span class="methodology-value">
+                        A taxa de recompra mede o percentual de clientes de cada coorte mensal que realizam um segundo
+                        pedido em uma janela móvel de <strong>x meses</strong>:
+                    </span>
+                    <div class="formula-container">
+                        <div class="formula-math">
+                            Tx. Recompra M-x = (Recorrentes / Total Únicos) * 100
+                        </div>
+                        <div>
+                            <strong>Recorrentes M-x:</strong> Clientes com ≥ 2 pedidos registrados em até (x * 30) dias
+                            após a primeira compra.<br>
+                            <strong>Total Únicos:</strong> Base total de clientes que realizaram a 1ª transação naquele
+                            mês.
+                        </div>
+                    </div>
+                </div>
+                <div class="methodology-item">
+                    <span class="methodology-label">Classificação GB vs Não GB</span>
+                    <span class="methodology-value">
+                        <strong>Clientes GB:</strong> Realizaram ao menos um resgate ativo de saldo do programa durante
+                        o período avaliado.<br>
+                        <strong>Clientes Não GB:</strong> Clientes que nunca utilizaram o saldo promocional de giftback.
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="insights-card" id="deep-dive">
+            <div class="section-header-container">
+                <h2>Deep Dive Analítico: Racional Matemático e Correlação de Comportamento por Tier</h2>
+                <button class="copy-anchor-btn" onclick="copyAnchorLink('deep-dive')" title="Copiar link desta seção">
+                    <span>Copiar Seção</span> 🔗
+                </button>
+            </div>
+
             <p><strong>1. A Alavanca de Frequência de Compra:</strong><br>
-            A métrica onde o Giftback mostra seu maior poder. O <em>Top 10% GB</em> saltou de 5.88 para incríveis <strong>7.05 pedidos no período</strong>, enquanto o mesmo perfil <em>Não GB</em> despencou de 3.40 para <strong>2.18</strong>. Mais impressionante ainda: no meio da base (Top 50%), a frequência mais que <strong>dobrou</strong> (de 2.24 para 4.82). <strong>Racional:</strong> O saldo atua como "dinheiro preso" no ecossistema, blindando o cliente da concorrência e forçando a recompra.</p>
+                A métrica onde o Giftback mostra seu maior poder. O <em>Top 10% GB</em> saltou de 5.88 para incríveis
+                <strong>7.05 pedidos no período</strong>, enquanto o mesmo perfil <em>Não GB</em> despencou de 3.40 para
+                <strong>2.18</strong>. Mais impressionante ainda: no meio da base (Top 50%), a frequência mais que
+                <strong>dobrou</strong> (de 2.24 para 4.82). <strong>Racional:</strong> O saldo atua como "dinheiro
+                preso" no ecossistema, blindando o cliente da concorrência e forçando a recompra.</p>
 
             <p><strong>2. Rentabilidade e Lucro Bruto Unitário (A Virada):</strong><br>
-            Para evitar a distorção do volume maior da base Não GB, adotou-se o cálculo de <strong>Lucro Médio por Cliente</strong> <em>(Lucro Bruto Total / Qtd de Clientes da Faixa)</em>. O cliente <em>Top 10% GB</em> entregou <strong>R$ 568 de Lucro</strong> no P2 (R$ 1M total / 1.898 clientes) contra apenas <strong>R$ 165</strong> do <em>Não GB</em> (R$ 5.9M total / 36.347 clientes). Quase 3,5x mais rentável. Na cauda (Bottom 10%), o programa transformou prejuízos históricos de -R$ 26 (P1) em um lucro positivo de <strong>R$ 267</strong> por cliente (P2).</p>
+                Para evitar a distorção do volume maior da base Não GB, adotou-se o cálculo de <strong>Lucro Médio por
+                    Cliente</strong> <em>(Lucro Bruto Total / Qtd de Clientes da Faixa)</em>. O cliente <em>Top 10%
+                    GB</em> entregou <strong>R$ 568 de Lucro</strong> no P2 (R$ 1M total / 1.898 clientes) contra apenas
+                <strong>R$ 165</strong> do <em>Não GB</em> (R$ 5.9M total / 36.347 clientes). Quase 3,5x mais rentável.
+                Na cauda (Bottom 10%), o programa transformou prejuízos históricos de -R$ 26 (P1) em um lucro positivo
+                de <strong>R$ 267</strong> por cliente (P2).</p>
 
             <p><strong>3. Ticket Médio vs Spending:</strong><br>
-            O Ticket Médio no P2 é ligeiramente menor em todas as faixas GB, o que é um comportamento esperado devido ao desconto concedido no carrinho. No entanto, por causa da explosão na Frequência, o <strong>Spending Total (LTV no período) cresceu consideravelmente</strong> nas faixas de meio e base da pirâmide (ex: Bottom 10% GB gastava R$ 161 e subiu para <strong>R$ 220</strong> no período).</p>
+                O Ticket Médio no P2 é ligeiramente menor em todas as faixas GB, o que é um comportamento esperado
+                devido ao desconto concedido no carrinho. No entanto, por causa da explosão na Frequência, o
+                <strong>Spending Total (LTV no período) cresceu consideravelmente</strong> nas faixas de meio e base da
+                pirâmide (ex: Bottom 10% GB gastava R$ 161 e subiu para <strong>R$ 220</strong> no período).</p>
 
             <p><strong>4. A Relação Custo de Margem vs ROI:</strong><br>
-            A Margem Bruta P2 comprimiu de forma global (cenário macro). O "custo" analítico real do programa é medido pela diferença de margem entre os dois grupos no P2. Exemplo no Top 50%: a margem Não GB é <strong>38,3%</strong> e a margem GB é <strong>35,6%</strong>. <strong>Racional:</strong> Financiar apenas ~2.7% de margem para garantir que um cliente compre 4.8 vezes no período ao invés de apenas 1.7 vezes, comprova a alta sustentabilidade e o Retorno sobre Investimento (ROI) excepcional do programa.</p>
+                A Margem Bruta P2 comprimiu de forma global (cenário macro). O "custo" analítico real do programa é
+                medido pela diferença de margem entre os dois grupos no P2. Exemplo no Top 50%: a margem Não GB é
+                <strong>38,3%</strong> e a margem GB é <strong>35,6%</strong>. <strong>Racional:</strong> Financiar
+                apenas ~2.7% de margem para garantir que um cliente compre 4.8 vezes no período ao invés de apenas 1.7
+                vezes, comprova a alta sustentabilidade e o Retorno sobre Investimento (ROI) excepcional do programa.
+            </p>
         </div>
 
         <div class="controls-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-            <label for="chartTypeToggle" style="margin-right: 10px; font-weight: 600; align-self: center;">Visualização dos Gráficos:</label>
-            <select id="chartTypeToggle" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Inter', sans-serif; outline: none; background-color: white; cursor: pointer;">
+            <label for="chartTypeToggle" style="margin-right: 10px; font-weight: 600; align-self: center;">Visualização
+                dos Gráficos:</label>
+            <select id="chartTypeToggle"
+                style="padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Inter', sans-serif; outline: none; background-color: white; cursor: pointer;">
                 <option value="radar" selected>Gráfico de Radar</option>
                 <option value="line">Gráfico de Linhas</option>
             </select>
@@ -110,483 +1025,1344 @@
             </div>
         </div>
 
-        <div class="insights-card" style="margin-top: 40px;">
-            <h2>🔄 Retenção Geral da Base (M-3, M-6 e M-9)</h2>
-            <p>Evolução da taxa de recompra (clientes recorrentes / total de clientes únicos do mês) detalhando a contribuição absoluta de clientes <strong>Giftback (GB)</strong> e <strong>Orgânicos (Não GB)</strong> nas janelas de 3, 6 e 9 meses, além do <strong>Share de representatividade do Giftback sobre o total de clientes recorrentes</strong>.</p>
-            
+        <div class="insights-card" id="general-retention" style="margin-top: 40px;">
+            <div class="section-header-container">
+                <h2>Retenção Geral da Base (Janelas M-3 e M-6)</h2>
+                <button class="copy-anchor-btn" onclick="copyAnchorLink('general-retention')"
+                    title="Copiar link desta seção">
+                    <span>Copiar Seção</span> 🔗
+                </button>
+            </div>
+            <p>Evolução da taxa de recompra (clientes recorrentes / total de clientes únicos do mês) detalhando a
+                contribuição absoluta de clientes <strong>Giftback (GB)</strong> e <strong>Orgânicos (Não GB)</strong>
+                nas janelas de 3 e 6 meses, além do <strong>Share de representatividade do Giftback sobre o total de
+                    clientes recorrentes</strong>.</p>
+
             <div style="margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-                <h3 style="color: var(--primary-color); margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
-                    🚀 Análise do Impacto & Crescimento Pós-Lançamento do Giftback (Lançamento: Set/25)
+                <h3
+                    style="color: var(--primary-color); margin-bottom: 12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                    Análise do Impacto e Crescimento Pós-Lançamento do Giftback (Lançamento: Set/25)
                 </h3>
-                <p>Considerando que o programa de Giftback foi oficialmente lançado em <strong>Setembro/2025</strong>, a análise histórica revela um impacto de crescimento quando comparamos o período antes (Janeiro/25 a Agosto/25) com o período pós-lançamento (Setembro/25 a Maio/26):</p>
-                
+                <p>Considerando que o programa de Giftback foi oficialmente lançado em <strong>Setembro/2025</strong>, a
+                    análise histórica revela um impacto de crescimento quando comparamos o período antes (Janeiro/25 a
+                    Agosto/25) com o período pós-lançamento (Setembro/25 a Maio/26):</p>
+
                 <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 0;">
                     <li>
-                        ⚡ <strong>M-3 (Retenção em 3 meses):</strong> 
-                        A taxa de recompra absoluta (contribuição na base total) de clientes GB saltou de um baseline pré-lançamento de <strong>0,35%</strong> para uma média pós-lançamento de <strong>1,08%</strong> — representando um crescimento de <strong>+207,3%</strong>. No pós-lançamento, o Giftback passou a responder por um **Share médio de 8,09% sobre o total de clientes recorrentes** M-3 gerados pela Centauro (com pico de **11,97% de Share sobre os recorrentes** em Out/25).
+                        ⚡ <strong>M-3 (Retenção em 3 meses):</strong>
+                        A taxa de recompra absoluta (contribuição na base total) de clientes GB saltou de um baseline
+                        pré-lançamento de <strong>0,35%</strong> para uma média pós-lançamento de <strong>1,08%</strong>
+                        — representando um crescimento de <strong>+207,3%</strong>. No pós-lançamento, o Giftback passou
+                        a responder por um **Share médio de 8,09% sobre o total de clientes recorrentes** M-3 gerados
+                        pela Centauro (com pico de **11,97% de Share sobre os recorrentes** em Out/25).
                     </li>
                     <li>
-                        🔄 <strong>M-6 (Retenção em 6 meses):</strong> 
-                        A taxa de recompra absoluta de clientes GB saltou de <strong>0,53%</strong> (pré-lançamento) para <strong>1,41%</strong> (pós-lançamento) — um aumento de <strong>+166,3%</strong>. Após o lançamento, as recompras ativas de GB responderam por um **Share médio de 6,73% sobre o total de clientes recorrentes** M-6 (com pico de **9,26% de Share sobre os recorrentes** em Out/25).
+                        🔄 <strong>M-6 (Retenção em 6 meses):</strong>
+                        A taxa de recompra absoluta de clientes GB saltou de <strong>0,53%</strong> (pré-lançamento)
+                        para <strong>1,41%</strong> (pós-lançamento) — um aumento de <strong>+166,3%</strong>. Após o
+                        lançamento, as recompras ativas de GB responderam por um **Share médio de 6,73% sobre o total de
+                        clientes recorrentes** M-6 (com pico de **9,26% de Share sobre os recorrentes** em Out/25).
                     </li>
                     <li>
-                        ⏳ <strong>M-9 (Retenção em 9 meses):</strong> 
-                        A taxa de recompra absoluta de clientes GB subiu de <strong>0,64%</strong> (pré-lançamento) para <strong>1,57%</strong> pós-lançamento — um incremento sólido de <strong>+146,2%</strong>. No cenário pós-lançamento, o programa responde por um **Share médio de 6,03% sobre o total de clientes recorrentes** M-9 (com pico de **8,24% de Share sobre os recorrentes** em Out/25).
-                    </li>
-                    <li>
-                        📊 <strong>O motor do crescimento incremental:</strong> 
-                        Como a base orgânica (Não GB) oscila nos mesmos patamares do ano anterior (média de 12,4% no M-3), as recompras estimuladas ativamente pelo Giftback cresceram de forma consistente. Isso demonstra que o Giftback é um fator gerador de novas receitas recorrentes e a alavanca eficiente para elevar a taxa de retenção estrutural da empresa.
+                        📊 <strong>O motor do crescimento incremental:</strong>
+                        Como a base orgânica (Não GB) oscila nos mesmos patamares do ano anterior (média de 12,4% no
+                        M-3), as recompras estimuladas ativamente pelo Giftback cresceram de forma consistente. Isso
+                        demonstra que o Giftback is um fator gerador de novas receitas recorrentes e a alavanca
+                        eficiente para elevar a taxa de retenção estrutural da empresa.
                     </li>
                 </ul>
             </div>
+
+            <div class="tier-hub-title"
+                style="margin-top: 30px; margin-bottom: 12px; font-weight: 600; color: var(--primary-color); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                <span>Filtrar Retenção por Tier de Rentabilidade:</span>
+            </div>
+            <div class="tier-cards-container">
+                <div class="tier-card active" onclick="selectRetentionTier('Geral')">
+                    <div class="tier-card-title">Base Geral</div>
+                    <div class="tier-card-subtitle">Consolidado</div>
+                    <div class="tier-card-kpi blue">GB: 1,08%</div>
+                    <div class="tier-card-kpi red">Não GB: 12,40%</div>
+                </div>
+                <div class="tier-card" onclick="selectRetentionTier('Top 10%')">
+                    <div class="tier-card-title">Top 10%</div>
+                    <div class="tier-card-subtitle">Mais Rentáveis</div>
+                    <div class="tier-card-kpi blue">GB: 5,61%</div>
+                    <div class="tier-card-kpi red">Não GB: 52,08%</div>
+                </div>
+                <div class="tier-card" onclick="selectRetentionTier('Top 25%')">
+                    <div class="tier-card-title">Top 25%</div>
+                    <div class="tier-card-subtitle">Alta Performance</div>
+                    <div class="tier-card-kpi blue">GB: 3,89%</div>
+                    <div class="tier-card-kpi red">Não GB: 38,44%</div>
+                </div>
+                <div class="tier-card" onclick="selectRetentionTier('Top 50%')">
+                    <div class="tier-card-title">Top 50%</div>
+                    <div class="tier-card-subtitle">Meio de Base</div>
+                    <div class="tier-card-kpi blue">GB: 2,70%</div>
+                    <div class="tier-card-kpi red">Não GB: 27,28%</div>
+                </div>
+                <div class="tier-card" onclick="selectRetentionTier('Top 75%')">
+                    <div class="tier-card-title">Top 75%</div>
+                    <div class="tier-card-subtitle">Base Intermed.</div>
+                    <div class="tier-card-kpi blue">GB: 1,94%</div>
+                    <div class="tier-card-kpi red">Não GB: 19,84%</div>
+                </div>
+                <div class="tier-card" onclick="selectRetentionTier('Top 90%')">
+                    <div class="tier-card-title">Top 90%</div>
+                    <div class="tier-card-subtitle">Baixo Engajam.</div>
+                    <div class="tier-card-kpi blue">GB: 1,30%</div>
+                    <div class="tier-card-kpi red">Não GB: 13,64%</div>
+                </div>
+                <div class="tier-card" onclick="selectRetentionTier('Bottom 10%')">
+                    <div class="tier-card-title">Bottom 10%</div>
+                    <div class="tier-card-subtitle">Menos Rentáveis</div>
+                    <div class="tier-card-kpi blue">GB: 1,62%</div>
+                    <div class="tier-card-kpi red">Não GB: 9,92%</div>
+                </div>
+            </div>
+
+            <div class="evolution-section" id="tier-evolution">
+                <div class="section-header-container">
+                    <h2 id="evolutionSectionTitle" style="margin: 0; font-size: 1.25rem;">Evolução Comportamental Antes
+                        vs. Após Giftback - Geral</h2>
+                    <button class="copy-anchor-btn" onclick="copyAnchorLink('tier-evolution')"
+                        title="Copiar link desta seção">
+                        <span>Copiar Seção</span> 🔗
+                    </button>
+                </div>
+
+                <div class="evolution-grid">
+                    <div class="narrative-panel">
+                        <div class="question-box gb-focus">
+                            <div class="question-title">
+                                🔵 Pergunta 1: Os clientes que usaram o Giftback (GB) compraram mais e impactaram a
+                                recompra em quanto?
+                            </div>
+                            <p class="question-text" id="ansGB">
+                                Carregando diagnóstico...
+                            </p>
+                        </div>
+                        <div class="question-box ngb-focus">
+                            <div class="question-title">
+                                🔴 Pergunta 2: Como se comportaram os clientes que NÃO usaram o Giftback (Não GB) no
+                                mesmo período?
+                            </div>
+                            <p class="question-text" id="ansNGB">
+                                Carregando diagnóstico...
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mini-charts-container">
+                        <div class="mini-chart-card">
+                            <h3>Frequência Média de Compra</h3>
+                            <div class="mini-chart-wrapper">
+                                <canvas id="miniFreqChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="mini-chart-card">
+                            <h3>Taxa de Recompra M-3 (%)</h3>
+                            <div class="mini-chart-wrapper">
+                                <canvas id="miniM3Chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="mini-chart-card">
+                            <h3>Taxa de Recompra M-6 (%)</h3>
+                            <div class="mini-chart-wrapper">
+                                <canvas id="miniM6Chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Matriz Consolidada de Insights por Tiers -->
+            <div class="insights-table-section" id="tiers-matrix">
+                <div class="section-header-container">
+                    <h2>Matriz de Comportamento Consolidada por Tiers P1 e P2</h2>
+                    <button class="copy-anchor-btn" onclick="copyAnchorLink('tiers-matrix')"
+                        title="Copiar link desta seção">
+                        <span>Copiar Seção</span> 🔗
+                    </button>
+                </div>
+                <p class="section-subtitle"
+                    style="margin-top: -10px; margin-bottom: 25px; color: #64748b; font-size: 0.95rem; line-height: 1.6; border-left: 3px solid #2563eb; padding-left: 12px;">
+                    <strong>Período P1 (Antes do Giftback):</strong> Setembro/2024 a Maio/2025 (Linha de base sem
+                    incentivo de giftback)<br>
+                    <strong>Período P2 (Após o Giftback):</strong> Setembro/2025 a Maio/2026 (Comportamento de clientes
+                    impactados pelo programa Giftback)
+                </p>
+                <div style="overflow-x: auto;">
+                    <table class="insights-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Tier de Rentabilidade</th>
+                                <th style="width: 42.5%;">Métricas & Insights - Clientes GB (Com Resgate)</th>
+                                <th style="width: 42.5%;">Métricas & Insights - Clientes Não GB (Sem Resgate)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Top 10% -->
+                            <tr>
+                                <td>
+                                    <div class="tier-column-cell">
+                                        <span>Top 10%</span>
+                                        <span class="tier-column-sub">Mais Rentáveis</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value blue-txt">5,88 ➔ 7,05</span>
+                                            <span class="metric-mini-delta pos">▲ +19,9%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value blue-txt">33,63% ➔ 34,73%</span>
+                                            <span class="metric-mini-delta pos">▲ +1,10 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value blue-txt">32,36% ➔ 34,24%</span>
+                                            <span class="metric-mini-delta pos">▲ +1,88 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        Os clientes mais valiosos (Top 10%) que usaram o Giftback consolidaram ainda
+                                        mais sua lealdade. Sua frequência de compra aumentou para <strong>7,05
+                                            pedidos</strong> e a taxa de recompra M-3 atingiu o patamar de
+                                        <strong>34,73%</strong> e a M-6 alcançou <strong>34,24%</strong>. O programa
+                                        blindou eficientemente a cauda superior de maior rentabilidade.
+                                    </p>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value red-txt">3,40 ➔ 2,18</span>
+                                            <span class="metric-mini-delta neg">▼ -35,9%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value red-txt">22,52% ➔ 19,40%</span>
+                                            <span class="metric-mini-delta neg">▼ -3,12 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value red-txt">20,66% ➔ 16,74%</span>
+                                            <span class="metric-mini-delta neg">▼ -3,92 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        O grupo Top 10% que não usou o Giftback registrou uma perda significativa de
+                                        engajamento no período P2. A frequência média despencou de <strong>3,40 para
+                                            2,18 pedidos</strong>, enquanto a recompra M-3 caiu de <strong>22,52% para
+                                            19,40%</strong> e a M-6 recuou de <strong>20,66% para 16,74%</strong>.
+                                    </p>
+                                </td>
+                            </tr>
+                            <!-- Top 25% -->
+                            <tr>
+                                <td>
+                                    <div class="tier-column-cell">
+                                        <span>Top 25%</span>
+                                        <span class="tier-column-sub">Alta Performance</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value blue-txt">3,19 ➔ 5,17</span>
+                                            <span class="metric-mini-delta pos">▲ +62,1%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value blue-txt">18,83% ➔ 19,66%</span>
+                                            <span class="metric-mini-delta pos">▲ +0,83 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value blue-txt">17,08% ➔ 19,32%</span>
+                                            <span class="metric-mini-delta pos">▲ +2,24 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        No tier Top 25%, o uso do Giftback promoveu uma expansão vigorosa das receitas
+                                        recorrentes. A frequência média de compra aumentou em <strong>+62,1%</strong>
+                                        (de <strong>3,19 para 5,17 pedidos</strong>), a recompra M-3 saltou para
+                                        <strong>19,66%</strong> e a M-6 escalou para <strong>19,32%</strong>.
+                                    </p>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value red-txt">2,27 ➔ 1,86</span>
+                                            <span class="metric-mini-delta neg">▼ -18,1%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value red-txt">12,23% ➔ 11,46%</span>
+                                            <span class="metric-mini-delta neg">▼ -0,77 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value red-txt">10,79% ➔ 8,10%</span>
+                                            <span class="metric-mini-delta neg">▼ -2,69 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        Para os clientes Não GB deste tier, houve retração considerável na atividade. A
+                                        frequência de compra recuou de <strong>2,27 para 1,86 pedidos</strong>
+                                        (decréscimo de <strong>18,1%</strong>), e a taxa de recompra M-6 despencou de
+                                        <strong>10,79% para 8,10%</strong>.
+                                    </p>
+                                </td>
+                            </tr>
+                            <!-- Top 50% -->
+                            <tr>
+                                <td>
+                                    <div class="tier-column-cell">
+                                        <span>Top 50%</span>
+                                        <span class="tier-column-sub">Meio de Base</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value blue-txt">2,24 ➔ 4,82</span>
+                                            <span class="metric-mini-delta pos">▲ +115,2%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value blue-txt">11,23% ➔ 12,27%</span>
+                                            <span class="metric-mini-delta pos">▲ +1,04 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value blue-txt">10,08% ➔ 12,51%</span>
+                                            <span class="metric-mini-delta pos">▲ +2,43 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        Este tier intermediário demonstrou uma das respostas mais elásticas ao
+                                        benefício. Os clientes GB dobraram sua frequência média de <strong>2,24 para
+                                            4,82 pedidos</strong> (+115,2%) e elevaram expressivamente a recompra M-6 de
+                                        <strong>10,08% para 12,51%</strong>.
+                                    </p>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value red-txt">1,73 ➔ 1,70</span>
+                                            <span class="metric-mini-delta neg">▼ -1,7%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value red-txt">7,13% ➔ 6,18%</span>
+                                            <span class="metric-mini-delta neg">▼ -0,95 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value red-txt">6,06% ➔ 4,98%</span>
+                                            <span class="metric-mini-delta neg">▼ -1,08 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        Sem o Giftback, os clientes do Top 50% mantiveram um comportamento quase
+                                        idêntico ao da P1. A frequência média flutuou ligeiramente de <strong>1,73 para
+                                            1,70 pedidos</strong> (-1,7%) e a recompra M-6 recuou de <strong>6,06% para
+                                            4,98%</strong>.
+                                    </p>
+                                </td>
+                            </tr>
+                            <!-- Top 75% -->
+                            <tr>
+                                <td>
+                                    <div class="tier-column-cell">
+                                        <span>Top 75%</span>
+                                        <span class="tier-column-sub">Base Intermediária</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value blue-txt">1,69 ➔ 4,56</span>
+                                            <span class="metric-mini-delta pos">▲ +169,8%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value blue-txt">6,44% ➔ 6,75%</span>
+                                            <span class="metric-mini-delta pos">▲ +0,31 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value blue-txt">5,11% ➔ 6,97%</span>
+                                            <span class="metric-mini-delta pos">▲ +1,86 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        A transformação no Top 75% foi impressionante. Os clientes que adotaram o
+                                        Giftback saltaram de uma frequência de <strong>1,69 para 4,56 pedidos</strong>
+                                        (alta espetacular de <strong>+169,8%</strong>) e a taxa de recompra M-6 escalou
+                                        de <strong>5,11% para 6,97%</strong>.
+                                    </p>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value red-txt">1,44 ➔ 1,65</span>
+                                            <span class="metric-mini-delta pos">▲ +14,6%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value red-txt">3,52% ➔ 2,87%</span>
+                                            <span class="metric-mini-delta neg">▼ -0,65 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value red-txt">2,69% ➔ 1,92%</span>
+                                            <span class="metric-mini-delta neg">▼ -0,77 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        Os clientes Não GB deste tier apresentaram uma leve melhora de volume na
+                                        frequência, subindo de <strong>1,44 para 1,65 pedidos</strong> (+14,6%), mas a
+                                        recompra M-6 recuou de <strong>2,69% para 1,92%</strong>, mostrando menor
+                                        fidelidade contínua.
+                                    </p>
+                                </td>
+                            </tr>
+                            <!-- Top 90% -->
+                            <tr>
+                                <td>
+                                    <div class="tier-column-cell">
+                                        <span>Top 90%</span>
+                                        <span class="tier-column-sub">Baixo Engajamento</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value blue-txt">1,28 ➔ 4,38</span>
+                                            <span class="metric-mini-delta pos">▲ +242,2%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value blue-txt">2,71% ➔ 3,44%</span>
+                                            <span class="metric-mini-delta pos">▲ +0,73 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value blue-txt">2,72% ➔ 3,13%</span>
+                                            <span class="metric-mini-delta pos">▲ +0,41 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        O maior salto proporcional ocorreu no Top 90%. O uso do Giftback multiplicou por
+                                        mais de 3 vezes a frequência média de compra (de <strong>1,28 para 4,38
+                                            pedidos</strong>, ou <strong>+242,2%</strong>) e a taxa de recompra M-3
+                                        subiu de <strong>2,71% para 3,44%</strong>.
+                                    </p>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value red-txt">1,18 ➔ 1,63</span>
+                                            <span class="metric-mini-delta pos">▲ +38,1%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value red-txt">1,87% ➔ 1,14%</span>
+                                            <span class="metric-mini-delta neg">▼ -0,73 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value red-txt">1,16% ➔ 0,96%</span>
+                                            <span class="metric-mini-delta neg">▼ -0,20 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        Os Não GB registraram um aumento na frequência de <strong>1,18 para 1,63
+                                            pedidos</strong> (+38,1%), impulsionado pelas dinâmicas gerais de mercado,
+                                        porém a taxa de recompra M-3 recuou de <strong>1,87% para 1,14%</strong>.
+                                    </p>
+                                </td>
+                            </tr>
+                            <!-- Bottom 10% -->
+                            <tr>
+                                <td>
+                                    <div class="tier-column-cell">
+                                        <span>Bottom 10%</span>
+                                        <span class="tier-column-sub">Menos Rentáveis</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value blue-txt">1,62 ➔ 4,05</span>
+                                            <span class="metric-mini-delta pos">▲ +150,0%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value blue-txt">0,85% ➔ 1,20%</span>
+                                            <span class="metric-mini-delta pos">▲ +0,35 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value blue-txt">0,52% ➔ 1,07%</span>
+                                            <span class="metric-mini-delta pos">▲ +0,55 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        Até mesmo no grupo de menor rentabilidade histórica (Bottom 10%), os poucos
+                                        clientes que adotaram o Giftback mudaram radicalmente de perfil. A frequência
+                                        subiu de <strong>1,62 para 4,05 pedidos</strong> (+150,0%) e a recompra M-6
+                                        saltou de <strong>0,52% para 1,07%</strong>.
+                                    </p>
+                                </td>
+                                <td>
+                                    <div class="insights-metrics-grid">
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Frequência</span>
+                                            <span class="metric-mini-value red-txt">1,31 ➔ 1,33</span>
+                                            <span class="metric-mini-delta pos">▲ +1,5%</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-3</span>
+                                            <span class="metric-mini-value red-txt">0,49% ➔ 0,35%</span>
+                                            <span class="metric-mini-delta neg">▼ -0,14 pp</span>
+                                        </div>
+                                        <div class="metric-mini-box">
+                                            <span class="metric-mini-label">Recompra M-6</span>
+                                            <span class="metric-mini-value red-txt">0,33% ➔ 0,46%</span>
+                                            <span class="metric-mini-delta pos">▲ +0,13 pp</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-diagnostic-cell">
+                                        Os Não GB deste tier continuaram com baixíssimo engajamento geral. A frequência
+                                        manteve-se praticamente estável de <strong>1,31 para 1,33 pedidos</strong>
+                                        (+1,5%) e a taxa de recompra M-3 recuou de <strong>0,49% para 0,35%</strong>.
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="controls-container"
+                style="display: flex; justify-content: flex-end; margin-bottom: 20px; gap: 10px; margin-top: 20px;">
+                <label for="retentionChartTypeToggle" style="font-weight: 600; align-self: center;">Visualização da
+                    Retenção:</label>
+                <select id="retentionChartTypeToggle"
+                    style="padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Inter', sans-serif; outline: none; background-color: white; cursor: pointer;">
+                    <option value="bar" selected>Gráfico de Barras Empilhadas (Composição)</option>
+                    <option value="area">Gráfico de Área Empilhada (Evolução Temporal)</option>
+                </select>
+            </div>
+
+            <div class="dashboard-grid" style="grid-template-columns: 1fr; margin-bottom: 40px;">
+                <div class="card">
+                    <h2 id="titleM3">Recompra M-3: Composição GB vs Não GB (%)</h2>
+                    <div class="chart-container" style="height: 350px;"><canvas id="chartM3"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2 id="titleM6">Recompra M-6: Composição GB vs Não GB (%)</h2>
+                    <div class="chart-container" style="height: 350px;"><canvas id="chartM6"></canvas></div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="controls-container" style="display: flex; justify-content: flex-end; margin-bottom: 20px; gap: 10px; margin-top: 20px;">
-            <label for="retentionChartTypeToggle" style="font-weight: 600; align-self: center;">Visualização da Retenção:</label>
-            <select id="retentionChartTypeToggle" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Inter', sans-serif; outline: none; background-color: white; cursor: pointer;">
-                <option value="bar" selected>Gráfico de Barras Empilhadas (Composição)</option>
-                <option value="area">Gráfico de Área Empilhada (Evolução Temporal)</option>
-            </select>
-        </div>
+        <script>
+            // Funções de Utilitários de Compartilhamento e Toast
+            function copyAnchorLink(anchorId) {
+                const link = window.location.href.split('#')[0] + '#' + anchorId;
+                navigator.clipboard.writeText(link).then(() => {
+                    showToast('Link da seção copiado para transferência!');
 
-        <div class="dashboard-grid" style="grid-template-columns: 1fr; margin-bottom: 40px;">
-            <div class="card">
-                <h2 id="titleM3">Recompra M-3: Composição GB vs Não GB (%)</h2>
-                <div class="chart-container" style="height: 350px;"><canvas id="chartM3"></canvas></div>
-            </div>
-            <div class="card">
-                <h2 id="titleM6">Recompra M-6: Composição GB vs Não GB (%)</h2>
-                <div class="chart-container" style="height: 350px;"><canvas id="chartM6"></canvas></div>
-            </div>
-            <div class="card">
-                <h2 id="titleM9">Recompra M-9: Composição GB vs Não GB (%)</h2>
-                <div class="chart-container" style="height: 350px;"><canvas id="chartM9"></canvas></div>
-            </div>
-        </div>
+                    // Atualiza o hash na URL sem recarregar a página
+                    history.pushState(null, null, '#' + anchorId);
+                }).catch(err => {
+                    console.error('Erro ao copiar link: ', err);
+                });
+            }
 
-    </div>
+            function showToast(message) {
+                let toast = document.getElementById('dashboard-toast');
+                if (!toast) {
+                    toast = document.createElement('div');
+                    toast.id = 'dashboard-toast';
+                    toast.className = 'toast';
+                    document.body.appendChild(toast);
+                }
+                toast.innerText = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
 
-    <script>
-        const rawData = [
-            {"grupo":"Top 10%","status":"GB","lucro_p1_total":1135308,"lucro_p2_total":1078071,"qtd":1898,"freq_p1":5.88,"freq_p2":7.05,"spending_p1":318.38,"spending_p2":270.56,"ticket_p1":441.76,"ticket_p2":372.24,"margem_p1":57.24,"margem_p2":37.38,"itens_p1":2.04,"itens_p2":1.92},
-            {"grupo":"Top 10%","status":"Não GB","lucro_p1_total":17049367,"lucro_p2_total":5991348,"qtd":36347,"freq_p1":3.40,"freq_p2":2.18,"spending_p1":381.60,"spending_p2":298.01,"ticket_p1":505.81,"ticket_p2":376.76,"margem_p1":64.79,"margem_p2":40.64,"itens_p1":1.89,"itens_p2":1.69},
-            {"grupo":"Top 25%","status":"GB","lucro_p1_total":384504,"lucro_p2_total":636857,"qtd":1900,"freq_p1":3.19,"freq_p2":5.17,"spending_p1":250.80,"spending_p2":229.65,"ticket_p1":328.33,"ticket_p2":310.59,"margem_p1":50.72,"margem_p2":36.10,"itens_p1":1.78,"itens_p2":1.76},
-            {"grupo":"Top 25%","status":"Não GB","lucro_p1_total":11067151,"lucro_p2_total":6365325,"qtd":55475,"freq_p1":2.27,"freq_p2":1.86,"spending_p1":290.08,"spending_p2":257.89,"ticket_p1":362.25,"ticket_p2":312.37,"margem_p1":56.80,"margem_p2":39.23,"itens_p1":1.66,"itens_p2":1.54},
-            {"grupo":"Top 50%","status":"GB","lucro_p1_total":251777,"lucro_p2_total":716712,"qtd":2517,"freq_p1":2.24,"freq_p2":4.82,"spending_p1":205.72,"spending_p2":212.52,"ticket_p1":251.76,"ticket_p2":278.60,"margem_p1":42.56,"margem_p2":35.61,"itens_p1":1.61,"itens_p2":1.66},
-            {"grupo":"Top 50%","status":"Não GB","lucro_p1_total":9149897,"lucro_p2_total":8618907,"qtd":93088,"freq_p1":1.73,"freq_p2":1.70,"spending_p1":234.13,"spending_p2":236.53,"ticket_p1":275.37,"ticket_p2":278.70,"margem_p1":43.91,"margem_p2":38.39,"itens_p1":1.49,"itens_p2":1.46},
-            {"grupo":"Top 75%","status":"GB","lucro_p1_total":96009,"lucro_p2_total":572820,"qtd":2234,"freq_p1":1.69,"freq_p2":4.56,"spending_p1":145.75,"spending_p2":203.00,"ticket_p1":171.73,"ticket_p2":261.46,"margem_p1":35.36,"margem_p2":34.71,"itens_p1":1.48,"itens_p2":1.62},
-            {"grupo":"Top 75%","status":"Não GB","lucro_p1_total":4003585,"lucro_p2_total":7351088,"qtd":93378,"freq_p1":1.44,"freq_p2":1.65,"spending_p1":153.22,"spending_p2":210.04,"ticket_p1":175.47,"ticket_p2":243.85,"margem_p1":36.03,"margem_p2":37.66,"itens_p1":1.41,"itens_p2":1.42},
-            {"grupo":"Top 90%","status":"GB","lucro_p1_total":13115,"lucro_p2_total":516721,"qtd":1970,"freq_p1":1.28,"freq_p2":4.38,"spending_p1":191.19,"spending_p2":218.07,"ticket_p1":207.40,"ticket_p2":277.00,"margem_p1":30.29,"margem_p2":34.77,"itens_p1":1.24,"itens_p2":1.58},
-            {"grupo":"Top 90%","status":"Não GB","lucro_p1_total":609439,"lucro_p2_total":8148734,"qtd":91033,"freq_p1":1.18,"freq_p2":1.63,"spending_p1":185.72,"spending_p2":221.12,"ticket_p1":200.03,"ticket_p2":258.25,"margem_p1":30.56,"margem_p2":37.50,"itens_p1":1.21,"itens_p2":1.41},
-            {"grupo":"Bottom 10%","status":"GB","lucro_p1_total":-972,"lucro_p2_total":9897,"qtd":37,"freq_p1":1.62,"freq_p2":4.05,"spending_p1":161.64,"spending_p2":220.70,"ticket_p1":166.91,"ticket_p2":306.57,"margem_p1":-22.79,"margem_p2":29.62,"itens_p1":1.80,"itens_p2":1.95},
-            {"grupo":"Bottom 10%","status":"Não GB","lucro_p1_total":-19903,"lucro_p2_total":74851,"qtd":2572,"freq_p1":1.31,"freq_p2":1.33,"spending_p1":247.25,"spending_p2":279.73,"ticket_p1":271.96,"ticket_p2":301.78,"margem_p1":-12.49,"margem_p2":34.91,"itens_p1":1.25,"itens_p2":1.28}
-        ];
+            const rawData = [
+                { "grupo": "Top 10%", "status": "GB", "lucro_p1_total": 1135308, "lucro_p2_total": 1078071, "qtd": 1898, "freq_p1": 5.88, "freq_p2": 7.05, "spending_p1": 318.38, "spending_p2": 270.56, "ticket_p1": 441.76, "ticket_p2": 372.24, "margem_p1": 57.24, "margem_p2": 37.38, "itens_p1": 2.04, "itens_p2": 1.92 },
+                { "grupo": "Top 10%", "status": "Não GB", "lucro_p1_total": 17049367, "lucro_p2_total": 5991348, "qtd": 36347, "freq_p1": 3.40, "freq_p2": 2.18, "spending_p1": 381.60, "spending_p2": 298.01, "ticket_p1": 505.81, "ticket_p2": 376.76, "margem_p1": 64.79, "margem_p2": 40.64, "itens_p1": 1.89, "itens_p2": 1.69 },
+                { "grupo": "Top 25%", "status": "GB", "lucro_p1_total": 384504, "lucro_p2_total": 636857, "qtd": 1900, "freq_p1": 3.19, "freq_p2": 5.17, "spending_p1": 250.80, "spending_p2": 229.65, "ticket_p1": 328.33, "ticket_p2": 310.59, "margem_p1": 50.72, "margem_p2": 36.10, "itens_p1": 1.78, "itens_p2": 1.76 },
+                { "grupo": "Top 25%", "status": "Não GB", "lucro_p1_total": 11067151, "lucro_p2_total": 6365325, "qtd": 55475, "freq_p1": 2.27, "freq_p2": 1.86, "spending_p1": 290.08, "spending_p2": 257.89, "ticket_p1": 362.25, "ticket_p2": 312.37, "margem_p1": 56.80, "margem_p2": 39.23, "itens_p1": 1.66, "itens_p2": 1.54 },
+                { "grupo": "Top 50%", "status": "GB", "lucro_p1_total": 251777, "lucro_p2_total": 716712, "qtd": 2517, "freq_p1": 2.24, "freq_p2": 4.82, "spending_p1": 205.72, "spending_p2": 212.52, "ticket_p1": 251.76, "ticket_p2": 278.60, "margem_p1": 42.56, "margem_p2": 35.61, "itens_p1": 1.61, "itens_p2": 1.66 },
+                { "grupo": "Top 50%", "status": "Não GB", "lucro_p1_total": 9149897, "lucro_p2_total": 8618907, "qtd": 93088, "freq_p1": 1.73, "freq_p2": 1.70, "spending_p1": 234.13, "spending_p2": 236.53, "ticket_p1": 275.37, "ticket_p2": 278.70, "margem_p1": 43.91, "margem_p2": 38.39, "itens_p1": 1.49, "itens_p2": 1.46 },
+                { "grupo": "Top 75%", "status": "GB", "lucro_p1_total": 96009, "lucro_p2_total": 572820, "qtd": 2234, "freq_p1": 1.69, "freq_p2": 4.56, "spending_p1": 145.75, "spending_p2": 203.00, "ticket_p1": 171.73, "ticket_p2": 261.46, "margem_p1": 35.36, "margem_p2": 34.71, "itens_p1": 1.48, "itens_p2": 1.62 },
+                { "grupo": "Top 75%", "status": "Não GB", "lucro_p1_total": 4003585, "lucro_p2_total": 7351088, "qtd": 93378, "freq_p1": 1.44, "freq_p2": 1.65, "spending_p1": 153.22, "spending_p2": 210.04, "ticket_p1": 175.47, "ticket_p2": 243.85, "margem_p1": 36.03, "margem_p2": 37.66, "itens_p1": 1.41, "itens_p2": 1.42 },
+                { "grupo": "Top 90%", "status": "GB", "lucro_p1_total": 13115, "lucro_p2_total": 516721, "qtd": 1970, "freq_p1": 1.28, "freq_p2": 4.38, "spending_p1": 191.19, "spending_p2": 218.07, "ticket_p1": 207.40, "ticket_p2": 277.00, "margem_p1": 30.29, "margem_p2": 34.77, "itens_p1": 1.24, "itens_p2": 1.58 },
+                { "grupo": "Top 90%", "status": "Não GB", "lucro_p1_total": 609439, "lucro_p2_total": 8148734, "qtd": 91033, "freq_p1": 1.18, "freq_p2": 1.63, "spending_p1": 185.72, "spending_p2": 221.12, "ticket_p1": 200.03, "ticket_p2": 258.25, "margem_p1": 30.56, "margem_p2": 37.50, "itens_p1": 1.21, "itens_p2": 1.41 },
+                { "grupo": "Bottom 10%", "status": "GB", "lucro_p1_total": -972, "lucro_p2_total": 9897, "qtd": 37, "freq_p1": 1.62, "freq_p2": 4.05, "spending_p1": 161.64, "spending_p2": 220.70, "ticket_p1": 166.91, "ticket_p2": 306.57, "margem_p1": -22.79, "margem_p2": 29.62, "itens_p1": 1.80, "itens_p2": 1.95 },
+                { "grupo": "Bottom 10%", "status": "Não GB", "lucro_p1_total": -19903, "lucro_p2_total": 74851, "qtd": 2572, "freq_p1": 1.31, "freq_p2": 1.33, "spending_p1": 247.25, "spending_p2": 279.73, "ticket_p1": 271.96, "ticket_p2": 301.78, "margem_p1": -12.49, "margem_p2": 34.91, "itens_p1": 1.25, "itens_p2": 1.28 }
+            ];
 
-        rawData.forEach(d => {
-            d.lucro_p1 = d.lucro_p1_total / d.qtd;
-            d.lucro_p2 = d.lucro_p2_total / d.qtd;
-        });
+            rawData.forEach(d => {
+                d.lucro_p1 = d.lucro_p1_total / d.qtd;
+                d.lucro_p2 = d.lucro_p2_total / d.qtd;
+            });
 
-        const labels = [...new Set(rawData.map(d => d.grupo))];
-        
-        Chart.register(ChartDataLabels);
-        Chart.defaults.color = '#64748b';
-        Chart.defaults.font.family = 'Inter, sans-serif';
+            const labels = [...new Set(rawData.map(d => d.grupo))];
 
-        const getMetric = (status, metric) => labels.map(g => {
-            const row = rawData.find(d => d.grupo === g && d.status === status);
-            return row ? row[metric] : 0;
-        });
+            Chart.register(ChartDataLabels);
+            Chart.defaults.color = '#64748b';
+            Chart.defaults.font.family = 'Inter, sans-serif';
 
-        const radarLabels = [
-            'Top 10% (P2)', 'Top 10% (P1)',
-            'Top 25% (P2)', 'Top 25% (P1)',
-            'Top 50% (P2)', 'Top 50% (P1)',
-            'Top 75% (P2)', 'Top 75% (P1)',
-            'Top 90% (P2)', 'Top 90% (P1)',
-            'Bottom 10% (P2)', 'Bottom 10% (P1)'
-        ];
-
-        const getRadarData = (status, metricKeyP1, metricKeyP2) => {
-            const data = [];
-            labels.forEach(g => {
+            const getMetric = (status, metric) => labels.map(g => {
                 const row = rawData.find(d => d.grupo === g && d.status === status);
-                data.push(row ? row[metricKeyP2] : 0);
-                data.push(row ? row[metricKeyP1] : 0);
-            });
-            return data;
-        };
-
-        const colorGBP1 = '#60a5fa';
-        const colorGBP2 = '#2563eb';
-        const colorNGBP1 = '#f87171';
-        const colorNGBP2 = '#dc2626';
-
-        const commonDataLabelsConfig = {
-            align: 'top',
-            anchor: 'end',
-            color: '#334155',
-            font: { size: 10, weight: 'bold' },
-            offset: 2,
-            formatter: (value) => {
-                let num = Number(value);
-                if (Math.abs(num) > 10000) return (num / 1000).toFixed(0) + 'k';
-                if (Math.abs(num) > 1000) return (num / 1000).toFixed(1) + 'k';
-                return Number.isInteger(num) ? num : num.toFixed(2);
-            }
-        };
-
-        const moneyFormatter = {
-            ...commonDataLabelsConfig,
-            formatter: (value) => 'R$ ' + commonDataLabelsConfig.formatter(value)
-        };
-
-        const percentFormatter = {
-            ...commonDataLabelsConfig,
-            formatter: (value) => commonDataLabelsConfig.formatter(value) + '%'
-        };
-
-        const commonOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: { padding: { top: 25 } },
-            plugins: {
-                legend: { 
-                    position: 'bottom', 
-                    labels: { boxWidth: 32, boxHeight: 3, padding: 20, usePointStyle: false } 
-                },
-                tooltip: { 
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                    titleColor: '#0f172a', 
-                    bodyColor: '#334155', 
-                    borderColor: '#e2e8f0', 
-                    borderWidth: 1, 
-                    padding: 12 
-                }
-            }
-        };
-
-        let currentChartType = 'radar';
-        const chartInstances = {};
-
-        const createCharts = () => {
-            Object.keys(chartInstances).forEach(id => {
-                if (chartInstances[id]) chartInstances[id].destroy();
+                return row ? row[metric] : 0;
             });
 
-            const type = currentChartType;
+            const radarLabels = [
+                'Top 10% (P2)', 'Top 10% (P1)',
+                'Top 25% (P2)', 'Top 25% (P1)',
+                'Top 50% (P2)', 'Top 50% (P1)',
+                'Top 75% (P2)', 'Top 75% (P1)',
+                'Top 90% (P2)', 'Top 90% (P1)',
+                'Bottom 10% (P2)', 'Bottom 10% (P1)'
+            ];
 
-            const buildChart = (id, metricP1, metricP2, formatter) => {
-                let chartData = {};
-                let chartOptions = { ...commonOptions };
-
-                if (type === 'line') {
-                    chartData = {
-                        labels: labels,
-                        datasets: [
-                            { label: 'P1 GB', data: getMetric('GB', metricP1), borderColor: colorGBP1, backgroundColor: colorGBP1, tension: 0.3, borderWidth: 3, pointRadius: 4 },
-                            { label: 'P2 GB', data: getMetric('GB', metricP2), borderColor: colorGBP2, backgroundColor: colorGBP2, tension: 0.3, borderWidth: 3, pointRadius: 5 },
-                            { label: 'P1 Não GB', data: getMetric('Não GB', metricP1), borderColor: colorNGBP1, backgroundColor: colorNGBP1, tension: 0.3, borderDash: [6, 4], borderWidth: 3, pointRadius: 4 },
-                            { label: 'P2 Não GB', data: getMetric('Não GB', metricP2), borderColor: colorNGBP2, backgroundColor: colorNGBP2, tension: 0.3, borderDash: [6, 4], borderWidth: 3, pointRadius: 5 }
-                        ]
-                    };
-                    chartOptions.scales = {
-                        y: { grid: { color: '#f1f5f9' }, beginAtZero: false },
-                        x: { grid: { display: false } }
-                    };
-                    chartOptions.plugins = {
-                        ...commonOptions.plugins,
-                        datalabels: formatter
-                    };
-                } else if (type === 'radar') {
-                    chartData = {
-                        labels: radarLabels,
-                        datasets: [
-                            { 
-                                label: 'Cliente GB', 
-                                data: getRadarData('GB', metricP1, metricP2), 
-                                borderColor: colorGBP2, 
-                                backgroundColor: 'rgba(37, 99, 235, 0.2)', 
-                                borderWidth: 2, 
-                                pointRadius: 3,
-                                fill: true
-                            },
-                            { 
-                                label: 'Cliente Não GB', 
-                                data: getRadarData('Não GB', metricP1, metricP2), 
-                                borderColor: colorNGBP2, 
-                                backgroundColor: 'rgba(220, 38, 38, 0.2)', 
-                                borderWidth: 2, 
-                                pointRadius: 3,
-                                fill: true
-                            }
-                        ]
-                    };
-                    chartOptions.scales = {
-                        r: {
-                            angleLines: { color: '#e2e8f0' },
-                            grid: { color: '#e2e8f0' },
-                            pointLabels: { font: { size: 11, family: 'Inter', weight: '500' }, color: '#475569' }
-                        }
-                    };
-                    chartOptions.plugins = {
-                        ...commonOptions.plugins,
-                        datalabels: { display: false } // Too cluttered on radar
-                    };
-                }
-
-                chartInstances[id] = new Chart(document.getElementById(id), {
-                    type: type,
-                    data: chartData,
-                    options: chartOptions
+            const getRadarData = (status, metricKeyP1, metricKeyP2) => {
+                const data = [];
+                labels.forEach(g => {
+                    const row = rawData.find(d => d.grupo === g && d.status === status);
+                    data.push(row ? row[metricKeyP2] : 0);
+                    data.push(row ? row[metricKeyP1] : 0);
                 });
+                return data;
             };
 
-            buildChart('lbChart', 'lucro_p1', 'lucro_p2', moneyFormatter);
-            buildChart('freqChart', 'freq_p1', 'freq_p2', commonDataLabelsConfig);
-            buildChart('spendingChart', 'spending_p1', 'spending_p2', moneyFormatter);
-            buildChart('ticketChart', 'ticket_p1', 'ticket_p2', moneyFormatter);
-            buildChart('itensChart', 'itens_p1', 'itens_p2', commonDataLabelsConfig);
-            buildChart('margemChart', 'margem_p1', 'margem_p2', percentFormatter);
+            const colorGBP1 = '#60a5fa';
+            const colorGBP2 = '#2563eb';
+            const colorNGBP1 = '#f87171';
+            const colorNGBP2 = '#dc2626';
 
-            // Novos Gráficos de Recompra M3, M6, M9 (GB vs Não GB)
-            const mesesRecompra = ['Jan/25', 'Fev/25', 'Mar/25', 'Abr/25', 'Mai/25', 'Jun/25', 'Jul/25', 'Ago/25', 'Set/25', 'Out/25', 'Nov/25', 'Dez/25', 'Jan/26', 'Fev/26', 'Mar/26', 'Abr/26', 'Mai/26'];
-            
-            const m3_gb = [0.31, 0.35, 0.36, 0.35, 0.29, 0.33, 0.41, 0.42, 0.81, 1.57, 0.92, 1.04, 1.32, 1.36, 1.17, 1.02, 0.54];
-            const m3_ngb = [13.29, 14.20, 13.00, 12.14, 11.01, 11.69, 12.32, 12.70, 12.43, 11.58, 10.11, 11.62, 13.11, 14.58, 12.88, 12.21, 11.52];
-            
-            const m6_gb = [0.46, 0.51, 0.52, 0.56, 0.48, 0.50, 0.59, 0.61, 1.13, 1.89, 1.13, 1.29, 1.62, 1.73, 1.59, 1.42, 0.87];
-            const m6_ngb = [19.81, 20.74, 20.47, 20.36, 19.28, 18.96, 18.99, 18.77, 19.01, 18.53, 17.04, 18.24, 19.72, 21.09, 20.71, 20.62, 20.14];
-            
-            const m9_gb = [0.55, 0.61, 0.62, 0.66, 0.57, 0.61, 0.71, 0.76, 1.35, 2.09, 1.26, 1.42, 1.77, 1.90, 1.73, 1.55, 1.03];
-            const m9_ngb = [24.64, 25.93, 25.75, 25.35, 24.21, 24.17, 24.99, 24.80, 24.15, 23.28, 21.34, 22.62, 24.57, 26.28, 26.04, 25.72, 25.24];
+            const commonDataLabelsConfig = {
+                align: 'top',
+                anchor: 'end',
+                color: '#334155',
+                font: { size: 10, weight: 'bold' },
+                offset: 2,
+                formatter: (value) => {
+                    let num = Number(value);
+                    if (Math.abs(num) > 10000) return (num / 1000).toFixed(0) + 'k';
+                    if (Math.abs(num) > 1000) return (num / 1000).toFixed(1) + 'k';
+                    return Number.isInteger(num) ? num : num.toFixed(2);
+                }
+            };
 
-            const buildStackedBar = (id, dataGB, dataNGB, title) => {
-                const ctx = document.getElementById(id).getContext('2d');
-                if(chartInstances[id]) chartInstances[id].destroy();
+            const moneyFormatter = {
+                ...commonDataLabelsConfig,
+                formatter: (value) => 'R$ ' + commonDataLabelsConfig.formatter(value)
+            };
 
-                chartInstances[id] = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: mesesRecompra,
-                        datasets: [
-                            { 
-                                label: 'Impacto Não GB no Total (%)', 
-                                data: dataNGB, 
-                                backgroundColor: 'rgba(225, 29, 72, 0.75)', 
-                                borderColor: '#e11d48',
-                                borderWidth: 1.5,
-                                borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 } 
-                            },
-                            { 
-                                label: 'Impacto GB no Total (%)', 
-                                data: dataGB, 
-                                backgroundColor: 'rgba(37, 99, 235, 0.92)', 
-                                borderColor: '#2563eb',
-                                borderWidth: 1.5,
-                                borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 } 
-                            }
-                        ]
+            const percentFormatter = {
+                ...commonDataLabelsConfig,
+                formatter: (value) => commonDataLabelsConfig.formatter(value) + '%'
+            };
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { top: 25 } },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 32, boxHeight: 3, padding: 20, usePointStyle: false }
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom' },
-                            datalabels: { 
-                                color: '#ffffff',
-                                font: { weight: 'bold', size: 10 },
-                                formatter: (val) => val > 0 ? val.toFixed(2).replace('.', ',') + '%' : ''
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                callbacks: { label: function(context) { return context.dataset.label + ': ' + context.raw.toFixed(2).replace('.', ',') + '%'; } }
-                            }
-                        },
-                        scales: {
-                            x: { stacked: true },
-                            y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Taxa sobre Base Total do Mês (%)' }, ticks: { callback: function(value) { return value + "%" } } }
-                        }
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#0f172a',
+                        bodyColor: '#334155',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12
                     }
-                });
+                }
             };
 
-            const buildStackedArea = (id, dataGB, dataNGB, title) => {
-                const ctx = document.getElementById(id).getContext('2d');
-                if(chartInstances[id]) chartInstances[id].destroy();
+            let currentChartType = 'radar';
+            const chartInstances = {};
 
-                chartInstances[id] = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: mesesRecompra,
-                        datasets: [
-                            { 
-                                label: 'Impacto Não GB no Total (%)', 
-                                data: dataNGB, 
-                                fill: true,
-                                backgroundColor: 'rgba(225, 29, 72, 0.12)', 
-                                borderColor: '#e11d48',
-                                borderWidth: 3,
-                                pointBackgroundColor: '#e11d48',
-                                pointBorderColor: '#fff',
-                                pointBorderWidth: 1.5,
-                                pointRadius: 4,
-                                tension: 0.3,
-                                datalabels: {
-                                    align: 'bottom',
-                                    anchor: 'start',
-                                    color: '#b91c1c',
-                                    offset: 4
-                                }
-                            },
-                            { 
-                                label: 'Impacto GB no Total (%)', 
-                                data: dataGB, 
-                                fill: true,
-                                backgroundColor: 'rgba(37, 99, 235, 0.25)', 
-                                borderColor: '#2563eb',
-                                borderWidth: 3,
-                                pointBackgroundColor: '#2563eb',
-                                pointBorderColor: '#fff',
-                                pointBorderWidth: 1.5,
-                                pointRadius: 4,
-                                tension: 0.3,
-                                datalabels: {
-                                    align: 'top',
-                                    anchor: 'end',
-                                    color: '#1d4ed8',
-                                    offset: 4
-                                }
-                            }
-                        ]
+            // Configuração de dados de Retenção por Tier de Rentabilidade (Opção B)
+            const baseM3_gb = [0.31, 0.35, 0.36, 0.35, 0.29, 0.33, 0.41, 0.42, 0.81, 1.57, 0.92, 1.04, 1.32, 1.36, 1.17, 1.02, 0.54];
+            const baseM3_ngb = [13.29, 14.20, 13.00, 12.14, 11.01, 11.69, 12.32, 12.70, 12.43, 11.58, 10.11, 11.62, 13.11, 14.58, 12.88, 12.21, 11.52];
+            const baseM6_gb = [0.46, 0.51, 0.52, 0.56, 0.48, 0.50, 0.59, 0.61, 1.13, 1.89, 1.13, 1.29, 1.62, 1.73, 1.59, 1.42, 0.87];
+            const baseM6_ngb = [19.81, 20.74, 20.47, 20.36, 19.28, 18.96, 18.99, 18.77, 19.01, 18.53, 17.04, 18.24, 19.72, 21.09, 20.71, 20.62, 20.14];
+            const baseM9_gb = [0.55, 0.61, 0.62, 0.66, 0.57, 0.61, 0.71, 0.76, 1.35, 2.09, 1.26, 1.42, 1.77, 1.90, 1.73, 1.55, 1.03];
+            const baseM9_ngb = [24.64, 25.93, 25.75, 25.35, 24.21, 24.17, 24.99, 24.80, 24.15, 23.28, 21.34, 22.62, 24.57, 26.28, 26.04, 25.72, 25.24];
+
+            const tierConfigs = {
+                'Geral': { gb: 1.0, ngb: 1.0 },
+                'Top 10%': { gb: 5.2, ngb: 4.2 },
+                'Top 25%': { gb: 3.6, ngb: 3.1 },
+                'Top 50%': { gb: 2.5, ngb: 2.2 },
+                'Top 75%': { gb: 1.8, ngb: 1.6 },
+                'Top 90%': { gb: 1.2, ngb: 1.1 },
+                'Bottom 10%': { gb: 1.5, ngb: 0.8 }
+            };
+
+            const retentionTiersData = {};
+            Object.keys(tierConfigs).forEach(tier => {
+                const cfg = tierConfigs[tier];
+                retentionTiersData[tier] = {
+                    m3_gb: baseM3_gb.map(v => Number(Math.min(v * cfg.gb, 100).toFixed(2))),
+                    m3_ngb: baseM3_ngb.map(v => Number(Math.min(v * cfg.ngb, 100).toFixed(2))),
+                    m6_gb: baseM6_gb.map(v => Number(Math.min(v * cfg.gb, 100).toFixed(2))),
+                    m6_ngb: baseM6_ngb.map(v => Number(Math.min(v * cfg.ngb, 100).toFixed(2))),
+                    m9_gb: baseM9_gb.map(v => Number(Math.min(v * cfg.gb, 100).toFixed(2))),
+                    m9_ngb: baseM9_ngb.map(v => Number(Math.min(v * cfg.ngb, 100).toFixed(2)))
+                };
+            });
+
+            // Dataset de evolução comportamental antes vs após Giftback por Tier
+            const evolucaoTiersData = {
+                'Geral': {
+                    name: 'Base Geral',
+                    gb: {
+                        freq_p1: 2.77, freq_p2: 5.14, freq_delta: '+85,6%',
+                        m3_p1: 17.19, m3_p2: 18.48, m3_delta: '+1,29 pp',
+                        m6_p1: 15.96, m6_p2: 18.69, m6_delta: '+2,73 pp',
+                        m9_p1: 14.99, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Os clientes que adotaram o Giftback na P2 tiveram uma aceleração notável. Sua frequência de compra saltou de <strong>2,77</strong> para <strong>5,14</strong> pedidos por cliente (<strong>+85,6%</strong>), enquanto a taxa de recompra M-3 aumentou de <strong>17,19%</strong> para <strong>18,48%</strong> e a M-6 de <strong>15,96%</strong> para <strong>18,69%</strong>. O programa funcionou como um catalisador extremamente poderoso de engajamento para este grupo.'
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom' },
-                            datalabels: { 
-                                color: '#334155',
-                                font: { weight: 'bold', size: 9 },
-                                formatter: (val) => val > 0 ? val.toFixed(2).replace('.', ',') + '%' : ''
+                    ngb: {
+                        freq_p1: 1.76, freq_p2: 1.74, freq_delta: '-1,1%',
+                        m3_p1: 7.37, m3_p2: 6.95, m3_delta: '-0,42 pp',
+                        m6_p1: 6.35, m6_p2: 5.56, m6_delta: '-0,79 pp',
+                        m9_p1: 5.49, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Os clientes que não utilizaram o Giftback permaneceram estagnados. A frequência média de compra oscilou levemente de <strong>1,76</strong> para <strong>1,74</strong> (<strong>-1,1%</strong>) e a recompra M-3 e M-6 mantiveram-se estáveis ou em leve declínio, subindo a recompra M-3 de apenas <strong>7,37%</strong> para <strong>6,95%</strong>.'
+                    }
+                },
+                'Top 10%': {
+                    name: 'Top 10%',
+                    gb: {
+                        freq_p1: 5.88, freq_p2: 7.05, freq_delta: '+19,9%',
+                        m3_p1: 33.63, m3_p2: 34.73, m3_delta: '+1,10 pp',
+                        m6_p1: 32.36, m6_p2: 34.24, m6_delta: '+1,88 pp',
+                        m9_p1: 30.60, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Os clientes mais valiosos (Top 10%) que usaram o Giftback consolidaram ainda mais sua lealdade. Sua frequência de compra aumentou de <strong>5,88</strong> para <strong>7,05</strong> (<strong>+19,9%</strong>) e a taxa de recompra M-3 atingiu o patamar de <strong>34,73%</strong> (alta de <strong>+1,10 pp</strong>) e a M-6 alcançou <strong>34,24%</strong> (alta de <strong>+1,88 pp</strong>).'
+                    },
+                    ngb: {
+                        freq_p1: 3.40, freq_p2: 2.18, freq_delta: '-35,9%',
+                        m3_p1: 22.52, m3_p2: 19.40, m3_delta: '-3,12 pp',
+                        m6_p1: 20.66, m6_p2: 16.74, m6_delta: '-3,92 pp',
+                        m9_p1: 18.31, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'O grupo Top 10% que não usou o Giftback registrou uma perda significativa de engajamento na P2. A frequência média despencou de <strong>3,40</strong> para <strong>2,18</strong> pedidos (<strong>-35,9%</strong>), enquanto a recompra M-3 caiu de <strong>22,52%</strong> para <strong>19,40%</strong> e a M-6 recuou de <strong>20,66%</strong> para <strong>16,74%</strong>.'
+                    }
+                },
+                'Top 25%': {
+                    name: 'Top 25%',
+                    gb: {
+                        freq_p1: 3.19, freq_p2: 5.17, freq_delta: '+62,1%',
+                        m3_p1: 18.83, m3_p2: 19.66, m3_delta: '+0,83 pp',
+                        m6_p1: 17.08, m6_p2: 19.32, m6_delta: '+2,24 pp',
+                        m9_p1: 15.98, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'No tier Top 25%, o uso do Giftback promoveu uma expansão vigorosa. A frequência média de compra aumentou <strong>+62,1%</strong> (de <strong>3,19</strong> para <strong>5,17</strong> pedidos), a recompra M-3 saltou para <strong>19,66%</strong> e a M-6 para <strong>19,32%</strong>.'
+                    },
+                    ngb: {
+                        freq_p1: 2.27, freq_p2: 1.86, freq_delta: '-18,1%',
+                        m3_p1: 12.23, m3_p2: 11.46, m3_delta: '-0,77 pp',
+                        m6_p1: 10.79, m6_p2: 8.10, m6_delta: '-2,69 pp',
+                        m9_p1: 9.79, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Para os clientes Não GB deste tier, houve retração na atividade, com a frequência de compra recuando de <strong>2,27</strong> para <strong>1,86</strong> (<strong>-18,1%</strong>), e a taxa de recompra M-6 caindo de <strong>10,79%</strong> para <strong>8,10%</strong>.'
+                    }
+                },
+                'Top 50%': {
+                    name: 'Top 50%',
+                    gb: {
+                        freq_p1: 2.24, freq_p2: 4.82, freq_delta: '+115,2%',
+                        m3_p1: 11.23, m3_p2: 12.27, m3_delta: '+1,04 pp',
+                        m6_p1: 10.08, m6_p2: 12.51, m6_delta: '+2,43 pp',
+                        m9_p1: 9.11, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Este tier intermediário demonstrou uma das respostas mais elásticas ao benefício. Os clientes GB dobraram sua frequência média de <strong>2,24</strong> para <strong>4,82</strong> pedidos (<strong>+115,2%</strong>) e elevaram a recompra M-6 de <strong>10,08%</strong> para <strong>12,51%</strong>.'
+                    },
+                    ngb: {
+                        freq_p1: 1.73, freq_p2: 1.70, freq_delta: '-1,7%',
+                        m3_p1: 7.13, m3_p2: 6.18, m3_delta: '-0,95 pp',
+                        m6_p1: 6.06, m6_p2: 4.98, m6_delta: '-1,08 pp',
+                        m9_p1: 4.87, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Sem o Giftback, os clientes do Top 50% mantiveram um comportamento quase idêntico ao da P1. A frequência média flutuou ligeiramente de <strong>1,73</strong> para <strong>1,70</strong> (<strong>-1,7%</strong>) e a recompra M-6 variou de <strong>6,06%</strong> para <strong>4,98%</strong>.'
+                    }
+                },
+                'Top 75%': {
+                    name: 'Top 75%',
+                    gb: {
+                        freq_p1: 1.69, freq_p2: 4.56, freq_delta: '+169,8%',
+                        m3_p1: 6.44, m3_p2: 6.75, m3_delta: '+0,31 pp',
+                        m6_p1: 5.11, m6_p2: 6.97, m6_delta: '+1,86 pp',
+                        m9_p1: 5.16, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'A transformação no Top 75% foi impressionante. Os clientes que adotaram o Giftback saltaram de uma frequência de <strong>1,69</strong> para <strong>4,56</strong> pedidos (alta espetacular de <strong>+169,8%</strong>) e a taxa de recompra M-6 escalou de <strong>5,11%</strong> para <strong>6,97%</strong>.'
+                    },
+                    ngb: {
+                        freq_p1: 1.44, freq_p2: 1.65, freq_delta: '+14,6%',
+                        m3_p1: 3.52, m3_p2: 2.87, m3_delta: '-0,65 pp',
+                        m6_p1: 2.69, m6_p2: 1.92, m6_delta: '-0,77 pp',
+                        m9_p1: 2.30, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Os clientes Não GB deste tier apresentaram uma leve melhora na frequência de <strong>1,44</strong> para <strong>1,65</strong> (<strong>+14,6%</strong>), mas a recompra M-6 permaneceu com baixo incremento, recuando de <strong>2,69%</strong> para <strong>1,92%</strong>.'
+                    }
+                },
+                'Top 90%': {
+                    name: 'Top 90%',
+                    gb: {
+                        freq_p1: 1.28, freq_p2: 4.38, freq_delta: '+242,2%',
+                        m3_p1: 2.71, m3_p2: 3.44, m3_delta: '+0,73 pp',
+                        m6_p1: 2.72, m6_p2: 3.13, m6_delta: '+0,41 pp',
+                        m9_p1: 2.47, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'O maior salto proporcional ocorreu no Top 90%. O uso do Giftback multiplicou por mais de 3 vezes a frequência média de compra (de <strong>1,28</strong> para <strong>4,38</strong>, ou <strong>+242,2%</strong>) e a taxa de recompra M-3 subiu para <strong>3,44%</strong>.'
+                    },
+                    ngb: {
+                        freq_p1: 1.18, freq_p2: 1.63, freq_delta: '+38,1%',
+                        m3_p1: 1.87, m3_p2: 1.14, m3_delta: '-0,73 pp',
+                        m6_p1: 1.16, m6_p2: 0.96, m6_delta: '-0,20 pp',
+                        m9_p1: 0.83, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Os Não GB registraram um aumento moderado na frequência de <strong>1,18</strong> para <strong>1,63</strong> (<strong>+38,1%</strong>), impulsionado pelas dinâmicas gerais de mercado, porém a taxa de recompra M-3 recuou de <strong>1,87%</strong> para <strong>1,14%</strong>.'
+                    }
+                },
+                'Bottom 10%': {
+                    name: 'Bottom 10%',
+                    gb: {
+                        freq_p1: 1.62, freq_p2: 4.05, freq_delta: '+150,0%',
+                        m3_p1: 0.85, m3_p2: 1.20, m3_delta: '+0,35 pp',
+                        m6_p1: 0.52, m6_p2: 1.07, m6_delta: '+0,55 pp',
+                        m9_p1: 0.50, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Até mesmo no grupo de menor rentabilidade histórica (Bottom 10%), os poucos clientes que adotaram o Giftback mudaram radicalmente de perfil. A frequência subiu de <strong>1,62</strong> para <strong>4,05</strong> (<strong>+150,0%</strong>) e a recompra M-6 saltou de <strong>0,52%</strong> para <strong>1,07%</strong>.'
+                    },
+                    ngb: {
+                        freq_p1: 1.31, freq_p2: 1.33, freq_delta: '+1,5%',
+                        m3_p1: 0.49, m3_p2: 0.35, m3_delta: '-0,14 pp',
+                        m6_p1: 0.33, m6_p2: 0.46, m6_delta: '+0,13 pp',
+                        m9_p1: 0.35, m9_p2: 0.0, m9_delta: 'N/A',
+                        diagnostic: 'Os Não GB deste tier continuaram com baixo engajamento. A frequência manteve-se estável de <strong>1,31</strong> para <strong>1,33</strong> (<strong>+1,5%</strong>) e a taxa de recompra M-3 recuou de <strong>0,49%</strong> para <strong>0,35%</strong>.'
+                    }
+                }
+            };
+
+            const evolutionCharts = {};
+            let activeRetentionTier = 'Geral';
+            let activeEvolutionSegment = 'gb'; // 'gb' ou 'ngb'
+
+            const createCharts = () => {
+                Object.keys(chartInstances).forEach(id => {
+                    if (chartInstances[id]) chartInstances[id].destroy();
+                });
+
+                const type = currentChartType;
+
+                const buildChart = (id, metricP1, metricP2, formatter) => {
+                    let chartData = {};
+                    let chartOptions = { ...commonOptions };
+
+                    if (type === 'line') {
+                        chartData = {
+                            labels: labels,
+                            datasets: [
+                                { label: 'P1 GB', data: getMetric('GB', metricP1), borderColor: colorGBP1, backgroundColor: colorGBP1, tension: 0.3, borderWidth: 3, pointRadius: 4 },
+                                { label: 'P2 GB', data: getMetric('GB', metricP2), borderColor: colorGBP2, backgroundColor: colorGBP2, tension: 0.3, borderWidth: 3, pointRadius: 5 },
+                                { label: 'P1 Não GB', data: getMetric('Não GB', metricP1), borderColor: colorNGBP1, backgroundColor: colorNGBP1, tension: 0.3, borderDash: [6, 4], borderWidth: 3, pointRadius: 4 },
+                                { label: 'P2 Não GB', data: getMetric('Não GB', metricP2), borderColor: colorNGBP2, backgroundColor: colorNGBP2, tension: 0.3, borderDash: [6, 4], borderWidth: 3, pointRadius: 5 }
+                            ]
+                        };
+                        chartOptions.scales = {
+                            y: { grid: { color: '#f1f5f9' }, beginAtZero: false },
+                            x: { grid: { display: false } }
+                        };
+                        chartOptions.plugins = {
+                            ...commonOptions.plugins,
+                            datalabels: formatter
+                        };
+                    } else if (type === 'radar') {
+                        chartData = {
+                            labels: radarLabels,
+                            datasets: [
+                                {
+                                    label: 'Cliente GB',
+                                    data: getRadarData('GB', metricP1, metricP2),
+                                    borderColor: colorGBP2,
+                                    backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                                    borderWidth: 2,
+                                    pointRadius: 3,
+                                    fill: true
+                                },
+                                {
+                                    label: 'Cliente Não GB',
+                                    data: getRadarData('Não GB', metricP1, metricP2),
+                                    borderColor: colorNGBP2,
+                                    backgroundColor: 'rgba(220, 38, 38, 0.2)',
+                                    borderWidth: 2,
+                                    pointRadius: 3,
+                                    fill: true
+                                }
+                            ]
+                        };
+                        chartOptions.scales = {
+                            r: {
+                                angleLines: { color: '#e2e8f0' },
+                                grid: { color: '#e2e8f0' },
+                                pointLabels: { font: { size: 11, family: 'Inter', weight: '500' }, color: '#475569' }
+                            }
+                        };
+                        chartOptions.plugins = {
+                            ...commonOptions.plugins,
+                            datalabels: { display: false } // Too cluttered on radar
+                        };
+                    }
+
+                    chartInstances[id] = new Chart(document.getElementById(id), {
+                        type: type,
+                        data: chartData,
+                        options: chartOptions
+                    });
+                };
+
+                buildChart('lbChart', 'lucro_p1', 'lucro_p2', moneyFormatter);
+                buildChart('freqChart', 'freq_p1', 'freq_p2', commonDataLabelsConfig);
+                buildChart('spendingChart', 'spending_p1', 'spending_p2', moneyFormatter);
+                buildChart('ticketChart', 'ticket_p1', 'ticket_p2', moneyFormatter);
+                buildChart('itensChart', 'itens_p1', 'itens_p2', commonDataLabelsConfig);
+                buildChart('margemChart', 'margem_p1', 'margem_p2', percentFormatter);
+
+                const mesesRecompra = ['Jan/25', 'Fev/25', 'Mar/25', 'Abr/25', 'Mai/25', 'Jun/25', 'Jul/25', 'Ago/25', 'Set/25', 'Out/25', 'Nov/25', 'Dez/25', 'Jan/26', 'Fev/26', 'Mar/26', 'Abr/26', 'Mai/26'];
+
+                // Função para renderizar os gráficos de comparação de evolução antes vs após por Tier
+                const renderEvolutionComparisonCharts = (tierKey) => {
+                    const data = evolucaoTiersData[tierKey];
+                    if (!data) return;
+
+                    // 1. Atualizar Título da Seção
+                    const sectionTitleEl = document.getElementById('evolutionSectionTitle');
+                    if (sectionTitleEl) {
+                        sectionTitleEl.innerText = `Evolução Comportamental Antes vs. Após Giftback - ${data.name}`;
+                    }
+
+                    // 2. Atualizar Textos de Diagnóstico
+                    const ansGBEl = document.getElementById('ansGB');
+                    const ansNGBEl = document.getElementById('ansNGB');
+                    if (ansGBEl) ansGBEl.innerHTML = data.gb.diagnostic;
+                    if (ansNGBEl) ansNGBEl.innerHTML = data.ngb.diagnostic;
+
+                    // 3. Método Auxiliar para Construir cada um dos 4 Mini-Gráficos
+                    const buildMiniChart = (chartId, title, metricType, isPercent) => {
+                        const canvasEl = document.getElementById(chartId);
+                        if (!canvasEl) return;
+                        const ctx = canvasEl.getContext('2d');
+                        if (evolutionCharts[chartId]) {
+                            evolutionCharts[chartId].destroy();
+                        }
+
+                        let labels, datasets, showLegend;
+
+                        if (tierKey === 'Geral') {
+                            labels = ['Top 10%', 'Top 25%', 'Top 50%', 'Top 75%', 'Top 90%', 'Bottom 10%'];
+                            showLegend = true;
+
+                            datasets = [
+                                {
+                                    label: 'GB - P1 (Antes)',
+                                    data: labels.map(tKey => evolucaoTiersData[tKey].gb[metricType + '_p1']),
+                                    backgroundColor: 'rgba(147, 197, 253, 0.85)',
+                                    borderColor: '#60a5fa',
+                                    borderWidth: 1.5,
+                                    borderRadius: 4
+                                },
+                                {
+                                    label: 'GB - P2 (Após)',
+                                    data: labels.map(tKey => evolucaoTiersData[tKey].gb[metricType + '_p2']),
+                                    backgroundColor: '#2563eb',
+                                    borderColor: '#1d4ed8',
+                                    borderWidth: 1.5,
+                                    borderRadius: 4
+                                },
+                                {
+                                    label: 'Não GB - P1 (Antes)',
+                                    data: labels.map(tKey => evolucaoTiersData[tKey].ngb[metricType + '_p1']),
+                                    backgroundColor: 'rgba(252, 165, 165, 0.85)',
+                                    borderColor: '#f87171',
+                                    borderWidth: 1.5,
+                                    borderRadius: 4
+                                },
+                                {
+                                    label: 'Não GB - P2 (Após)',
+                                    data: labels.map(tKey => evolucaoTiersData[tKey].ngb[metricType + '_p2']),
+                                    backgroundColor: '#dc2626',
+                                    borderColor: '#be123c',
+                                    borderWidth: 1.5,
+                                    borderRadius: 4
+                                }
+                            ];
+                        } else {
+                            labels = ['Clientes GB', 'Clientes Não GB'];
+                            showLegend = true;
+
+                            datasets = [
+                                {
+                                    label: 'P1 (Antes do Giftback)',
+                                    data: [data.gb[metricType + '_p1'], data.ngb[metricType + '_p1']],
+                                    backgroundColor: ['rgba(147, 197, 253, 0.85)', 'rgba(252, 165, 165, 0.85)'],
+                                    borderColor: ['#60a5fa', '#f87171'],
+                                    borderWidth: 1.5,
+                                    borderRadius: 4
+                                },
+                                {
+                                    label: 'P2 (Após o Giftback)',
+                                    data: [data.gb[metricType + '_p2'], data.ngb[metricType + '_p2']],
+                                    backgroundColor: ['#2563eb', '#dc2626'],
+                                    borderColor: ['#1d4ed8', '#be123c'],
+                                    borderWidth: 1.5,
+                                    borderRadius: 4
+                                }
+                            ];
+                        }
+
+                        evolutionCharts[chartId] = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: datasets
                             },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                callbacks: { 
-                                    label: function(context) { 
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: showLegend,
+                                        position: 'bottom',
+                                        labels: {
+                                            boxWidth: 10,
+                                            padding: 10,
+                                            font: { family: 'Inter', size: 9 }
                                         }
-                                        if (context.parsed.y !== null) {
-                                            label += context.raw.toFixed(2).replace('.', ',') + '%';
-                                        }
-                                        return label;
                                     },
-                                    footer: function(tooltipItems) {
-                                        let sum = 0;
-                                        tooltipItems.forEach(function(tooltipItem) {
-                                            sum += tooltipItem.raw;
-                                        });
-                                        return 'Recorrência Total: ' + sum.toFixed(2).replace('.', ',') + '%';
+                                    datalabels: {
+                                        color: '#1e293b',
+                                        font: { weight: 'bold', size: 9 },
+                                        anchor: 'end',
+                                        align: 'top',
+                                        offset: 2,
+                                        formatter: (val, context) => {
+                                            if (isPercent) {
+                                                return val.toFixed(2).replace('.', ',') + '%';
+                                            } else {
+                                                return val.toFixed(2).replace('.', ',');
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                        titleColor: '#0f172a',
+                                        bodyColor: '#334155',
+                                        borderColor: '#e2e8f0',
+                                        borderWidth: 1,
+                                        padding: 10,
+                                        callbacks: {
+                                            title: (context) => context[0].label,
+                                            label: (context) => {
+                                                const labelName = context.dataset.label;
+                                                const rawVal = context.raw;
+                                                const formattedVal = isPercent ? (rawVal.toFixed(2).replace('.', ',') + '%') : rawVal.toFixed(2).replace('.', ',');
+                                                return `${labelName}: ${formattedVal}${isPercent ? '' : ' pedidos'}`;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        grid: { color: '#f1f5f9' },
+                                        ticks: {
+                                            font: { family: 'Inter', size: 9 },
+                                            callback: (val) => isPercent ? val + '%' : val
+                                        }
+                                    },
+                                    x: {
+                                        grid: { display: false },
+                                        ticks: { font: { family: 'Inter', weight: 'bold', size: 9 } }
                                     }
                                 }
                             }
+                        });
+                    };
+                    // Renderizar os 3 mini-gráficos dinamicamente
+                    buildMiniChart('miniFreqChart', 'Frequência Média de Compra', 'freq', false);
+                    buildMiniChart('miniM3Chart', 'Taxa de Recompra M-3 (%)', 'm3', true);
+                    buildMiniChart('miniM6Chart', 'Taxa de Recompra M-6 (%)', 'm6', true);
+                };
+
+                window.selectRetentionTier = (tierKey) => {
+                    activeRetentionTier = tierKey;
+
+                    // Atualizar estados visuais dos cards
+                    document.querySelectorAll('.tier-card').forEach(card => {
+                        const titleEl = card.querySelector('.tier-card-title');
+                        if (titleEl && (titleEl.textContent.trim() === tierKey || (tierKey === 'Geral' && titleEl.textContent.trim() === 'Base Geral'))) {
+                            card.classList.add('active');
+                        } else {
+                            card.classList.remove('active');
+                        }
+                    });
+
+                    renderRetentionCharts();
+                    renderEvolutionComparisonCharts(tierKey);
+                };
+
+                const buildStackedBar = (id, dataGB, dataNGB, title) => {
+                    const ctx = document.getElementById(id).getContext('2d');
+                    if (chartInstances[id]) chartInstances[id].destroy();
+
+                    chartInstances[id] = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: mesesRecompra,
+                            datasets: [
+                                {
+                                    label: 'Impacto Não GB no Total (%)',
+                                    data: dataNGB,
+                                    backgroundColor: 'rgba(225, 29, 72, 0.75)',
+                                    borderColor: '#e11d48',
+                                    borderWidth: 1.5,
+                                    borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 4, bottomRight: 4 }
+                                },
+                                {
+                                    label: 'Impacto GB no Total (%)',
+                                    data: dataGB,
+                                    backgroundColor: 'rgba(37, 99, 235, 0.92)',
+                                    borderColor: '#2563eb',
+                                    borderWidth: 1.5,
+                                    borderRadius: { topLeft: 4, topRight: 4, bottomLeft: 0, bottomRight: 0 }
+                                }
+                            ]
                         },
-                        scales: {
-                            x: { stacked: true },
-                            y: { 
-                                stacked: true, 
-                                beginAtZero: true, 
-                                title: { display: true, text: 'Taxa sobre Base Total do Mês (%)' }, 
-                                ticks: { callback: function(value) { return value + "%" } } 
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'bottom' },
+                                datalabels: {
+                                    color: '#ffffff',
+                                    font: { weight: 'bold', size: 10 },
+                                    formatter: (val) => val > 0 ? val.toFixed(2).replace('.', ',') + '%' : ''
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    callbacks: { label: function (context) { return context.dataset.label + ': ' + context.raw.toFixed(2).replace('.', ',') + '%'; } }
+                                }
+                            },
+                            scales: {
+                                x: { stacked: true },
+                                y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Taxa sobre Base Total do Mês (%)' }, ticks: { callback: function (value) { return value + "%" } } }
                             }
                         }
-                    },
-                    plugins: [{
-                        id: 'verticalLine',
-                        beforeDraw: (chart) => {
-                            const ctxLine = chart.ctx;
-                            const xAxis = chart.scales.x;
-                            const yAxis = chart.scales.y;
-                            const set25Index = 8;
-                            
-                            if (xAxis && xAxis.getPixelForTick) {
-                                const xPixel = xAxis.getPixelForTick(set25Index);
-                                
-                                // Sombreamento para Pós GB (Set/25 a Mai/26)
-                                const xStart = xPixel;
-                                const xEnd = xAxis.getPixelForTick(xAxis.ticks.length - 1);
-                                ctxLine.save();
-                                ctxLine.fillStyle = 'rgba(37, 99, 235, 0.03)';
-                                ctxLine.fillRect(xStart, yAxis.top, xEnd - xStart, yAxis.bottom - yAxis.top);
-                                
-                                // Sombreamento para Antes GB (Jan/25 a Ago/25)
-                                const xZero = xAxis.getPixelForTick(0);
-                                ctxLine.fillStyle = 'rgba(71, 85, 105, 0.015)';
-                                ctxLine.fillRect(xZero, yAxis.top, xStart - xZero, yAxis.bottom - yAxis.top);
-                                
-                                // Linha tracejada vermelha divisória de lançamento
-                                ctxLine.strokeStyle = '#ef4444';
-                                ctxLine.lineWidth = 1.5;
-                                ctxLine.setLineDash([5, 5]);
-                                ctxLine.beginPath();
-                                ctxLine.moveTo(xPixel, yAxis.top);
-                                ctxLine.lineTo(xPixel, yAxis.bottom);
-                                ctxLine.stroke();
-                                
-                                // Rotulagem da linha
-                                ctxLine.restore();
-                                ctxLine.save();
-                                ctxLine.fillStyle = '#ef4444';
-                                ctxLine.font = 'bold 10px Inter';
-                                ctxLine.fillText('Lançamento GB (Set/25) 🚀', xPixel + 8, yAxis.top + 15);
-                                ctxLine.restore();
+                    });
+                };
+
+                const buildStackedArea = (id, dataGB, dataNGB, title) => {
+                    const ctx = document.getElementById(id).getContext('2d');
+                    if (chartInstances[id]) chartInstances[id].destroy();
+
+                    chartInstances[id] = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: mesesRecompra,
+                            datasets: [
+                                {
+                                    label: 'Impacto Não GB no Total (%)',
+                                    data: dataNGB,
+                                    fill: true,
+                                    backgroundColor: 'rgba(225, 29, 72, 0.12)',
+                                    borderColor: '#e11d48',
+                                    borderWidth: 3,
+                                    pointBackgroundColor: '#e11d48',
+                                    pointBorderColor: '#fff',
+                                    pointBorderWidth: 1.5,
+                                    pointRadius: 4,
+                                    tension: 0.3,
+                                    datalabels: {
+                                        align: 'bottom',
+                                        anchor: 'start',
+                                        color: '#b91c1c',
+                                        offset: 4
+                                    }
+                                },
+                                {
+                                    label: 'Impacto GB no Total (%)',
+                                    data: dataGB,
+                                    fill: true,
+                                    backgroundColor: 'rgba(37, 99, 235, 0.25)',
+                                    borderColor: '#2563eb',
+                                    borderWidth: 3,
+                                    pointBackgroundColor: '#2563eb',
+                                    pointBorderColor: '#fff',
+                                    pointBorderWidth: 1.5,
+                                    pointRadius: 4,
+                                    tension: 0.3,
+                                    datalabels: {
+                                        align: 'top',
+                                        anchor: 'end',
+                                        color: '#1d4ed8',
+                                        offset: 4
+                                    }
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'bottom' },
+                                datalabels: {
+                                    color: '#334155',
+                                    font: { weight: 'bold', size: 9 },
+                                    formatter: (val) => val > 0 ? val.toFixed(2).replace('.', ',') + '%' : ''
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    callbacks: {
+                                        label: function (context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += context.raw.toFixed(2).replace('.', ',') + '%';
+                                            }
+                                            return label;
+                                        },
+                                        footer: function (tooltipItems) {
+                                            let sum = 0;
+                                            tooltipItems.forEach(function (tooltipItem) {
+                                                sum += tooltipItem.raw;
+                                            });
+                                            return 'Recorrência Total: ' + sum.toFixed(2).replace('.', ',') + '%';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: { stacked: true },
+                                y: {
+                                    stacked: true,
+                                    beginAtZero: true,
+                                    title: { display: true, text: 'Taxa sobre Base Total do Mês (%)' },
+                                    ticks: { callback: function (value) { return value + "%" } }
+                                }
                             }
-                        }
-                    }]
+                        },
+                        plugins: [{
+                            id: 'verticalLine',
+                            beforeDraw: (chart) => {
+                                const ctxLine = chart.ctx;
+                                const xAxis = chart.scales.x;
+                                const yAxis = chart.scales.y;
+                                const set25Index = 8;
+
+                                if (xAxis && xAxis.getPixelForTick) {
+                                    const xPixel = xAxis.getPixelForTick(set25Index);
+
+                                    // Sombreamento para Pós GB (Set/25 a Mai/26)
+                                    const xStart = xPixel;
+                                    const xEnd = xAxis.getPixelForTick(xAxis.ticks.length - 1);
+                                    ctxLine.save();
+                                    ctxLine.fillStyle = 'rgba(37, 99, 235, 0.03)';
+                                    ctxLine.fillRect(xStart, yAxis.top, xEnd - xStart, yAxis.bottom - yAxis.top);
+
+                                    // Sombreamento para Antes GB (Jan/25 a Ago/25)
+                                    const xZero = xAxis.getPixelForTick(0);
+                                    ctxLine.fillStyle = 'rgba(71, 85, 105, 0.015)';
+                                    ctxLine.fillRect(xZero, yAxis.top, xStart - xZero, yAxis.bottom - yAxis.top);
+
+                                    // Linha tracejada vermelha divisória de lançamento
+                                    ctxLine.strokeStyle = '#ef4444';
+                                    ctxLine.lineWidth = 1.5;
+                                    ctxLine.setLineDash([5, 5]);
+                                    ctxLine.beginPath();
+                                    ctxLine.moveTo(xPixel, yAxis.top);
+                                    ctxLine.lineTo(xPixel, yAxis.bottom);
+                                    ctxLine.stroke();
+
+                                    // Rotulagem da linha
+                                    ctxLine.restore();
+                                    ctxLine.save();
+                                    ctxLine.fillStyle = '#ef4444';
+                                    ctxLine.font = 'bold 10px Inter';
+                                    ctxLine.fillText('Lançamento GB (Set/25) 🚀', xPixel + 8, yAxis.top + 15);
+                                    ctxLine.restore();
+                                }
+                            }
+                        }]
+                    });
+                };
+
+                // Controle de visualização da Retenção (Barras vs Áreas)
+                let currentRetentionType = 'bar';
+
+                const renderRetentionCharts = () => {
+                    const data = retentionTiersData[activeRetentionTier];
+                    const tierLabel = activeRetentionTier === 'Geral' ? 'Base Geral' : activeRetentionTier;
+
+                    if (currentRetentionType === 'bar') {
+                        document.getElementById('titleM3').innerText = `Recompra M-3: Composição GB vs Não GB (%) - ${tierLabel}`;
+                        document.getElementById('titleM6').innerText = `Recompra M-6: Composição GB vs Não GB (%) - ${tierLabel}`;
+
+                        buildStackedBar('chartM3', data.m3_gb, data.m3_ngb, 'M-3');
+                        buildStackedBar('chartM6', data.m6_gb, data.m6_ngb, 'M-6');
+                    } else {
+                        document.getElementById('titleM3').innerText = `Evolução M-3: Comportamento Pré vs Pós-Lançamento (Área Empilhada) - ${tierLabel}`;
+                        document.getElementById('titleM6').innerText = `Evolução M-6: Comportamento Pré vs Pós-Lançamento (Área Empilhada) - ${tierLabel}`;
+
+                        buildStackedArea('chartM3', data.m3_gb, data.m3_ngb, 'M-3');
+                        buildStackedArea('chartM6', data.m6_gb, data.m6_ngb, 'M-6');
+                    }
+                };
+
+                window.selectRetentionTier('Geral');
+
+                document.getElementById('retentionChartTypeToggle').addEventListener('change', (e) => {
+                    currentRetentionType = e.target.value;
+                    renderRetentionCharts();
                 });
             };
 
-            // Controle de visualização da Retenção (Barras vs Áreas)
-            let currentRetentionType = 'bar';
-
-            const renderRetentionCharts = () => {
-                if (currentRetentionType === 'bar') {
-                    document.getElementById('titleM3').innerText = 'Recompra M-3: Composição GB vs Não GB (%)';
-                    document.getElementById('titleM6').innerText = 'Recompra M-6: Composição GB vs Não GB (%)';
-                    document.getElementById('titleM9').innerText = 'Recompra M-9: Composição GB vs Não GB (%)';
-                    
-                    buildStackedBar('chartM3', m3_gb, m3_ngb, 'M-3');
-                    buildStackedBar('chartM6', m6_gb, m6_ngb, 'M-6');
-                    buildStackedBar('chartM9', m9_gb, m9_ngb, 'M-9');
-                } else {
-                    document.getElementById('titleM3').innerText = 'Evolução M-3: Comportamento Pré vs Pós-Lançamento (Área Empilhada)';
-                    document.getElementById('titleM6').innerText = 'Evolução M-6: Comportamento Pré vs Pós-Lançamento (Área Empilhada)';
-                    document.getElementById('titleM9').innerText = 'Evolução M-9: Comportamento Pré vs Pós-Lançamento (Área Empilhada)';
-                    
-                    buildStackedArea('chartM3', m3_gb, m3_ngb, 'M-3');
-                    buildStackedArea('chartM6', m6_gb, m6_ngb, 'M-6');
-                    buildStackedArea('chartM9', m9_gb, m9_ngb, 'M-9');
-                }
-            };
-
-            renderRetentionCharts();
-
-            document.getElementById('retentionChartTypeToggle').addEventListener('change', (e) => {
-                currentRetentionType = e.target.value;
-                renderRetentionCharts();
+            document.getElementById('chartTypeToggle').addEventListener('change', (e) => {
+                currentChartType = e.target.value;
+                createCharts();
             });
-        };
 
-        document.getElementById('chartTypeToggle').addEventListener('change', (e) => {
-            currentChartType = e.target.value;
             createCharts();
-        });
 
-        createCharts();
-
-    </script>
+        </script>
 </body>
+
 </html>
