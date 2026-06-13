@@ -196,7 +196,7 @@
         <div class="header-container">
             <div>
                 <h1>Análise Executiva: Impacto Spoint Centauro</h1>
-                <p>Análise de Recompra e Rentabilidade (2025 vs 2026) segregada por Nível de Influência do Spoint</p>
+                <p>Análise de Recompra e Rentabilidade (2025 vs 2026) segregada por Nível de Atribuição do Spoint</p>
             </div>
         </div>
 
@@ -208,17 +208,27 @@
                 <div class="bignumber-sub">Fonte: vnt_ref_gld_dim_crava_usuarios</div>
             </div>
             <div class="bignumber-card">
+                <div class="bignumber-title">MAU (Monthly Active Users) Spoint</div>
+                <div class="bignumber-value">850K</div>
+                <div class="bignumber-sub">Média Ativos Mês</div>
+            </div>
+            <div class="bignumber-card">
                 <div class="bignumber-title">Clientes Digital Centauro</div>
                 <div class="bignumber-value">18.2M</div>
                 <div class="bignumber-sub">Fonte: cnt_ref_gld_dim_cliente</div>
             </div>
             <div class="bignumber-card">
-                <div class="bignumber-title">Receita Total Spoint (25/26)</div>
-                <div class="bignumber-value">R$ 145.8M</div>
-                <div class="bignumber-sub">Fonte: vnt_ref_tab_fat_crava_cnto_vendas</div>
+                <div class="bignumber-title">Receita c/ Atribuição Spoint</div>
+                <div class="bignumber-value">R$ 115.3M</div>
+                <div class="bignumber-sub">nom_origem_pedido != "usuario"</div>
             </div>
             <div class="bignumber-card">
-                <div class="bignumber-title">Receita Total Digital (25/26)</div>
+                <div class="bignumber-title">Receita s/ Atribuição Spoint</div>
+                <div class="bignumber-value">R$ 30.5M</div>
+                <div class="bignumber-sub">nom_origem_pedido = "usuario"</div>
+            </div>
+            <div class="bignumber-card">
+                <div class="bignumber-title">Receita Total Digital Centauro</div>
                 <div class="bignumber-value">R$ 2.1B</div>
                 <div class="bignumber-sub">Fonte: cnt_ref_gld_flt_venda_consolidada</div>
             </div>
@@ -234,9 +244,9 @@
             </ul>
             <br>
             <h2>Resumo Executivo (Insights)</h2>
-            <p><strong>1. Impacto na Frequência de Compra:</strong> Observa-se uma variação superior na frequência média de pedidos/ano para a base de clientes com influência direta do Spoint, indicando maior retenção do canal.</p>
+            <p><strong>1. Impacto na Frequência de Compra:</strong> Observa-se uma variação superior na frequência média de pedidos/ano para a base de clientes com atribuição direta do Spoint, indicando maior retenção do canal.</p>
             <p><strong>2. Relação Custo de Margem vs. Recompra:</strong> A margem bruta apresenta variação justificada pelos incentivos do programa Spoint. Esta redução pontual de margem subsidia taxas de recompra mais elevadas (M-3 e M-6), ampliando o Lifetime Value (LTV) da base ativa.</p>
-            <p><strong>3. Variação do Ticket Médio e Spending:</strong> O ticket médio do grupo sob influência do programa tende a apresentar decréscimo isolado; contudo, o efeito multiplicador da frequência de compra resulta em um aumento líquido no Spending Médio Anual por cliente deste segmento.</p>
+            <p><strong>3. Variação do Ticket Médio e Spending:</strong> O ticket médio do grupo com atribuição do programa tende a apresentar decréscimo isolado; contudo, o efeito multiplicador da frequência de compra resulta em um aumento líquido no Spending Médio Anual por cliente deste segmento.</p>
         </div>
 
         <!-- Dashboard Charts -->
@@ -277,15 +287,23 @@
 
         <!-- Matriz de Comportamento -->
         <div class="matrix-section">
-            <h2>Matriz de Comportamento: Evolução 2026 (Consolidado)</h2>
+            <h2>Matriz de Comportamento: Evolução 2025 vs 2026 (Consolidado)</h2>
             <table class="matrix-table">
                 <thead>
                     <tr>
-                        <th>Tier de Rentabilidade</th>
-                        <th>Grupo de Comparação</th>
-                        <th>Frequência de Compra</th>
-                        <th>Recompra M-3 (%)</th>
-                        <th>Recompra M-6 (%)</th>
+                        <th rowspan="2">Tier de Rentabilidade</th>
+                        <th rowspan="2">Grupo de Comparação</th>
+                        <th colspan="2">Frequência de Compra</th>
+                        <th colspan="2">Recompra M-3 (%)</th>
+                        <th colspan="2">Recompra M-6 (%)</th>
+                    </tr>
+                    <tr>
+                        <th>2025</th>
+                        <th>2026</th>
+                        <th>2025</th>
+                        <th>2026</th>
+                        <th>2025</th>
+                        <th>2026</th>
                     </tr>
                 </thead>
                 <tbody id="matrixTableBody">
@@ -379,12 +397,12 @@
 
         const createDatasets = (metric) => {
             return [
-                { label: 'Spoint (2025)', data: rawData.map(d => d.inf_25[metric]), borderColor: '#60a5fa', backgroundColor: '#60a5fa', tension: 0.3, fill: false, borderWidth: 2 },
-                { label: 'Spoint (2026)', data: rawData.map(d => d.inf_26[metric]), borderColor: '#2563eb', backgroundColor: '#2563eb', tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
-                { label: 'Usuário Direto (2025)', data: rawData.map(d => d.sinf_25[metric]), borderColor: '#f87171', backgroundColor: '#f87171', borderDash: [5, 5], tension: 0.3, fill: false, borderWidth: 2 },
-                { label: 'Usuário Direto (2026)', data: rawData.map(d => d.sinf_26[metric]), borderColor: '#dc2626', backgroundColor: '#dc2626', borderDash: [5, 5], tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
-                { label: 'Apenas Centauro (2025)', data: rawData.map(d => d.cnt_25[metric]), borderColor: '#94a3b8', backgroundColor: '#94a3b8', borderDash: [2, 2], tension: 0.3, fill: false, borderWidth: 2 },
-                { label: 'Apenas Centauro (2026)', data: rawData.map(d => d.cnt_26[metric]), borderColor: '#475569', backgroundColor: '#475569', borderDash: [2, 2], tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
+                { label: 'Atribuição Spoint (2025)', data: rawData.map(d => d.inf_25[metric]), borderColor: '#60a5fa', backgroundColor: '#60a5fa', tension: 0.3, fill: false, borderWidth: 2 },
+                { label: 'Atribuição Spoint (2026)', data: rawData.map(d => d.inf_26[metric]), borderColor: '#2563eb', backgroundColor: '#2563eb', tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
+                { label: 'Sem atribuição Spoint (2025)', data: rawData.map(d => d.sinf_25[metric]), borderColor: '#f87171', backgroundColor: '#f87171', borderDash: [5, 5], tension: 0.3, fill: false, borderWidth: 2 },
+                { label: 'Sem atribuição Spoint (2026)', data: rawData.map(d => d.sinf_26[metric]), borderColor: '#dc2626', backgroundColor: '#dc2626', borderDash: [5, 5], tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
+                { label: 'Centauro (2025)', data: rawData.map(d => d.cnt_25[metric]), borderColor: '#94a3b8', backgroundColor: '#94a3b8', borderDash: [2, 2], tension: 0.3, fill: false, borderWidth: 2 },
+                { label: 'Centauro (2026)', data: rawData.map(d => d.cnt_26[metric]), borderColor: '#475569', backgroundColor: '#475569', borderDash: [2, 2], tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
             ];
         };
 
@@ -426,30 +444,40 @@
             const tdGrupos = document.createElement('td');
             tdGrupos.innerHTML = `
                 <div class="data-block">
-                    <div class="data-item influencia"><span class="item-label">Spoint</span></div>
-                    <div class="data-item sem-influencia"><span class="item-label">Usuário Direto</span></div>
-                    <div class="data-item apenas-centauro"><span class="item-label">Apenas Centauro</span></div>
+                    <div class="data-item influencia"><span class="item-label">Atribuição Spoint</span></div>
+                    <div class="data-item sem-influencia"><span class="item-label">Sem atribuição Spoint</span></div>
+                    <div class="data-item apenas-centauro"><span class="item-label">Centauro</span></div>
                 </div>
             `;
 
             // Colunas de Dados
             const createDataColumn = (metric, isPercent) => {
-                const td = document.createElement('td');
-                td.innerHTML = `
+                // Added Year column to support both 2025 and 2026 columns
+                const td_25 = document.createElement('td');
+                td_25.innerHTML = `
+                    <div class="data-block">
+                        <div class="data-item"><span class="item-value" style="color: #64748b">${d.inf_25[metric]}${isPercent ? '%' : 'x'}</span></div>
+                        <div class="data-item"><span class="item-value" style="color: #64748b">${d.sinf_25[metric]}${isPercent ? '%' : 'x'}</span></div>
+                        <div class="data-item"><span class="item-value" style="color: #64748b">${d.cnt_25[metric]}${isPercent ? '%' : 'x'}</span></div>
+                    </div>
+                `;
+                
+                const td_26 = document.createElement('td');
+                td_26.innerHTML = `
                     <div class="data-block">
                         <div class="data-item"><span class="item-value">${d.inf_26[metric]}${isPercent ? '%' : 'x'}</span></div>
                         <div class="data-item"><span class="item-value">${d.sinf_26[metric]}${isPercent ? '%' : 'x'}</span></div>
                         <div class="data-item"><span class="item-value">${d.cnt_26[metric]}${isPercent ? '%' : 'x'}</span></div>
                     </div>
                 `;
-                return td;
+                return [td_25, td_26];
             };
 
             tr.appendChild(tdTier);
             tr.appendChild(tdGrupos);
-            tr.appendChild(createDataColumn('freq', false));
-            tr.appendChild(createDataColumn('rec3', true));
-            tr.appendChild(createDataColumn('rec6', true));
+            createDataColumn('freq', false).forEach(td => tr.appendChild(td));
+            createDataColumn('rec3', true).forEach(td => tr.appendChild(td));
+            createDataColumn('rec6', true).forEach(td => tr.appendChild(td));
             
             tbody.appendChild(tr);
         });
