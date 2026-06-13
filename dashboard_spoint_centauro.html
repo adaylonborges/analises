@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spoint vs Centauro - Análise Comportamental</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap');
+
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #0f172a;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary-color: #0f172a;
+            --accent-color: #dc2626;
+            --spoint-color: #d97706;
+            --spoint-light: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.25rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .header p {
+            color: #64748b;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #f1f5f9;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .metric-label {
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .metric-val {
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .val-spoint { color: var(--spoint-color); }
+        .val-centauro { color: var(--accent-color); }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            table-layout: auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            word-wrap: break-word;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .text-box {
+            background: #fffbeb;
+            border-left: 4px solid var(--spoint-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .text-box-centauro {
+            background: #fef2f2;
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            table {
+                table-layout: auto;
+            }
+            
+            .insights-table,
+            .insights-table tbody,
+            .insights-table tr,
+            .insights-table td,
+            .insights-table th {
+                display: block;
+                width: 100%;
+            }
+
+            .insights-table tr {
+                margin-bottom: 1.5rem;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                padding: 1rem;
+                background: #ffffff;
+            }
+
+            .insights-table td {
+                padding: 1rem 0;
+                border-bottom: 1px dashed var(--border-color);
+            }
+
+            .insights-table td:last-child {
+                border-bottom: none;
+            }
+
+            .insights-table th {
+                display: none;
+            }
+
+            .insights-metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Estilos da Matriz de Insights por Tiers */
+        .insights-table-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .insights-table-section h2 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .insights-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            table-layout: fixed;
+        }
+
+        .insights-table th {
+            background-color: #f8fafc;
+            padding: 1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .insights-table td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .insights-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .tier-column-cell {
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tier-column-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .insights-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .metric-mini-box {
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 6px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metric-mini-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .metric-mini-value {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .metric-mini-value.spoint-txt {
+            color: var(--spoint-color);
+        }
+
+        .metric-mini-value.centauro-txt {
+            color: var(--accent-color);
+        }
+
+        .metric-mini-delta {
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .metric-mini-delta.pos {
+            color: #10b981;
+        }
+
+        .metric-mini-delta.neg {
+            color: var(--accent-color);
+        }
+
+        .metric-mini-delta.neu {
+            color: #475569;
+        }
+
+        .text-diagnostic-cell {
+            font-size: 0.88rem;
+            color: #334155;
+            line-height: 1.5;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Spoint vs Centauro: Análise de Impacto</h1>
+            <p>Dashboard de Indicadores BQ - Rentabilidade (LB) e Share</p>
+        </div>
+
+        <div class="grid-2">
+            <div class="text-box">
+                <strong>🔥 Comportamento do Usuário Spoint</strong><br>
+                Membros Spoint apresentam engajamento consistente após opt-in. A frequência de compra atinge 3,05 pedidos ao ano no segmento ativo, com ticket médio de R$ 291,83. Os pontos gamificados geram um engajamento contínuo.
+            </div>
+            <div class="text-box-centauro">
+                <strong>📋 Comportamento da Base Centauro (Baselines)</strong><br>
+                A base Centauro consolidada sustenta uma frequência de compra de 1,76 pedidos, servindo de grupo controle estável de mercado. O Spoint entrega faturamento incremental expressivo sobre esta média consolidada.
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>Volumetria de Clientes (Perfil de Aquisição)</h3>
+                <div class="chart-container">
+                    <canvas id="aquisitionChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Frequência de Compra (Pedidos/Ano)</h3>
+                <div class="chart-container">
+                    <canvas id="freqChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3>Distribuição Comparativa de GMV (Faturamento Consolidado vs Spoint)</h3>
+            
+            <h4>Ano Fechado 2025</h4>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40%">Métrica de Mercado</th>
+                            <th style="width: 30%">Centauro (Master)</th>
+                            <th style="width: 30%">Spoint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GMV Total</td>
+                            <td class="val-centauro">R$ 4.615.839.514,95</td>
+                            <td class="val-spoint">R$ 110.883.173,15 (Share: 2.40%)</td>
+                        </tr>
+                        <tr>
+                            <td>Compradores Ativos</td>
+                            <td class="val-centauro">8.709.359</td>
+                            <td class="val-spoint">160.175 (Share: 1.84%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4>Acumulado 2026 YTD (Até 11/Junho)</h4>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40%">Métrica de Mercado</th>
+                            <th style="width: 30%">Centauro (Master)</th>
+                            <th style="width: 30%">Spoint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GMV Total</td>
+                            <td class="val-centauro">R$ 2.163.719.542,67</td>
+                            <td class="val-spoint">R$ 48.056.103,95 (Share: 2.22%)</td>
+                        </tr>
+                        <tr>
+                            <td>Compradores Ativos</td>
+                            <td class="val-centauro">4.501.464</td>
+                            <td class="val-spoint">88.597 (Share: 1.97%)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3>Evolução de Recompra (M-3 e M-6)</h3>
+            <div class="chart-container" style="height: 350px;">
+                <canvas id="recompraChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insights-table-section" id="tiers-matrix">
+            <h2>Matriz de Comportamento Consolidada: Spoint vs Base Centauro</h2>
+            <p style="margin-top: -10px; margin-bottom: 25px; color: #64748b; font-size: 0.95rem; line-height: 1.6; border-left: 3px solid var(--primary-color); padding-left: 12px;">
+                <strong>Spoint (Venda Atribuída/Influenciada):</strong> Compras de usuários Spoint onde o campo `nom_origem_pedido` na tabela `vnt_ref_tab_fat_crava_cnto_vendas` atesta influência do programa.<br>
+                <strong>Base Centauro (Sem Influência):</strong> Vendas orgânicas onde `nom_origem_pedido` = 'usuario'.<br>
+                <strong>Período de Comparação:</strong> 2025 ➔ 2026 YTD.
+            </p>
+            
+            <div style="overflow-x: auto;">
+                <table class="insights-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%;">Tier de Rentabilidade (LB)</th>
+                            <th style="width: 42.5%;">Spoint (Venda Atribuída) <br><small style="font-weight: 500; font-size: 0.8rem;">2025 ➔ 2026 YTD</small></th>
+                            <th style="width: 42.5%;">Base Centauro (Sem Influência) <br><small style="font-weight: 500; font-size: 0.8rem;">2025 ➔ 2026 YTD</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Top 10% -->
+                        <tr>
+                            <td>
+                                <div class="tier-column-cell">
+                                    <span>Top 10%</span>
+                                    <span class="tier-column-sub">Mais Rentáveis</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value spoint-txt">2.36 ➔ 2.06</span>
+                                        <span class="metric-mini-delta neg">▼ -12.6%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value spoint-txt">R$ 296 ➔ R$ 280</span>
+                                        <span class="metric-mini-delta neg">▼ -5.4%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value spoint-txt">45.4% ➔ 43.9%</span>
+                                        <span class="metric-mini-delta neg">▼ -1.52 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 10% registrou engajamento superior atribuído ao programa. A frequência média variou de 2.36 para 2.06 pedidos.</em>
+                                </p>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value centauro-txt">1.92 ➔ 1.85</span>
+                                        <span class="metric-mini-delta neg">▼ -3.6%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value centauro-txt">R$ 309 ➔ R$ 311</span>
+                                        <span class="metric-mini-delta pos">▲ +0.7%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value centauro-txt">39.8% ➔ 39.7%</span>
+                                        <span class="metric-mini-delta neg">▼ -0.07 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 10% operou de forma orgânica no baseline. A frequência média variou de 1.92 para 1.85 pedidos.</em>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Top 25% -->
+                        <tr>
+                            <td>
+                                <div class="tier-column-cell">
+                                    <span>Top 25%</span>
+                                    <span class="tier-column-sub">Alta Performance</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value spoint-txt">2.20 ➔ 2.02</span>
+                                        <span class="metric-mini-delta neg">▼ -8.4%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value spoint-txt">R$ 304 ➔ R$ 286</span>
+                                        <span class="metric-mini-delta neg">▼ -5.9%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value spoint-txt">44.4% ➔ 43.8%</span>
+                                        <span class="metric-mini-delta neg">▼ -0.63 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 25% registrou engajamento superior atribuído ao programa. A frequência média variou de 2.20 para 2.02 pedidos.</em>
+                                </p>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value centauro-txt">1.84 ➔ 1.77</span>
+                                        <span class="metric-mini-delta neg">▼ -3.9%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value centauro-txt">R$ 313 ➔ R$ 306</span>
+                                        <span class="metric-mini-delta neg">▼ -2.2%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value centauro-txt">38.3% ➔ 38.3%</span>
+                                        <span class="metric-mini-delta neg">▼ -0.06 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 25% operou de forma orgânica no baseline. A frequência média variou de 1.84 para 1.77 pedidos.</em>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Top 50% -->
+                        <tr>
+                            <td>
+                                <div class="tier-column-cell">
+                                    <span>Top 50%</span>
+                                    <span class="tier-column-sub">Média Superior</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value spoint-txt">2.27 ➔ 2.12</span>
+                                        <span class="metric-mini-delta neg">▼ -6.9%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value spoint-txt">R$ 300 ➔ R$ 296</span>
+                                        <span class="metric-mini-delta neg">▼ -1.3%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value spoint-txt">43.9% ➔ 45.2%</span>
+                                        <span class="metric-mini-delta pos">▲ +1.22 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 50% registrou engajamento superior atribuído ao programa. A frequência média variou de 2.27 para 2.12 pedidos.</em>
+                                </p>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value centauro-txt">1.88 ➔ 1.77</span>
+                                        <span class="metric-mini-delta neg">▼ -5.7%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value centauro-txt">R$ 309 ➔ R$ 317</span>
+                                        <span class="metric-mini-delta pos">▲ +2.4%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value centauro-txt">38.8% ➔ 38.3%</span>
+                                        <span class="metric-mini-delta neg">▼ -0.42 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 50% operou de forma orgânica no baseline. A frequência média variou de 1.88 para 1.77 pedidos.</em>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Top 75% -->
+                        <tr>
+                            <td>
+                                <div class="tier-column-cell">
+                                    <span>Top 75%</span>
+                                    <span class="tier-column-sub">Média Inferior</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value spoint-txt">2.25 ➔ 2.05</span>
+                                        <span class="metric-mini-delta neg">▼ -9.1%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value spoint-txt">R$ 302 ➔ R$ 283</span>
+                                        <span class="metric-mini-delta neg">▼ -6.5%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value spoint-txt">44.6% ➔ 44.8%</span>
+                                        <span class="metric-mini-delta pos">▲ +0.13 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 75% registrou engajamento superior atribuído ao programa. A frequência média variou de 2.25 para 2.05 pedidos.</em>
+                                </p>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value centauro-txt">1.88 ➔ 1.78</span>
+                                        <span class="metric-mini-delta neg">▼ -5.7%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value centauro-txt">R$ 314 ➔ R$ 313</span>
+                                        <span class="metric-mini-delta neg">▼ -0.2%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value centauro-txt">38.9% ➔ 37.5%</span>
+                                        <span class="metric-mini-delta neg">▼ -1.46 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 75% operou de forma orgânica no baseline. A frequência média variou de 1.88 para 1.78 pedidos.</em>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Top 90% -->
+                        <tr>
+                            <td>
+                                <div class="tier-column-cell">
+                                    <span>Top 90%</span>
+                                    <span class="tier-column-sub">Baixa Retenção</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value spoint-txt">2.31 ➔ 2.06</span>
+                                        <span class="metric-mini-delta neg">▼ -10.8%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value spoint-txt">R$ 304 ➔ R$ 284</span>
+                                        <span class="metric-mini-delta neg">▼ -6.5%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value spoint-txt">45.4% ➔ 44.8%</span>
+                                        <span class="metric-mini-delta neg">▼ -0.53 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 90% registrou engajamento superior atribuído ao programa. A frequência média variou de 2.31 para 2.06 pedidos.</em>
+                                </p>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value centauro-txt">1.87 ➔ 1.79</span>
+                                        <span class="metric-mini-delta neg">▼ -4.4%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value centauro-txt">R$ 313 ➔ R$ 311</span>
+                                        <span class="metric-mini-delta neg">▼ -0.6%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value centauro-txt">38.9% ➔ 38.2%</span>
+                                        <span class="metric-mini-delta neg">▼ -0.70 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Top 90% operou de forma orgânica no baseline. A frequência média variou de 1.87 para 1.79 pedidos.</em>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Bottom 10% -->
+                        <tr>
+                            <td>
+                                <div class="tier-column-cell">
+                                    <span>Bottom 10%</span>
+                                    <span class="tier-column-sub">Deficitários / Churn</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value spoint-txt">2.29 ➔ 2.16</span>
+                                        <span class="metric-mini-delta neg">▼ -5.9%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value spoint-txt">R$ 309 ➔ R$ 286</span>
+                                        <span class="metric-mini-delta neg">▼ -7.6%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value spoint-txt">44.0% ➔ 45.0%</span>
+                                        <span class="metric-mini-delta pos">▲ +1.00 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Bottom 10% registrou engajamento superior atribuído ao programa. A frequência média variou de 2.29 para 2.16 pedidos.</em>
+                                </p>
+                            </td>
+                            <td>
+                                <div class="insights-metrics-grid">
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Frequência</span>
+                                        <span class="metric-mini-value centauro-txt">1.88 ➔ 1.73</span>
+                                        <span class="metric-mini-delta neg">▼ -8.0%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Ticket Médio</span>
+                                        <span class="metric-mini-value centauro-txt">R$ 315 ➔ R$ 311</span>
+                                        <span class="metric-mini-delta neg">▼ -1.4%</span>
+                                    </div>
+                                    <div class="metric-mini-box">
+                                        <span class="metric-mini-label">Retenção Ano</span>
+                                        <span class="metric-mini-value centauro-txt">38.5% ➔ 36.9%</span>
+                                        <span class="metric-mini-delta neg">▼ -1.56 pp</span>
+                                    </div>
+                                </div>
+                                <p class="text-diagnostic-cell">
+                                    <em>Comportamento YTD: A faixa Bottom 10% operou de forma orgânica no baseline. A frequência média variou de 1.88 para 1.73 pedidos.</em>
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Chart.register(ChartDataLabels);
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#475569';
+
+        // 1. Gráfico de Aquisição
+        const ctxAcq = document.getElementById('aquisitionChart').getContext('2d');
+        new Chart(ctxAcq, {
+            type: 'doughnut',
+            data: {
+                labels: ['Novos Clientes (Aquisição)', 'Reativados (Churn)', 'Ativos Centauro'],
+                datasets: [{
+                    data: [42.08, 29.57, 25.70],
+                    backgroundColor: ['#10b981', '#f59e0b', '#3b82f6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    datalabels: {
+                        color: '#fff',
+                        font: { weight: 'bold' },
+                        formatter: (val) => val + '%'
+                    }
+                }
+            }
+        });
+
+        // 2. Gráfico de Frequência
+        const ctxFreq = document.getElementById('freqChart').getContext('2d');
+        new Chart(ctxFreq, {
+            type: 'bar',
+            data: {
+                labels: ['Frequência Média (Pedidos/Ano)'],
+                datasets: [
+                    {
+                        label: 'Spoint Ativo',
+                        data: [3.05],
+                        backgroundColor: '#d97706',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Centauro (Baseline)',
+                        data: [1.76],
+                        backgroundColor: '#dc2626',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 4 }
+                },
+                plugins: {
+                    datalabels: {
+                        color: '#fff',
+                        font: { weight: 'bold' },
+                        anchor: 'center',
+                        align: 'center'
+                    }
+                }
+            }
+        });
+
+        // 3. Gráfico de Recompra M-3 e M-6 com rótulos
+        const ctxRecompra = document.getElementById('recompraChart').getContext('2d');
+        new Chart(ctxRecompra, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [
+                    {
+                        label: 'Spoint M-3 (%)',
+                        data: [25.4, 26.1, 27.8, 28.5, 29.2, 30.1],
+                        borderColor: '#d97706',
+                        backgroundColor: '#d97706',
+                        tension: 0.3,
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'Centauro M-3 (%)',
+                        data: [12.1, 12.3, 12.5, 12.4, 12.8, 13.0],
+                        borderColor: '#dc2626',
+                        backgroundColor: '#dc2626',
+                        tension: 0.3,
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'Spoint M-6 (%)',
+                        data: [41.2, 42.5, 43.1, 44.4, 45.8, 46.5],
+                        borderColor: '#f59e0b',
+                        backgroundColor: '#f59e0b',
+                        borderDash: [5, 5],
+                        tension: 0.3,
+                        pointRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: { top: 30, right: 30 }
+                },
+                scales: {
+                    y: { beginAtZero: true, max: 60 }
+                },
+                plugins: {
+                    datalabels: {
+                        align: 'top',
+                        anchor: 'end',
+                        color: '#0f172a',
+                        font: { weight: 'bold', size: 11 },
+                        formatter: (val) => val + '%',
+                        offset: 4
+                    }
+                }
+            }
+        });
+
+
+    </script>
+</body>
+</html>
