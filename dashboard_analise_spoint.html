@@ -46,6 +46,26 @@
         }
         .header-container h1 { font-size: 2rem; margin: 0 0 0.5rem 0; color: var(--primary-color); }
         .header-container p { margin: 0; color: #64748b; font-size: 1.1rem; }
+        
+        .insight-box {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--color-spoint);
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .insight-box strong { color: #0f172a; }
+        .origin-tags {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; margin-bottom: 16px;
+        }
+        .tag {
+            background-color: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0;
+        }
+
         /* Big Numbers */
         .bignumbers-grid {
             display: grid;
@@ -113,12 +133,11 @@
             padding-bottom: 0.75rem; 
             text-align: center; 
         }
-        .chart-container { position: relative; height: 350px; width: 100%; }
-
+        .chart-container { position: relative; height: 380px; width: 100%; }
         .matriz-container { overflow-x: auto; }
         .matriz-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .matriz-table th { background: #F8FAFC; padding: 12px; border: 1px solid var(--border); color: var(--text-muted); }
-        .matriz-table td { padding: 10px; border: 1px solid var(--border); text-align: center; }
+        .matriz-table th { background: #F8FAFC; padding: 12px; border: 1px solid var(--border-color); color: #64748b; }
+        .matriz-table td { padding: 10px; border: 1px solid var(--border-color); text-align: center; }
         .numeric { font-family: monospace; font-weight: 600; }
         .tier-cell { text-align: left; background: #FFF; }
         .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
@@ -138,21 +157,38 @@
             </div>
         </div>
 
+        <div class="insight-box">
+            <strong>💡 Insight:</strong> O Spoint alcança quase 1 milhão de cadastros (aprox. 8.0% da base e-commerce da Centauro). O aplicativo MFit é o grande motor de aquisição e engajamento ativo desse ecossistema, representando mais da metade do MAU real do programa.
+        </div>
+
         <div class="bignumbers-grid">
             <div class="bignumber-card">
                 <div class="bignumber-title">Usuários Cadastrados Spoint</div>
                 <div class="bignumber-value">943.6K</div>
-                <div style="font-size: 11px; color: #64748b; margin-top: -4px; margin-bottom: 12px; font-weight: 500;">
-                    Origem: Spoint (422K) &bull; MFit (339.7K) &bull; SmartFit (175.3K) &bull; Outros (6.5K)
+                <div class="origin-tags">
+                    <span class="tag">Spoint: 422K</span>
+                    <span class="tag">MFit: 339.7K</span>
+                    <span class="tag">SmartFit: 175.3K</span>
+                    <span class="tag">Outros: 6.5K</span>
                 </div>
                 <div class="bignumber-subgrid">
                     <div class="subgrid-item" style="grid-column: span 2;">
-                        <span class="subgrid-label">MAU Spoint (Usuários Interagindo)</span>
-                        <span class="subgrid-val">412.3K</span>
-                        <span style="font-size: 11px; color: #64748b; margin-top: 4px;">MFit: 237.4K &bull; Spoint: 114.1K &bull; SmartFit: 60K &bull; Outros: 0.8K</span>
+                        <span class="subgrid-label">MAU Spoint</span>
+                        <span class="subgrid-val">138.9K</span>
+                        <div class="origin-tags" style="margin-bottom: 0;">
+                            <span class="tag">MFit: 78.0K</span>
+                            <span class="tag">Spoint: 57.5K</span>
+                            <span class="tag">SmartFit: 3.0K</span>
+                            <span class="tag">Outros: 0.4K</span>
+                        </div>
                     </div>
-                    <div class="subgrid-item"><span class="subgrid-label">MAU App Centauro</span><span class="subgrid-val">3.0M</span></div>
-                    <div class="subgrid-item"><span class="subgrid-label">Total Clientes Digital Centauro</span><span class="subgrid-val">87.1M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px dashed var(--border-color); padding-top: 8px; margin-top: 4px;">
+                        <span class="subgrid-label" style="font-weight: 600; color: #475569;">MAU App Centauro</span>
+                        <span class="subgrid-val" style="font-size: 1.1rem; color: var(--color-cnt);">319.2K</span>
+                        <div style="font-size: 0.75rem; color: #64748b; margin-top: 4px; line-height: 1.4;">
+                            * Média mensal de usuários ativos logados no Aplicativo Centauro (Android + iOS).
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="bignumber-card">
@@ -161,6 +197,11 @@
                 <div class="bignumber-subgrid">
                     <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 1.17B</span></div>
                     <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 584.5M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;"><span class="subgrid-label">Estimativa Média Mensal</span><span class="subgrid-val" style="color: var(--color-cnto);">~R$ 97.2M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px dashed var(--border-color); padding-top: 8px; margin-top: 4px;">
+                        <span class="subgrid-label" style="font-weight: 600; color: #475569;">Base Histórica de Clientes</span>
+                        <span class="subgrid-val" style="font-size: 1.0rem; color: #1e293b;">11.8M <span style="font-size: 11px; font-weight: 500; color: #64748b; margin-left: 4px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">Ativos c/ compra últimos 12 meses: 3.5M</span></span>
+                    </div>
                 </div>
             </div>
             <div class="bignumber-card">
@@ -169,6 +210,7 @@
                 <div class="bignumber-subgrid">
                     <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 37.4M</span></div>
                     <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 18.0M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;"><span class="subgrid-label">Estimativa Média Mensal</span><span class="subgrid-val" style="color: var(--color-inf);">~R$ 3.0M</span></div>
                 </div>
             </div>
             <div class="bignumber-card">
@@ -177,31 +219,40 @@
                 <div class="bignumber-subgrid">
                     <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 59.0M</span></div>
                     <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 25.4M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;"><span class="subgrid-label">Estimativa Média Mensal</span><span class="subgrid-val" style="color: var(--color-sinf);">~R$ 4.6M</span></div>
                 </div>
             </div>
         </div>
 
         <div class="impact-section">
             <div class="impact-header"><h2>Contribuição do Spoint na Taxa de Recompra Global da Centauro</h2></div>
+            <div class="insight-box" style="margin-top: 16px;">
+                <strong>💡 Insight:</strong> A taxa de retenção dos clientes com atribuição Spoint é superior à média orgânica (+25.6 p.p.). A proporção dessa base na companhia gera uma receita incremental que eleva a taxa global de recompra.
+            </div>
             <div class="impact-grid">
                 <div class="impact-card">
                     <div class="impact-label">Aumento na Recompra da Companhia (M-3)</div>
-                    <div class="impact-val impact-highlight">+0.22 p.p.</div>
-                    <div class="impact-sub" style="line-height: 1.4;">A recompra no Spoint é <strong>21.6 p.p. superior</strong> à média. Como o programa representa 1.04% da base de clientes, essa alta performance alavanca a taxa total da Centauro em <strong>+0.22 p.p.</strong></div>
+                    <div class="impact-val impact-highlight">+1.73 p.p.</div>
+                    <div class="impact-sub" style="line-height: 1.4;">A recompra no Spoint é <strong>21.6 p.p. superior</strong> à média. Como o programa representa 8.0% da base de clientes e-commerce, esse resultado eleva a taxa total da Centauro em <strong>+1.73 p.p.</strong></div>
                 </div>
                 <div class="impact-card">
                     <div class="impact-label">Aumento na Recompra da Companhia (M-6)</div>
-                    <div class="impact-val impact-highlight">+0.27 p.p.</div>
-                    <div class="impact-sub" style="line-height: 1.4;">A recompra no Spoint é <strong>25.6 p.p. superior</strong> à média. Como o programa representa 1.04% da base de clientes, essa alta performance alavanca a taxa total da Centauro em <strong>+0.27 p.p.</strong></div>
+                    <div class="impact-val impact-highlight">+2.05 p.p.</div>
+                    <div class="impact-sub" style="line-height: 1.4;">A recompra no Spoint é <strong>25.6 p.p. superior</strong> à média. Como o programa representa 8.0% da base de clientes e-commerce, esse resultado eleva a taxa total da Centauro em <strong>+2.05 p.p.</strong></div>
                 </div>
                 <div class="impact-card">
                     <div class="impact-label">Receita Incremental Gerada (Lift)</div>
                     <div class="impact-val impact-highlight">R$ 4.4M</div>
-                    <div class="impact-sub" style="line-height: 1.4;">A Receita Atribuída total é R$ 55.4M. Deste valor, estima-se que <strong>R$ 4.4M seja receita puramente incremental</strong> — ou seja, dinheiro novo gerado <em>exclusivamente</em> porque o Spoint reteve clientes que, na média orgânica da Centauro, não teriam recomprado.</div>
+                    <div class="impact-sub" style="line-height: 1.4;">
+                        Sem o Spoint, estima-se que esses clientes gastariam R$ 51.0M (cálculo usando a taxa de recompra orgânica da Centauro). Como eles utilizaram o programa, gastaram um total de R$ 55.4M. <strong>A diferença de R$ 4.4M é o "Dinheiro Novo"</strong>, gerado apenas porque o programa de fidelidade os impediu de abandonar a marca.
+                    </div>
                 </div>
             </div>
         </div>
 
+        <div class="insight-box" style="margin-top: 16px;">
+            <strong>💡 Insight:</strong> O comportamento de compra dos usuários com atribuição Spoint supera os demais em todos os indicadores principais, apresentando mais lucro, frequência quase dobrada e tickets maiores em todas as visões (Tiers).
+        </div>
         <div class="dashboard-grid">
             <div class="card"><h2>Lucro Bruto por Tier (R$)</h2><div class="chart-container"><canvas id="chartLucro"></canvas></div></div>
             <div class="card"><h2>Frequência Média de Compra</h2><div class="chart-container"><canvas id="chartFreq"></canvas></div></div>
@@ -215,6 +266,9 @@
 
         <div class="card" style="grid-column: 1 / -1;">
             <div class="matriz-header-wrapper"><h2 class="section-title" style="border:none; text-align:left; margin-bottom: 0;">Matriz de Comportamento por Tier</h2></div>
+            <div class="insight-box" style="margin-top: 16px; margin-bottom: 16px; border-left-color: var(--color-cnto);">
+                <strong>💡 Insight:</strong> A análise de Tiers de lucro demonstra que os clientes com atribuição Spoint no "Top 10%" apresentam o maior Retorno Sobre Investimento (ROI) do painel: gastam em média R$ 2.014 anuais e compram mais de 5 vezes no ano.
+            </div>
             <div class="matriz-container">
                 <table class="matriz-table">
                     <thead>
@@ -281,20 +335,31 @@
 
         const matrizBody = document.getElementById('matriz-body');
         
+        function rPct(inf, sinf) {
+            const d = ((inf/sinf)-1)*100;
+            const c = d >= 0 ? '#10b981' : '#ef4444';
+            return `<span style="font-size:11px; color:${c}; margin-left:4px; font-weight: 500;">(${d>0?'+':''}${d.toFixed(1)}%)</span>`;
+        }
+        function rPP(inf, sinf) {
+            const d = inf - sinf;
+            const c = d >= 0 ? '#10b981' : '#ef4444';
+            return `<span style="font-size:11px; color:${c}; margin-left:4px; font-weight: 500;">(${d>0?'+':''}${d.toFixed(1)}p.p)</span>`;
+        }
+
         rawData.forEach((row, idx) => {
             const trInf = document.createElement('tr');
             trInf.style.backgroundColor = 'rgba(234, 179, 8, 0.05)'; // Tint Yellow
             trInf.innerHTML = `
                 <td rowspan="3" class="tier-cell"><strong>${row.tier}</strong></td>
                 <td><span class="dot dot-spoint"></span>Atribuição Spoint</td>
-                <td class="numeric">R$ ${row.inf.lucro.toFixed(1)}</td>
-                <td class="numeric">${row.inf.freq.toFixed(2)}</td>
-                <td class="numeric">R$ ${row.inf.spending.toFixed(1)}</td>
-                <td class="numeric">R$ ${row.inf.tkt.toFixed(1)}</td>
-                <td class="numeric">${row.inf.itens.toFixed(2)}</td>
-                <td class="numeric">${row.inf.margem.toFixed(1)}%</td>
-                <td class="numeric"><strong>${row.inf.rec3.toFixed(1)}%</strong></td>
-                <td class="numeric"><strong>${row.inf.rec6.toFixed(1)}%</strong></td>
+                <td class="numeric">R$ ${row.inf.lucro.toFixed(1)}${rPct(row.inf.lucro, row.sinf.lucro)}</td>
+                <td class="numeric">${row.inf.freq.toFixed(2)}${rPct(row.inf.freq, row.sinf.freq)}</td>
+                <td class="numeric">R$ ${row.inf.spending.toFixed(1)}${rPct(row.inf.spending, row.sinf.spending)}</td>
+                <td class="numeric">R$ ${row.inf.tkt.toFixed(1)}${rPct(row.inf.tkt, row.sinf.tkt)}</td>
+                <td class="numeric">${row.inf.itens.toFixed(2)}${rPct(row.inf.itens, row.sinf.itens)}</td>
+                <td class="numeric">${row.inf.margem.toFixed(1)}%${rPP(row.inf.margem, row.sinf.margem)}</td>
+                <td class="numeric"><strong>${row.inf.rec3.toFixed(1)}%${rPP(row.inf.rec3, row.sinf.rec3)}</strong></td>
+                <td class="numeric"><strong>${row.inf.rec6.toFixed(1)}%${rPP(row.inf.rec6, row.sinf.rec6)}</strong></td>
             `;
 
             const trSinf = document.createElement('tr');
@@ -386,7 +451,8 @@
                     tension: 0.4,
                     borderWidth: 2,
                     pointRadius: 4,
-                    pointHoverRadius: 6
+                    pointHoverRadius: 6,
+                    datalabels: { align: 'top', offset: 6 }
                 },
                 {
                     label: 'Sem atribuição Spoint',
@@ -396,7 +462,8 @@
                     tension: 0.4,
                     borderWidth: 2,
                     pointRadius: 4,
-                    borderDash: [5, 5]
+                    borderDash: [5, 5],
+                    datalabels: { align: 'bottom', offset: 6 }
                 },
                 {
                     label: 'Centauro',
@@ -405,15 +472,16 @@
                     backgroundColor: colors.cnt,
                     tension: 0.4,
                     borderWidth: 2,
-                    pointRadius: 4
+                    pointRadius: 4,
+                    datalabels: { align: 'end', offset: 6 }
                 }
             ];
         };
 
         // Renderização dos Gráficos (Com Datalabels)
-        const dlMoney = { align: 'top', color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => 'R$ ' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v.toFixed(0)) };
-        const dlNum = { align: 'top', color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => Number.isInteger(v) ? v : v.toFixed(1) };
-        const dlPct = { align: 'top', color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => v.toFixed(1) + '%' };
+        const dlMoney = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => 'R$ ' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v.toFixed(0)) };
+        const dlNum = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => Number.isInteger(v) ? v : v.toFixed(1) };
+        const dlPct = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => v.toFixed(1) + '%' };
 
         new Chart(document.getElementById('chartLucro'), {
             type: 'line',
