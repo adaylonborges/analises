@@ -220,17 +220,17 @@
             <div class="bignumber-card">
                 <div class="bignumber-title">Receita c/ Atribuição Spoint</div>
                 <div class="bignumber-value">R$ 56.8M</div>
-                <div class="bignumber-sub">nom_origem_pedido != "usuario"</div>
+                <div class="bignumber-sub">2025: R$ 38.2M | 2026: R$ 18.6M</div>
             </div>
             <div class="bignumber-card">
                 <div class="bignumber-title">Receita s/ Atribuição Spoint</div>
                 <div class="bignumber-value">R$ 86.9M</div>
-                <div class="bignumber-sub">nom_origem_pedido = "usuario"</div>
+                <div class="bignumber-sub">2025: R$ 60.3M | 2026: R$ 26.6M</div>
             </div>
             <div class="bignumber-card">
                 <div class="bignumber-title">Receita Total Digital Centauro</div>
                 <div class="bignumber-value">R$ 1.75B</div>
-                <div class="bignumber-sub">Fonte: cnt_ref_gld_flt_venda_consolidada</div>
+                <div class="bignumber-sub">2025: R$ 1.17B | 2026: R$ 584.5M</div>
             </div>
         </div>
 
@@ -314,62 +314,62 @@
     </div>
 
     <script>
-        // Dados Estruturados Mockados para a apresentação
+        // Dados Estruturados Reais (via BigQuery) - Métricas M-3 e M-6 reais
         // Estrutura: [ { tier, inf_25, inf_26, sinf_25, sinf_26, cnt_25, cnt_26 } ]
         const rawData = [
             {
                 tier: 'Top 10%',
-                inf_25: { lucro: 2100, freq: 5.2, spending: 4100, tkt: 788, itens: 2.4, margem: 52, rec3: 35, rec6: 58 },
-                inf_26: { lucro: 2450, freq: 6.8, spending: 5100, tkt: 750, itens: 2.6, margem: 49, rec3: 42, rec6: 65 },
-                sinf_25: { lucro: 1800, freq: 3.5, spending: 2800, tkt: 800, itens: 2.2, margem: 55, rec3: 25, rec6: 40 },
-                sinf_26: { lucro: 1750, freq: 3.2, spending: 2600, tkt: 812, itens: 2.1, margem: 54, rec3: 22, rec6: 38 },
-                cnt_25: { lucro: 1500, freq: 2.8, spending: 2200, tkt: 785, itens: 2.0, margem: 56, rec3: 20, rec6: 35 },
-                cnt_26: { lucro: 1420, freq: 2.5, spending: 2000, tkt: 800, itens: 1.9, margem: 56, rec3: 18, rec6: 33 }
+                inf_25: { lucro: 434.5, freq: 4.25, spending: 1719.4, tkt: 404.6, itens: 1.75, margem: 42.1, rec3: 72.5, rec6: 80.6 },
+                inf_26: { lucro: 404.9, freq: 3.02, spending: 1438.4, tkt: 475.7, itens: 1.78, margem: 44.2, rec3: 64.6, rec6: 69.5 },
+                sinf_25: { lucro: 361.2, freq: 2.42, spending: 1239.5, tkt: 511.9, itens: 1.77, margem: 45.8, rec3: 48.2, rec6: 57.7 },
+                sinf_26: { lucro: 352.2, freq: 1.85, spending: 1102.7, tkt: 597.0, itens: 1.83, margem: 48.4, rec3: 38.6, rec6: 41.4 },
+                cnt_25: { lucro: 363.1, freq: 2.97, spending: 1297.1, tkt: 436.5, itens: 1.78, margem: 44.6, rec3: 57.1, rec6: 65.1 },
+                cnt_26: { lucro: 388.1, freq: 2.18, spending: 1210.3, tkt: 554.0, itens: 2.02, margem: 49.3, rec3: 46.0, rec6: 49.3 }
             },
             {
                 tier: 'Top 25%',
-                inf_25: { lucro: 850, freq: 3.1, spending: 1800, tkt: 580, itens: 2.0, margem: 50, rec3: 28, rec6: 45 },
-                inf_26: { lucro: 1100, freq: 4.2, spending: 2300, tkt: 547, itens: 2.1, margem: 47, rec3: 35, rec6: 52 },
-                sinf_25: { lucro: 780, freq: 2.1, spending: 1300, tkt: 619, itens: 1.8, margem: 53, rec3: 18, rec6: 32 },
-                sinf_26: { lucro: 720, freq: 1.9, spending: 1150, tkt: 605, itens: 1.7, margem: 52, rec3: 15, rec6: 30 },
-                cnt_25: { lucro: 650, freq: 1.8, spending: 1050, tkt: 583, itens: 1.7, margem: 54, rec3: 15, rec6: 28 },
-                cnt_26: { lucro: 600, freq: 1.6, spending: 950, tkt: 593, itens: 1.6, margem: 54, rec3: 12, rec6: 25 }
+                inf_25: { lucro: 164.7, freq: 2.63, spending: 731.3, tkt: 277.6, itens: 1.50, margem: 38.4, rec3: 56.1, rec6: 66.4 },
+                inf_26: { lucro: 159.6, freq: 2.01, spending: 635.9, tkt: 316.4, itens: 1.57, margem: 40.0, rec3: 48.1, rec6: 53.0 },
+                sinf_25: { lucro: 161.7, freq: 1.78, spending: 608.2, tkt: 341.7, itens: 1.54, margem: 41.9, rec3: 32.9, rec6: 42.4 },
+                sinf_26: { lucro: 158.0, freq: 1.49, spending: 570.9, tkt: 382.9, itens: 1.61, margem: 42.8, rec3: 27.6, rec6: 30.9 },
+                cnt_25: { lucro: 160.5, freq: 1.86, spending: 603.0, tkt: 323.7, itens: 1.49, margem: 41.8, rec3: 36.4, rec6: 45.3 },
+                cnt_26: { lucro: 158.6, freq: 1.60, spending: 564.3, tkt: 352.8, itens: 1.57, margem: 43.8, rec3: 31.5, rec6: 34.7 }
             },
             {
                 tier: 'Top 50%',
-                inf_25: { lucro: 420, freq: 2.2, spending: 950, tkt: 431, itens: 1.7, margem: 48, rec3: 22, rec6: 38 },
-                inf_26: { lucro: 650, freq: 3.5, spending: 1450, tkt: 414, itens: 1.9, margem: 45, rec3: 28, rec6: 45 },
-                sinf_25: { lucro: 400, freq: 1.5, spending: 700, tkt: 466, itens: 1.5, margem: 51, rec3: 12, rec6: 22 },
-                sinf_26: { lucro: 380, freq: 1.4, spending: 650, tkt: 464, itens: 1.4, margem: 50, rec3: 10, rec6: 20 },
-                cnt_25: { lucro: 350, freq: 1.3, spending: 600, tkt: 461, itens: 1.4, margem: 52, rec3: 10, rec6: 20 },
-                cnt_26: { lucro: 330, freq: 1.2, spending: 550, tkt: 458, itens: 1.4, margem: 52, rec3: 8, rec6: 18 }
+                inf_25: { lucro: 95.7, freq: 2.04, spending: 457.8, tkt: 224.9, itens: 1.41, margem: 37.1, rec3: 42.0, rec6: 53.3 },
+                inf_26: { lucro: 93.3, freq: 1.73, spending: 415.3, tkt: 239.7, itens: 1.48, margem: 38.4, rec3: 37.8, rec6: 41.9 },
+                sinf_25: { lucro: 94.3, freq: 1.40, spending: 391.6, tkt: 280.5, itens: 1.42, margem: 38.5, rec3: 18.9, rec6: 26.3 },
+                sinf_26: { lucro: 92.1, freq: 1.28, spending: 368.3, tkt: 288.8, itens: 1.44, margem: 39.8, rec3: 17.1, rec6: 19.3 },
+                cnt_25: { lucro: 94.5, freq: 1.41, spending: 384.5, tkt: 273.3, itens: 1.33, margem: 38.7, rec3: 19.9, rec6: 26.3 },
+                cnt_26: { lucro: 92.0, freq: 1.32, spending: 362.8, tkt: 275.6, itens: 1.38, margem: 40.1, rec3: 18.4, rec6: 20.6 }
             },
             {
                 tier: 'Top 75%',
-                inf_25: { lucro: 210, freq: 1.5, spending: 520, tkt: 346, itens: 1.4, margem: 46, rec3: 15, rec6: 28 },
-                inf_26: { lucro: 450, freq: 2.8, spending: 950, tkt: 339, itens: 1.6, margem: 43, rec3: 22, rec6: 35 },
-                sinf_25: { lucro: 200, freq: 1.2, spending: 420, tkt: 350, itens: 1.3, margem: 49, rec3: 8, rec6: 15 },
-                sinf_26: { lucro: 190, freq: 1.1, spending: 400, tkt: 363, itens: 1.2, margem: 48, rec3: 7, rec6: 14 },
-                cnt_25: { lucro: 180, freq: 1.1, spending: 380, tkt: 345, itens: 1.2, margem: 50, rec3: 7, rec6: 15 },
-                cnt_26: { lucro: 170, freq: 1.0, spending: 350, tkt: 350, itens: 1.2, margem: 50, rec3: 5, rec6: 12 }
+                inf_25: { lucro: 52.9, freq: 1.76, spending: 302.3, tkt: 171.7, itens: 1.33, margem: 33.9, rec3: 34.7, rec6: 47.1 },
+                inf_26: { lucro: 51.1, freq: 1.50, spending: 262.9, tkt: 175.0, itens: 1.44, margem: 34.8, rec3: 29.0, rec6: 33.0 },
+                sinf_25: { lucro: 52.8, freq: 1.28, spending: 259.4, tkt: 203.1, itens: 1.36, margem: 33.9, rec3: 15.1, rec6: 21.3 },
+                sinf_26: { lucro: 51.8, freq: 1.22, spending: 240.1, tkt: 197.0, itens: 1.39, margem: 35.3, rec3: 14.3, rec6: 15.9 },
+                cnt_25: { lucro: 53.1, freq: 1.28, spending: 259.0, tkt: 202.4, itens: 1.29, margem: 33.7, rec3: 15.6, rec6: 21.6 },
+                cnt_26: { lucro: 52.0, freq: 1.24, spending: 245.3, tkt: 198.0, itens: 1.34, margem: 35.0, rec3: 14.9, rec6: 16.7 }
             },
             {
                 tier: 'Top 90%',
-                inf_25: { lucro: 110, freq: 1.2, spending: 300, tkt: 250, itens: 1.2, margem: 44, rec3: 10, rec6: 20 },
-                inf_26: { lucro: 320, freq: 2.4, spending: 650, tkt: 270, itens: 1.4, margem: 41, rec3: 18, rec6: 30 },
-                sinf_25: { lucro: 100, freq: 1.1, spending: 280, tkt: 254, itens: 1.1, margem: 47, rec3: 5, rec6: 10 },
-                sinf_26: { lucro: 95, freq: 1.0, spending: 260, tkt: 260, itens: 1.1, margem: 46, rec3: 4, rec6: 9 },
-                cnt_25: { lucro: 90, freq: 1.0, spending: 250, tkt: 250, itens: 1.1, margem: 48, rec3: 4, rec6: 10 },
-                cnt_26: { lucro: 85, freq: 1.0, spending: 240, tkt: 240, itens: 1.1, margem: 48, rec3: 3, rec6: 8 }
+                inf_25: { lucro: 25.7, freq: 1.50, spending: 193.2, tkt: 129.1, itens: 1.29, margem: 31.8, rec3: 24.5, rec6: 36.8 },
+                inf_26: { lucro: 24.5, freq: 1.35, spending: 155.9, tkt: 115.8, itens: 1.34, margem: 33.4, rec3: 21.9, rec6: 25.4 },
+                sinf_25: { lucro: 25.9, freq: 1.21, spending: 158.9, tkt: 131.7, itens: 1.29, margem: 30.2, rec3: 11.7, rec6: 18.2 },
+                sinf_26: { lucro: 25.0, freq: 1.17, spending: 144.2, tkt: 122.8, itens: 1.31, margem: 31.9, rec3: 11.6, rec6: 13.1 },
+                cnt_25: { lucro: 26.2, freq: 1.19, spending: 160.4, tkt: 134.4, itens: 1.25, margem: 29.3, rec3: 11.9, rec6: 17.4 },
+                cnt_26: { lucro: 25.2, freq: 1.18, spending: 150.9, tkt: 127.9, itens: 1.29, margem: 30.3, rec3: 12.1, rec6: 13.4 }
             },
             {
                 tier: 'Bottom 10%',
-                inf_25: { lucro: 45, freq: 1.1, spending: 180, tkt: 163, itens: 1.1, margem: 40, rec3: 5, rec6: 12 },
-                inf_26: { lucro: 180, freq: 2.1, spending: 350, tkt: 166, itens: 1.3, margem: 38, rec3: 12, rec6: 22 },
-                sinf_25: { lucro: 40, freq: 1.0, spending: 160, tkt: 160, itens: 1.0, margem: 43, rec3: 2, rec6: 5 },
-                sinf_26: { lucro: 38, freq: 1.0, spending: 150, tkt: 150, itens: 1.0, margem: 42, rec3: 2, rec6: 4 },
-                cnt_25: { lucro: 35, freq: 1.0, spending: 140, tkt: 140, itens: 1.0, margem: 44, rec3: 2, rec6: 5 },
-                cnt_26: { lucro: 30, freq: 1.0, spending: 130, tkt: 130, itens: 1.0, margem: 44, rec3: 1, rec6: 4 }
+                inf_25: { lucro: 9.5, freq: 1.29, spending: 130.6, tkt: 101.4, itens: 1.18, margem: 22.5, rec3: 16.4, rec6: 26.0 },
+                inf_26: { lucro: 8.0, freq: 1.20, spending: 108.7, tkt: 90.5, itens: 1.32, margem: 19.2, rec3: 13.1, rec6: 15.2 },
+                sinf_25: { lucro: 9.4, freq: 1.10, spending: 98.4, tkt: 89.1, itens: 1.19, margem: 20.0, rec3: 6.7, rec6: 11.2 },
+                sinf_26: { lucro: 9.1, freq: 1.09, spending: 90.3, tkt: 83.3, itens: 1.20, margem: 22.2, rec3: 6.4, rec6: 6.9 },
+                cnt_25: { lucro: 9.1, freq: 1.12, spending: 104.0, tkt: 92.9, itens: 1.18, margem: 17.8, rec3: 7.8, rec6: 12.3 },
+                cnt_26: { lucro: 8.2, freq: 1.12, spending: 100.6, tkt: 90.0, itens: 1.23, margem: 17.8, rec3: 8.0, rec6: 8.9 }
             }
         ];
 
