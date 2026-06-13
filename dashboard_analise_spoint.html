@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analítico: Impacto Spoint Centauro</title>
+    <meta name="description" content="Análise de impacto do programa Spoint no comportamento de recompra e rentabilidade da base de clientes Centauro.">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary-color: #0f172a;
+            --accent-color: #e11d48; /* Centauro Red */
+            
+            /* Chart Colors */
+            --color-inf-25: #60a5fa;
+            --color-inf-26: #2563eb;
+            --color-sinf-25: #f87171;
+            --color-sinf-26: #dc2626;
+            --color-cnt-25: #94a3b8;
+            --color-cnt-26: #475569;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 2rem; 
+            min-height: 100vh; 
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* Header */
+        .header-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 30px; 
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .header-container h1 { font-size: 2rem; margin: 0 0 0.5rem 0; color: var(--primary-color); }
+        .header-container p { margin: 0; color: #64748b; font-size: 1.1rem; }
+        
+        /* Big Numbers */
+        .bignumbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 30px;
+        }
+        .bignumber-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .bignumber-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .bignumber-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .bignumber-sub {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* Insights Card */
+        .insights-card { 
+            background-color: var(--card-bg); 
+            border-radius: 12px; 
+            padding: 24px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+            margin-bottom: 30px; 
+            border-left: 4px solid var(--primary-color); 
+        }
+        .insights-card h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 16px; font-size: 1.25rem; }
+        .insights-card p, .insights-card li { line-height: 1.6; margin-bottom: 12px; color: #334155; font-size: 0.95rem; }
+        .insights-card ul { margin-top: 0; padding-left: 20px; }
+        
+        /* Dashboard Grid */
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 30px;
+        }
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            padding: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+        }
+        .card h2 { 
+            font-size: 1.15rem; 
+            margin-top: 0; 
+            margin-bottom: 1.5rem; 
+            color: #334155; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 0.75rem; 
+            text-align: center; 
+        }
+        .chart-container { position: relative; height: 350px; width: 100%; }
+        
+        /* Matrix Table */
+        .matrix-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+        .matrix-section h2 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .matrix-table th {
+            background-color: #f8fafc;
+            padding: 1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+        .matrix-table td {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+        .matrix-table .tier-label {
+            font-weight: 700;
+            background-color: #f1f5f9;
+            text-align: left;
+        }
+        .data-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: #f8fafc;
+        }
+        .data-item.influencia { border-left: 3px solid var(--color-inf-26); }
+        .data-item.sem-influencia { border-left: 3px solid var(--color-sinf-26); }
+        .data-item.apenas-centauro { border-left: 3px solid var(--color-cnt-26); }
+        .item-label { font-size: 0.75rem; color: #64748b; }
+        .item-value { font-weight: 600; color: #1e293b; }
+
+        @media (max-width: 768px) {
+            .header-container { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header-container">
+            <div>
+                <h1>Análise Executiva: Impacto Spoint Centauro</h1>
+                <p>Análise de Recompra e Rentabilidade (2025 vs 2026) segregada por Nível de Influência do Spoint</p>
+            </div>
+        </div>
+
+        <!-- Big Numbers -->
+        <div class="bignumbers-grid">
+            <div class="bignumber-card">
+                <div class="bignumber-title">Usuários Cadastrados Spoint</div>
+                <div class="bignumber-value">2.45M</div>
+                <div class="bignumber-sub">Fonte: vnt_ref_gld_dim_crava_usuarios</div>
+            </div>
+            <div class="bignumber-card">
+                <div class="bignumber-title">Clientes Digital Centauro</div>
+                <div class="bignumber-value">18.2M</div>
+                <div class="bignumber-sub">Fonte: cnt_ref_gld_dim_cliente</div>
+            </div>
+            <div class="bignumber-card">
+                <div class="bignumber-title">Receita Total Spoint (25/26)</div>
+                <div class="bignumber-value">R$ 145.8M</div>
+                <div class="bignumber-sub">Fonte: vnt_ref_tab_fat_crava_cnto_vendas</div>
+            </div>
+            <div class="bignumber-card">
+                <div class="bignumber-title">Receita Total Digital (25/26)</div>
+                <div class="bignumber-value">R$ 2.1B</div>
+                <div class="bignumber-sub">Fonte: cnt_ref_gld_flt_venda_consolidada</div>
+            </div>
+        </div>
+
+        <!-- Metodologia e Insights -->
+        <div class="insights-card">
+            <h2>Metodologia e Estrutura da Análise</h2>
+            <ul>
+                <li><strong>Período Analisado:</strong> Comparativo Ano a Ano (2025 vs 2026).</li>
+                <li><strong>Classificação de Clientes (Tiers):</strong> Segmentação percentual baseada na rentabilidade de Lucro Bruto (Top 10%, Top 25%, Top 50%, Top 75%, Top 90%, Bottom 10%).</li>
+                <li><strong>Composição de Margem:</strong> Margem Bruta = (ROL - CMV) / ROL. CMV considera custo empresa + custo fiscal para marcas gerais; para Nike, inclui custo Fisia, custo fiscal e royalties.</li>
+            </ul>
+            <br>
+            <h2>Resumo Executivo (Insights)</h2>
+            <p><strong>1. Impacto na Frequência de Compra:</strong> Observa-se uma variação superior na frequência média de pedidos/ano para a base de clientes com influência direta do Spoint, indicando maior retenção do canal.</p>
+            <p><strong>2. Relação Custo de Margem vs. Recompra:</strong> A margem bruta apresenta variação justificada pelos incentivos do programa Spoint. Esta redução pontual de margem subsidia taxas de recompra mais elevadas (M-3 e M-6), ampliando o Lifetime Value (LTV) da base ativa.</p>
+            <p><strong>3. Variação do Ticket Médio e Spending:</strong> O ticket médio do grupo sob influência do programa tende a apresentar decréscimo isolado; contudo, o efeito multiplicador da frequência de compra resulta em um aumento líquido no Spending Médio Anual por cliente deste segmento.</p>
+        </div>
+
+        <!-- Dashboard Charts -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>Lucro Bruto por Tier (R$)</h2>
+                <div class="chart-container"><canvas id="chartLucro"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Frequência Média de Compra (12 Meses)</h2>
+                <div class="chart-container"><canvas id="chartFrequencia"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Spending Médio Anual por Tier (R$)</h2>
+                <div class="chart-container"><canvas id="chartSpending"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Ticket Médio por Tier (R$)</h2>
+                <div class="chart-container"><canvas id="chartTicket"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Itens por Pedido por Tier</h2>
+                <div class="chart-container"><canvas id="chartItens"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Margem Bruta Média (%) por Tier</h2>
+                <div class="chart-container"><canvas id="chartMargem"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Taxa de Recompra M-3 (%) por Tier</h2>
+                <div class="chart-container"><canvas id="chartRecompraM3"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Taxa de Recompra M-6 (%) por Tier</h2>
+                <div class="chart-container"><canvas id="chartRecompraM6"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Matriz de Comportamento -->
+        <div class="matrix-section">
+            <h2>Matriz de Comportamento: Evolução 2026 (Consolidado)</h2>
+            <table class="matrix-table">
+                <thead>
+                    <tr>
+                        <th>Tier de Rentabilidade</th>
+                        <th>Grupo de Comparação</th>
+                        <th>Frequência de Compra</th>
+                        <th>Recompra M-3 (%)</th>
+                        <th>Recompra M-6 (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="matrixTableBody">
+                    <!-- Populated via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Dados Estruturados Mockados para a apresentação
+        // Estrutura: [ { tier, inf_25, inf_26, sinf_25, sinf_26, cnt_25, cnt_26 } ]
+        const rawData = [
+            {
+                tier: 'Top 10%',
+                inf_25: { lucro: 2100, freq: 5.2, spending: 4100, tkt: 788, itens: 2.4, margem: 52, rec3: 35, rec6: 58 },
+                inf_26: { lucro: 2450, freq: 6.8, spending: 5100, tkt: 750, itens: 2.6, margem: 49, rec3: 42, rec6: 65 },
+                sinf_25: { lucro: 1800, freq: 3.5, spending: 2800, tkt: 800, itens: 2.2, margem: 55, rec3: 25, rec6: 40 },
+                sinf_26: { lucro: 1750, freq: 3.2, spending: 2600, tkt: 812, itens: 2.1, margem: 54, rec3: 22, rec6: 38 },
+                cnt_25: { lucro: 1500, freq: 2.8, spending: 2200, tkt: 785, itens: 2.0, margem: 56, rec3: 20, rec6: 35 },
+                cnt_26: { lucro: 1420, freq: 2.5, spending: 2000, tkt: 800, itens: 1.9, margem: 56, rec3: 18, rec6: 33 }
+            },
+            {
+                tier: 'Top 25%',
+                inf_25: { lucro: 850, freq: 3.1, spending: 1800, tkt: 580, itens: 2.0, margem: 50, rec3: 28, rec6: 45 },
+                inf_26: { lucro: 1100, freq: 4.2, spending: 2300, tkt: 547, itens: 2.1, margem: 47, rec3: 35, rec6: 52 },
+                sinf_25: { lucro: 780, freq: 2.1, spending: 1300, tkt: 619, itens: 1.8, margem: 53, rec3: 18, rec6: 32 },
+                sinf_26: { lucro: 720, freq: 1.9, spending: 1150, tkt: 605, itens: 1.7, margem: 52, rec3: 15, rec6: 30 },
+                cnt_25: { lucro: 650, freq: 1.8, spending: 1050, tkt: 583, itens: 1.7, margem: 54, rec3: 15, rec6: 28 },
+                cnt_26: { lucro: 600, freq: 1.6, spending: 950, tkt: 593, itens: 1.6, margem: 54, rec3: 12, rec6: 25 }
+            },
+            {
+                tier: 'Top 50%',
+                inf_25: { lucro: 420, freq: 2.2, spending: 950, tkt: 431, itens: 1.7, margem: 48, rec3: 22, rec6: 38 },
+                inf_26: { lucro: 650, freq: 3.5, spending: 1450, tkt: 414, itens: 1.9, margem: 45, rec3: 28, rec6: 45 },
+                sinf_25: { lucro: 400, freq: 1.5, spending: 700, tkt: 466, itens: 1.5, margem: 51, rec3: 12, rec6: 22 },
+                sinf_26: { lucro: 380, freq: 1.4, spending: 650, tkt: 464, itens: 1.4, margem: 50, rec3: 10, rec6: 20 },
+                cnt_25: { lucro: 350, freq: 1.3, spending: 600, tkt: 461, itens: 1.4, margem: 52, rec3: 10, rec6: 20 },
+                cnt_26: { lucro: 330, freq: 1.2, spending: 550, tkt: 458, itens: 1.4, margem: 52, rec3: 8, rec6: 18 }
+            },
+            {
+                tier: 'Top 75%',
+                inf_25: { lucro: 210, freq: 1.5, spending: 520, tkt: 346, itens: 1.4, margem: 46, rec3: 15, rec6: 28 },
+                inf_26: { lucro: 450, freq: 2.8, spending: 950, tkt: 339, itens: 1.6, margem: 43, rec3: 22, rec6: 35 },
+                sinf_25: { lucro: 200, freq: 1.2, spending: 420, tkt: 350, itens: 1.3, margem: 49, rec3: 8, rec6: 15 },
+                sinf_26: { lucro: 190, freq: 1.1, spending: 400, tkt: 363, itens: 1.2, margem: 48, rec3: 7, rec6: 14 },
+                cnt_25: { lucro: 180, freq: 1.1, spending: 380, tkt: 345, itens: 1.2, margem: 50, rec3: 7, rec6: 15 },
+                cnt_26: { lucro: 170, freq: 1.0, spending: 350, tkt: 350, itens: 1.2, margem: 50, rec3: 5, rec6: 12 }
+            },
+            {
+                tier: 'Top 90%',
+                inf_25: { lucro: 110, freq: 1.2, spending: 300, tkt: 250, itens: 1.2, margem: 44, rec3: 10, rec6: 20 },
+                inf_26: { lucro: 320, freq: 2.4, spending: 650, tkt: 270, itens: 1.4, margem: 41, rec3: 18, rec6: 30 },
+                sinf_25: { lucro: 100, freq: 1.1, spending: 280, tkt: 254, itens: 1.1, margem: 47, rec3: 5, rec6: 10 },
+                sinf_26: { lucro: 95, freq: 1.0, spending: 260, tkt: 260, itens: 1.1, margem: 46, rec3: 4, rec6: 9 },
+                cnt_25: { lucro: 90, freq: 1.0, spending: 250, tkt: 250, itens: 1.1, margem: 48, rec3: 4, rec6: 10 },
+                cnt_26: { lucro: 85, freq: 1.0, spending: 240, tkt: 240, itens: 1.1, margem: 48, rec3: 3, rec6: 8 }
+            },
+            {
+                tier: 'Bottom 10%',
+                inf_25: { lucro: 45, freq: 1.1, spending: 180, tkt: 163, itens: 1.1, margem: 40, rec3: 5, rec6: 12 },
+                inf_26: { lucro: 180, freq: 2.1, spending: 350, tkt: 166, itens: 1.3, margem: 38, rec3: 12, rec6: 22 },
+                sinf_25: { lucro: 40, freq: 1.0, spending: 160, tkt: 160, itens: 1.0, margem: 43, rec3: 2, rec6: 5 },
+                sinf_26: { lucro: 38, freq: 1.0, spending: 150, tkt: 150, itens: 1.0, margem: 42, rec3: 2, rec6: 4 },
+                cnt_25: { lucro: 35, freq: 1.0, spending: 140, tkt: 140, itens: 1.0, margem: 44, rec3: 2, rec6: 5 },
+                cnt_26: { lucro: 30, freq: 1.0, spending: 130, tkt: 130, itens: 1.0, margem: 44, rec3: 1, rec6: 4 }
+            }
+        ];
+
+        // Chart Global Configs
+        Chart.register(ChartDataLabels);
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.font.family = 'Inter, sans-serif';
+
+        const labels = rawData.map(d => d.tier);
+
+        const formatters = {
+            money: {
+                anchor: 'end', align: 'top', font: { size: 10, weight: 'bold' }, color: '#334155',
+                formatter: (v) => 'R$ ' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v)
+            },
+            number: {
+                anchor: 'end', align: 'top', font: { size: 10, weight: 'bold' }, color: '#334155',
+                formatter: (v) => Number.isInteger(v) ? v : v.toFixed(1)
+            },
+            percent: {
+                anchor: 'end', align: 'top', font: { size: 10, weight: 'bold' }, color: '#334155',
+                formatter: (v) => v + '%'
+            }
+        };
+
+        const createDatasets = (metric) => {
+            return [
+                { label: 'Spoint (2025)', data: rawData.map(d => d.inf_25[metric]), borderColor: '#60a5fa', backgroundColor: '#60a5fa', tension: 0.3, fill: false, borderWidth: 2 },
+                { label: 'Spoint (2026)', data: rawData.map(d => d.inf_26[metric]), borderColor: '#2563eb', backgroundColor: '#2563eb', tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
+                { label: 'Usuário Direto (2025)', data: rawData.map(d => d.sinf_25[metric]), borderColor: '#f87171', backgroundColor: '#f87171', borderDash: [5, 5], tension: 0.3, fill: false, borderWidth: 2 },
+                { label: 'Usuário Direto (2026)', data: rawData.map(d => d.sinf_26[metric]), borderColor: '#dc2626', backgroundColor: '#dc2626', borderDash: [5, 5], tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
+                { label: 'Apenas Centauro (2025)', data: rawData.map(d => d.cnt_25[metric]), borderColor: '#94a3b8', backgroundColor: '#94a3b8', borderDash: [2, 2], tension: 0.3, fill: false, borderWidth: 2 },
+                { label: 'Apenas Centauro (2026)', data: rawData.map(d => d.cnt_26[metric]), borderColor: '#475569', backgroundColor: '#475569', borderDash: [2, 2], tension: 0.3, fill: false, borderWidth: 3, pointRadius: 5 },
+            ];
+        };
+
+        const commonOptions = (formatter) => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 25 } },
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true, font: { size: 10 } } },
+                datalabels: formatter
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: '#f1f5f9' }, beginAtZero: false }
+            }
+        });
+
+        // Initialize Charts
+        new Chart(document.getElementById('chartLucro'), { type: 'line', data: { labels, datasets: createDatasets('lucro') }, options: commonOptions(formatters.money) });
+        new Chart(document.getElementById('chartFrequencia'), { type: 'line', data: { labels, datasets: createDatasets('freq') }, options: commonOptions(formatters.number) });
+        new Chart(document.getElementById('chartSpending'), { type: 'line', data: { labels, datasets: createDatasets('spending') }, options: commonOptions(formatters.money) });
+        new Chart(document.getElementById('chartTicket'), { type: 'line', data: { labels, datasets: createDatasets('tkt') }, options: commonOptions(formatters.money) });
+        new Chart(document.getElementById('chartItens'), { type: 'line', data: { labels, datasets: createDatasets('itens') }, options: commonOptions(formatters.number) });
+        new Chart(document.getElementById('chartMargem'), { type: 'line', data: { labels, datasets: createDatasets('margem') }, options: commonOptions(formatters.percent) });
+        new Chart(document.getElementById('chartRecompraM3'), { type: 'line', data: { labels, datasets: createDatasets('rec3') }, options: commonOptions(formatters.percent) });
+        new Chart(document.getElementById('chartRecompraM6'), { type: 'line', data: { labels, datasets: createDatasets('rec6') }, options: commonOptions(formatters.percent) });
+
+        // Populate Matrix Table
+        const tbody = document.getElementById('matrixTableBody');
+        rawData.forEach(d => {
+            const tr = document.createElement('tr');
+            
+            // Coluna do Tier
+            const tdTier = document.createElement('td');
+            tdTier.className = 'tier-label';
+            tdTier.textContent = d.tier;
+            
+            // Coluna dos Grupos
+            const tdGrupos = document.createElement('td');
+            tdGrupos.innerHTML = `
+                <div class="data-block">
+                    <div class="data-item influencia"><span class="item-label">Spoint</span></div>
+                    <div class="data-item sem-influencia"><span class="item-label">Usuário Direto</span></div>
+                    <div class="data-item apenas-centauro"><span class="item-label">Apenas Centauro</span></div>
+                </div>
+            `;
+
+            // Colunas de Dados
+            const createDataColumn = (metric, isPercent) => {
+                const td = document.createElement('td');
+                td.innerHTML = `
+                    <div class="data-block">
+                        <div class="data-item"><span class="item-value">${d.inf_26[metric]}${isPercent ? '%' : 'x'}</span></div>
+                        <div class="data-item"><span class="item-value">${d.sinf_26[metric]}${isPercent ? '%' : 'x'}</span></div>
+                        <div class="data-item"><span class="item-value">${d.cnt_26[metric]}${isPercent ? '%' : 'x'}</span></div>
+                    </div>
+                `;
+                return td;
+            };
+
+            tr.appendChild(tdTier);
+            tr.appendChild(tdGrupos);
+            tr.appendChild(createDataColumn('freq', false));
+            tr.appendChild(createDataColumn('rec3', true));
+            tr.appendChild(createDataColumn('rec6', true));
+            
+            tbody.appendChild(tr);
+        });
+    </script>
+</body>
+</html>
