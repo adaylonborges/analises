@@ -194,16 +194,16 @@
             </div>
             <div class="bignumber-card" style="border-top-color: var(--color-cnt);">
                 <div class="bignumber-title">Receita Total Digital Centauro</div>
-                <div class="bignumber-value">R$ 2.18B <span style="font-size: 13px; font-weight: 600; color: var(--color-cnt); margin-left: 4px;">(100%)</span></div>
+                <div class="bignumber-value">R$ 2.62B <span style="font-size: 13px; font-weight: 600; color: var(--color-cnt); margin-left: 4px;">(100%)</span></div>
                 <div class="bignumber-subgrid">
-                    <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 1.47B</span></div>
-                    <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 714.2M</span></div>
-                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;"><span class="subgrid-label">Estimativa Média Mensal</span><span class="subgrid-val" style="color: var(--color-cnt);">~R$ 128.5M</span></div>
+                    <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 1.77B</span></div>
+                    <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 852.0M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;"><span class="subgrid-label">Estimativa Média Mensal</span><span class="subgrid-val" style="color: var(--color-cnt);">~R$ 145.4M</span></div>
                 </div>
             </div>
             <div class="bignumber-card">
                 <div class="bignumber-title">Receita Com Atribuição Spoint</div>
-                <div class="bignumber-value">R$ 55.6M <span style="font-size: 13px; font-weight: 600; color: var(--color-inf); margin-left: 4px;">(2.5% Share)</span></div>
+                <div class="bignumber-value">R$ 55.6M <span style="font-size: 13px; font-weight: 600; color: var(--color-inf); margin-left: 4px;">(2.1% Share)</span></div>
                 <div class="bignumber-subgrid">
                     <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 37.5M</span></div>
                     <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 18.1M</span></div>
@@ -212,7 +212,7 @@
             </div>
             <div class="bignumber-card">
                 <div class="bignumber-title">Receita Sem Atribuição Spoint</div>
-                <div class="bignumber-value">R$ 85.3M <span style="font-size: 13px; font-weight: 600; color: var(--color-sinf); margin-left: 4px;">(3.9% Share)</span></div>
+                <div class="bignumber-value">R$ 85.3M <span style="font-size: 13px; font-weight: 600; color: var(--color-sinf); margin-left: 4px;">(3.2% Share)</span></div>
                 <div class="bignumber-subgrid">
                     <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 59.4M</span></div>
                     <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 25.8M</span></div>
@@ -287,19 +287,50 @@
         </div>
 
 
-
         <div class="insight-box" style="margin-top: 24px;">
-            <strong>Highlight:</strong> O comportamento de compra dos usuários com atribuição Spoint supera os demais em todos os indicadores principais, apresentando mais lucro, frequência quase dobrada e tickets maiores em todas as visões (Tiers).
+            <strong>Highlight:</strong> O comportamento de compra dos usuários com atribuição Spoint apresenta uma dinâmica clara: embora possuam um ticket médio por pedido menor, a altíssima frequência e taxa de recompra compensam com folga essa diferença, resultando em maior lucro bruto e spending total em praticamente todas as visões (Tiers).
         </div>
         <div class="dashboard-grid">
-            <div class="card"><h2>Lucro Bruto por Tier (R$)</h2><div class="chart-container"><canvas id="chartLucro"></canvas></div></div>
-            <div class="card"><h2>Frequência Média de Compra</h2><div class="chart-container"><canvas id="chartFreq"></canvas></div></div>
-            <div class="card"><h2>Spending Médio Anual (R$)</h2><div class="chart-container"><canvas id="chartSpending"></canvas></div></div>
-            <div class="card"><h2>Ticket Médio (R$)</h2><div class="chart-container"><canvas id="chartTicket"></canvas></div></div>
-            <div class="card"><h2>Itens por Pedido</h2><div class="chart-container"><canvas id="chartItens"></canvas></div></div>
-            <div class="card"><h2>Margem Bruta Média (%)</h2><div class="chart-container"><canvas id="chartMargem"></canvas></div></div>
-            <div class="card"><h2>Taxa de Recompra M-3 (%)</h2><div class="chart-container"><canvas id="chartRec3"></canvas></div></div>
-            <div class="card"><h2>Taxa de Recompra M-6 (%)</h2><div class="chart-container"><canvas id="chartRec6"></canvas></div></div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Lucro Bruto por Tier (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> Clientes com Spoint geram lucro bruto superior em todos os recortes, provando que o engajamento no programa é altamente rentável.</div>
+                <div class="chart-container"><canvas id="chartLucro"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Frequência Média de Compra</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A grande alavanca do programa. A frequência de compra chega a ser quase o dobro em relação à base não fidelizada.</div>
+                <div class="chart-container"><canvas id="chartFreq"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Spending Médio Anual (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> Impulsionados pela alta frequência, clientes Spoint terminam o ano gastando muito mais, especialmente no Top 10% (R$ 2.014).</div>
+                <div class="chart-container"><canvas id="chartSpending"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Ticket Médio (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> O ticket por pedido é menor para clientes Spoint, o que indica que eles diluem suas compras em mais visitas ao longo do ano.</div>
+                <div class="chart-container"><canvas id="chartTicket"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Itens por Pedido</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> O número de itens por carrinho também é ligeiramente inferior, corroborando o comportamento de compras menores e mais frequentes.</div>
+                <div class="chart-container"><canvas id="chartItens"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Margem Bruta Média (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A margem bruta é alguns pontos percentuais menor devido aos resgates e incentivos, mas o volume total de lucro compensa o investimento.</div>
+                <div class="chart-container"><canvas id="chartMargem"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Taxa de Recompra M-3 (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A retenção de curtíssimo prazo é significativamente alta: no Top 10%, 76.6% dos clientes Spoint voltam a comprar em até 3 meses.</div>
+                <div class="chart-container"><canvas id="chartRec3"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Taxa de Recompra M-6 (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> No semestre a fidelização se consolida, com a taxa de recompra do Spoint superando a base orgânica em até 25 pontos percentuais.</div>
+                <div class="chart-container"><canvas id="chartRec6"></canvas></div>
+            </div>
         </div>
 
         <div class="card" style="grid-column: 1 / -1;">
@@ -325,6 +356,156 @@
                     </thead>
                     <tbody id="matriz-body"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- ROADMAP SPOINT 2026 -->
+        <div class="impact-section" style="margin-top: 40px; border-color: #22c55e;">
+            <div class="impact-header" style="background-color: #16a34a;"><h2 style="color: white;">Visão 2026: O Novo Modelo de Negócios e Roadmap Spoint</h2></div>
+            <div style="padding: 24px;">
+                <div class="insight-box" style="margin-bottom: 20px; border-left-color: #16a34a; background-color: #f0fdf4;">
+                    <strong>Objetivo 03:</strong> Acelerar a criação de hábito de recompra dos clientes no digital, aumentando o valor gerado por cliente de forma sustentável.<br>
+                    <strong>Tese:</strong> Transformar o "programa de fidelidade" isolado em uma marca de varejo com a fidelidade em seu DNA. Enriquecer cada interação com personalização, recompensas e gamificação.
+                </div>
+                
+                <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 12px;">Gaps e Oportunidades (Spoint vs App Centauro)</h3>
+                <div class="impact-grid" style="margin-bottom: 24px;">
+                    <div class="impact-card">
+                        <div class="impact-label">DAU/MAU</div>
+                        <div class="impact-val impact-highlight" style="color: #16a34a;">+4 p.p.</div>
+                        <div class="impact-sub">Spoint: 17% | App Centauro: 13%</div>
+                    </div>
+                    <div class="impact-card">
+                        <div class="impact-label">Frequência</div>
+                        <div class="impact-val impact-highlight" style="color: #16a34a;">+65%</div>
+                        <div class="impact-sub">Spoint: 2,2x | App Centauro: 1,3x</div>
+                    </div>
+                    <div class="impact-card">
+                        <div class="impact-label">Ticket Médio (TKM)</div>
+                        <div class="impact-val impact-highlight" style="color: #16a34a;">+R$ 16</div>
+                        <div class="impact-sub">Spoint: R$ 300 | App Centauro: R$ 284</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section" style="margin-top: 24px; border-color: #e2e8f0;">
+            <div class="impact-header" style="background-color: #334155;"><h2 style="color: white;">Esteira 1: "As Is" - Levar o Spoint para a jornada do App Centauro</h2></div>
+            <div style="padding: 24px;">
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 20px;">
+                    <strong>Objetivo:</strong> Garantir que o programa existe e que a jornada de acúmulo e resgate do Spoint passe a fazer parte da jornada de compra e conexão com a marca no App Centauro.
+                </p>
+
+                <h3 style="font-size: 1rem; color: #0f172a; margin-bottom: 12px;">Impacto Projetado (Jul/26 até Dez/26)</h3>
+                <table class="matriz-table" style="margin-bottom: 24px;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #475569; color: white;">Mês</th>
+                            <th style="background-color: #475569; color: white;">Evento Chave</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Membros (Acumulado)</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Pedidos Incrementais</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Receita Incremental</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Setembro</td><td>Go-Live</td><td style="text-align: right;">545.000</td><td style="text-align: right;">+33.100</td><td style="text-align: right;">~R$ 10,0M</td></tr>
+                        <tr><td>Outubro</td><td>Estabilização</td><td style="text-align: right;">710.000</td><td style="text-align: right;">+43.600</td><td style="text-align: right;">~R$ 13,2M</td></tr>
+                        <tr><td>Novembro</td><td>Black Friday</td><td style="text-align: right;">950.000</td><td style="text-align: right;">+72.000</td><td style="text-align: right;">~R$ 22,1M</td></tr>
+                        <tr><td>Dezembro</td><td>Natal</td><td style="text-align: right;">1.150.000</td><td style="text-align: right;">+88.500</td><td style="text-align: right;">~R$ 27,2M</td></tr>
+                        <tr style="font-weight: bold; background-color: #f1f5f9;"><td>TOTAL</td><td>---</td><td style="text-align: right;">1.150.000</td><td style="text-align: right;">+237.200</td><td style="text-align: right;">~R$ 72,5M</td></tr>
+                    </tbody>
+                </table>
+
+                <h3 style="font-size: 1rem; color: #0f172a; margin-bottom: 12px;">Experiência no App (Telas)</h3>
+                <div style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px;">
+                    <!-- Placeholder Imagens Esteira 1 -->
+                    <div style="min-width: 220px; height: 400px; background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; text-align: center; padding: 16px;">
+                        [Imagem da Tela 1:<br>Adesão/Landing Page]
+                    </div>
+                    <div style="min-width: 220px; height: 400px; background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; text-align: center; padding: 16px;">
+                        [Imagem da Tela 2:<br>Meu Carrinho / Acúmulo]
+                    </div>
+                    <div style="min-width: 220px; height: 400px; background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; text-align: center; padding: 16px;">
+                        [Imagem da Tela 3:<br>Adicionar Cupom / Resgate]
+                    </div>
+                    <div style="min-width: 220px; height: 400px; background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; text-align: center; padding: 16px;">
+                        [Imagem da Tela 4:<br>Extrato de Pontos]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section" style="margin-top: 24px; border-color: #e2e8f0;">
+            <div class="impact-header" style="background-color: #334155;"><h2 style="color: white;">Esteira 2: Alavancas de Ativação (Social e Financeira) - Experimentação</h2></div>
+            <div style="padding: 24px;">
+                <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 12px;">Hipóteses e Apostas</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                    <ul style="color: #334155; line-height: 1.6; margin: 0; padding-left: 20px;">
+                        <li><strong>MGM:</strong> Indicação qualificada.</li>
+                        <li><strong>Missões:</strong> Desafios práticos de treino ou compra que bonificam o usuário.</li>
+                        <li><strong>Badges:</strong> Selos de conquista no perfil (nível e nicho esportivo).</li>
+                        <li><strong>Rankings:</strong> Placares de competição baseados em pontos/atividades.</li>
+                    </ul>
+                    <ul style="color: #334155; line-height: 1.6; margin: 0; padding-left: 20px;">
+                        <li><strong>Grupos:</strong> Comunidades focadas em nichos para engajamento e interação social.</li>
+                        <li><strong>Jogos e Eventos:</strong> Experiências exclusivas híbridas (X3M, ingressos, etc).</li>
+                        <li><strong>Coleta de Dados:</strong> Mapeamento de preferências esportivas do cliente.</li>
+                    </ul>
+                </div>
+
+                <h3 style="font-size: 1rem; color: #0f172a; margin-bottom: 12px;">Experiência de Gamificação (Telas)</h3>
+                <div style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px;">
+                    <!-- Placeholder Imagens Esteira 2 -->
+                    <div style="min-width: 220px; height: 400px; background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; text-align: center; padding: 16px;">
+                        [Imagem da Tela:<br>Missões e Desafios]
+                    </div>
+                    <div style="min-width: 220px; height: 400px; background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; text-align: center; padding: 16px;">
+                        [Imagem da Tela:<br>Avaliação de Produto]
+                    </div>
+                    <div style="min-width: 220px; height: 400px; background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; text-align: center; padding: 16px;">
+                        [Imagem da Tela:<br>Upload de Foto/Comunidade]
+                    </div>
+                    <div style="min-width: 220px; height: 400px; background-color: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; text-align: center; padding: 16px;">
+                        [Imagem da Tela:<br>Conquista de Moedas/Badges]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section" style="margin-top: 24px; border-color: #e2e8f0;">
+            <div class="impact-header" style="background-color: #334155;"><h2 style="color: white;">Esteira 3: Aquisição de novos usuários qualificados para Centauro</h2></div>
+            <div style="padding: 24px;">
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 20px;">
+                    <strong>Objetivo:</strong> Transformar o Spoint em um canal de aquisição mais barato do que mídia paga e com potencial muito maior de trazer clientes mais qualificados e engajados com a marca.
+                </p>
+
+                <h3 style="font-size: 1rem; color: #0f172a; margin-bottom: 12px;">Impacto Projetado (Jul/26 até Dez/26)</h3>
+                <table class="matriz-table" style="margin-bottom: 24px;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #475569; color: white;">Parceria</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Novos clientes</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Compradores (10%)</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Receita incremental</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Social Commerce</td><td style="text-align: right;">180.000</td><td style="text-align: right;">18.000</td><td style="text-align: right;">R$ 5.400.000</td></tr>
+                        <tr><td>MFIT Personal</td><td style="text-align: right;">600.000</td><td style="text-align: right;">60.000</td><td style="text-align: right;">R$ 18.000.000</td></tr>
+                        <tr><td>Assessorias de corrida e outros parceiros de prática e academias</td><td style="text-align: right;">1.000.000</td><td style="text-align: right;">100.000</td><td style="text-align: right;">R$ 30.000.000</td></tr>
+                    </tbody>
+                </table>
+
+                <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 12px;">Alavancas de Aquisição</h3>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px;">
+                    <ul style="color: #334155; line-height: 1.6; margin: 0; padding-left: 20px;">
+                        <li><strong>Social Commerce:</strong> Ações de MGM e eventos virtuais/físicos (Desafios, treinos e seeding), atraindo novos clientes.</li>
+                        <li><strong>MFIT Personal:</strong> Canal direto com os profissionais da MFIT, promovendo o programa Spoint para os alunos.</li>
+                        <li><strong>Assessorias de corrida e outros parceiros de prática e academias:</strong> Conectar grandes assessorias e centros de treinamento do Brasil, oferecendo o Spoint.</li>
+                        <li><strong>Rankings:</strong> Placares de competição baseados em atividades.</li>
+                        <li><strong>Novos parceiros de prática:</strong> Conexão com aplicativos e ecossistemas de saúde e bem-estar.</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
