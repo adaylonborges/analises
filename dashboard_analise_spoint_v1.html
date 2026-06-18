@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analítico: Impacto Spoint Centauro</title>
+    <meta name="description" content="Análise de impacto do programa Spoint no comportamento de recompra e rentabilidade da base de clientes Centauro.">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary-color: #0f172a;
+            --accent-color: #e11d48; /* Centauro Red */
+            
+            /* Chart Colors */
+            --color-inf: #eab308; /* Spoint Yellow */
+            --color-sinf: #94a3b8; /* Gray */
+            --color-cnt: #e11d48; /* Centauro Red */
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 2rem; 
+            min-height: 100vh; 
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* Header */
+        .header-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 30px; 
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .header-container h1 { font-size: 2rem; margin: 0 0 0.5rem 0; color: var(--primary-color); }
+        .header-container p { margin: 0; color: #64748b; font-size: 1.1rem; }
+        
+        .insight-box {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--color-spoint);
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .insight-box strong { color: #0f172a; }
+        .origin-tags {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; margin-bottom: 16px;
+        }
+        .tag {
+            background-color: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0;
+        }
+
+        /* Big Numbers */
+        .bignumbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .bignumber-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 4px solid var(--primary-color);
+        }
+        .bignumber-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .bignumber-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .bignumber-subgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); }
+        .subgrid-item { display: flex; flex-direction: column; }
+        .subgrid-label { font-size: 0.75rem; color: #94a3b8; }
+        .subgrid-val { font-size: 0.85rem; font-weight: 600; color: #64748b; }
+
+        .impact-section { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .impact-header h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--text-color); }
+        .impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .impact-card { background: #f8fafc; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; border-left: 4px solid var(--color-inf); }
+        .impact-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; }
+        .impact-val { font-size: 24px; font-weight: 800; color: #1e293b; }
+        .impact-sub { font-size: 12px; color: #64748b; margin-top: 4px; }
+        .impact-highlight { color: #15803d; }
+
+        /* Dashboard Grid */
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 30px;
+        }
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            padding: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+        }
+        .card h2 { 
+            font-size: 1.15rem; 
+            margin-top: 0; 
+            margin-bottom: 1.5rem; 
+            color: #334155; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 0.75rem; 
+            text-align: center; 
+        }
+        .chart-container { position: relative; height: 380px; width: 100%; }
+        .matriz-container { overflow-x: auto; }
+        .matriz-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .matriz-table th { background: #F8FAFC; padding: 12px; border: 1px solid var(--border-color); color: #64748b; }
+        .matriz-table td { padding: 10px; border: 1px solid var(--border-color); text-align: center; }
+        .numeric { font-family: monospace; font-weight: 600; }
+        .tier-cell { text-align: left; background: #FFF; }
+        .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .dot-spoint { background-color: var(--color-inf); }
+        .dot-no-spoint { background-color: var(--color-sinf); }
+        .dot-centauro { background-color: var(--color-cnt); }
+        .bg-gray-50 { background-color: #F9FAFB; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header-container">
+            <div>
+                <h1 id="impacto">Impacto do programa Spoint no digital Centauro</h1>
+                <p>Análise de Recompra e Rentabilidade (Consolidada por Nível de Atribuição de jan/25 até mai/26)</p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 24px; padding: 16px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; gap: 24px;">
+            <a href="#impacto" style="color: #0369a1; text-decoration: none; font-weight: 600; font-size: 14px;">1. Impacto do programa Spoint no digital Centauro</a>
+            <a href="#visao-2026" style="color: #16a34a; text-decoration: none; font-weight: 600; font-size: 14px;">2. Visão 2026: O programa de fidelidade Centauro através do Spoint</a>
+        </div>
+
+        <div class="insight-box">
+            <strong>Highlight:</strong> O Spoint possui quase 1 milhão de cadastros (~8.0% da base digital Centauro). O App MFIT é o motor principal, atraindo mais da metade do MAU. Destes cadastros (919K), <strong>54.4% (496K) são usuários novos</strong> atraídos pelo programa e <strong>45.6% (423K) já eram clientes</strong>. Deste grupo, <strong>513.9K já se tornaram compradores ativos</strong> na Centauro (95.7K novos e 418.1K da base).
+        </div>
+
+        <div class="bignumbers-grid">
+            <div class="bignumber-card">
+                <div class="bignumber-title">Usuários Cadastrados Spoint</div>
+                <div class="bignumber-value">943.6K</div>
+                <div class="origin-tags">
+                    <span class="tag">Spoint: 422K</span>
+                    <span class="tag">MFIT: 339.7K</span>
+                    <span class="tag">SmartFit: 175.3K</span>
+                    <span class="tag">Outros: 6.5K</span>
+                </div>
+                <div class="bignumber-subgrid">
+                    <div class="subgrid-item" style="grid-column: span 2;">
+                        <span class="subgrid-label">MAU Spoint</span>
+                        <span class="subgrid-val">138.9K</span>
+                        <div class="origin-tags" style="margin-bottom: 0;">
+                            <span class="tag">MFIT: 78.0K</span>
+                            <span class="tag">Spoint: 57.5K</span>
+                            <span class="tag">SmartFit: 3.0K</span>
+                            <span class="tag">Outros: 0.4K</span>
+                        </div>
+                    </div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px dashed var(--border-color); padding-top: 8px; margin-top: 4px;">
+                        <span class="subgrid-label" style="font-weight: 600; color: #475569;">MAU App Centauro</span>
+                        <span class="subgrid-val" style="font-size: 1.1rem; color: var(--color-cnt);">~3.0M</span>
+                        <div class="insight-text" style="font-size: 0.75rem; color: #64748b; margin-top: 4px; line-height: 1.4;">
+                            * Média mensal de usuários que acessam o App Centauro (Android + iOS).<br>
+                            * <strong>Correlação:</strong> O MAU do Spoint (138.9K) representa <strong>~4.6%</strong> da base mensal de usuários ativos no App Centauro.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bignumber-card" style="border-top-color: var(--color-cnt);">
+                <div class="bignumber-title">Receita Total Digital Centauro</div>
+                <div class="bignumber-value">R$ 2.62B <span style="font-size: 13px; font-weight: 600; color: var(--color-cnt); margin-left: 4px;">(100%)</span></div>
+                <div class="bignumber-subgrid">
+                    <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 1.77B</span></div>
+                    <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 852.0M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;"><span class="subgrid-label">Estimativa Média Mensal</span><span class="subgrid-val" style="color: var(--color-cnt);">~R$ 145.4M</span></div>
+                </div>
+            </div>
+            <div class="bignumber-card">
+                <div class="bignumber-title">Receita Com Atribuição Spoint</div>
+                <div class="bignumber-value">R$ 55.6M <span style="font-size: 13px; font-weight: 600; color: var(--color-inf); margin-left: 4px;">(2.1% Share)</span></div>
+                <div class="bignumber-subgrid">
+                    <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 37.5M</span></div>
+                    <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 18.1M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;"><span class="subgrid-label">Estimativa Média Mensal</span><span class="subgrid-val" style="color: var(--color-inf);">~R$ 3.2M</span></div>
+                </div>
+            </div>
+            <div class="bignumber-card">
+                <div class="bignumber-title">Receita Sem Atribuição Spoint</div>
+                <div class="bignumber-value">R$ 85.3M <span style="font-size: 13px; font-weight: 600; color: var(--color-sinf); margin-left: 4px;">(3.2% Share)</span></div>
+                <div class="bignumber-subgrid">
+                    <div class="subgrid-item"><span class="subgrid-label">2025</span><span class="subgrid-val">R$ 59.4M</span></div>
+                    <div class="subgrid-item"><span class="subgrid-label">2026</span><span class="subgrid-val">R$ 25.8M</span></div>
+                    <div class="subgrid-item" style="grid-column: span 2; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;"><span class="subgrid-label">Estimativa Média Mensal</span><span class="subgrid-val" style="color: var(--color-sinf);">~R$ 5.0M</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section" style="margin-bottom: 24px; border-color: #e2e8f0; background-color: #ffffff;">
+            <div class="impact-header" style="background-color: #334155;"><h2 style="color: white;">Comportamento de Base e Aquisição</h2></div>
+            <div style="padding: 24px;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 8px;">1. O Spoint atrai pessoas novas para a Centauro?</h3>
+                    <p style="color: #334155; line-height: 1.6; margin: 0;"><strong>Sim, mais da metade dos cadastros.</strong> O Spoint atua como um forte canal de aquisição de clientes.<br><em style="font-size: 12px; color: #64748b;">(Cálculo: Usuários que criaram a conta Spoint antes da primeira compra na Centauro).</em><br>
+                    • <strong>54.4% (496K)</strong> são novos clientes que compraram a primeira vez com influência do Spoint. Destes, 95.7K já realizaram a primeira compra na Centauro.<br>
+                    • <strong>45.6% (423K)</strong> já eram clientes da base histórica e usam o Spoint para fidelização. Destes, 418.1K continuam comprando ativamente.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 8px;">2. Como comprovamos a "Nova Receita" (Lift)? O cliente não compraria de qualquer forma?</h3>
+                    <p style="color: #334155; line-height: 1.6; margin: 0;"><strong>Compraria, mas gastaria muito menos.</strong> Para comprovar o Lift matematicamente, isolamos o efeito do programa comparando dois grupos:<br>
+                    <em style="font-size: 12px; color: #64748b;">(Metodologia: Grupo de Controle = Base Orgânica Centauro sem Spoint | Grupo Tratamento = Base com Spoint).</em><br>
+                    • <strong>Passo 1 (Cenário Base):</strong> Se aplicarmos a frequência e o ticket médio do <em>Grupo de Controle</em> sobre o volume de clientes Spoint, eles teriam gasto <strong>R$ 46.3M</strong> naturalmente no período.<br>
+                    • <strong>Passo 2 (Cenário Real):</strong> Como participam do programa de fidelidade (<em>Tratamento</em>), eles retêm muito mais (+29.8 p.p.) e gastaram de fato <strong>R$ 55.6M</strong>.<br>
+                    • <strong>Passo 3 (Prova do Lift):</strong> A diferença exata entre a projeção orgânica e o que ocorreu na realidade é de <strong>R$ 9.3M</strong>. Esse valor é receita puramente incremental, que a marca perderia para a concorrência se não houvesse a fidelização do Spoint.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section">
+            <div class="impact-header"><h2>Contribuição do Spoint na Taxa de Recompra no Digital Centauro</h2></div>
+            <div class="insight-box" style="margin-top: 16px;">
+                <strong>Highlight:</strong> Clientes com Spoint recompram muito mais (+25.6 p.p.). Essa forte retenção eleva a taxa de recompra geral de toda a Centauro.
+            </div>
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-label">Aumento na Recompra da Companhia (M-3)</div>
+                    <div class="impact-val impact-highlight">+1.73 p.p.</div>
+                    <div class="impact-sub" style="line-height: 1.4;">A recompra no Spoint é <strong>21.6 p.p. maior</strong>. Pelo volume de clientes engajados, isso eleva a taxa total da Centauro em <strong>+1.73 p.p.</strong></div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-label">Aumento na Recompra da Companhia (M-6)</div>
+                    <div class="impact-val impact-highlight">+2.38 p.p.</div>
+                    <div class="impact-sub" style="line-height: 1.4;">A recompra no Spoint é <strong>29.8 p.p. maior</strong>. Pelo volume de clientes engajados, isso eleva a taxa total da Centauro em <strong>+2.38 p.p.</strong></div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-label">Receita com influência do programa</div>
+                    <div class="impact-val impact-highlight">R$ 9.3M</div>
+                    <div class="impact-sub" style="line-height: 1.4;">
+                        <strong>Matemática da prova:</strong> Receita Real do Grupo (R$ 55.6M) <strong>menos</strong> Projeção de Gastos se tivessem o mesmo comportamento da Base Orgânica (R$ 46.3M) = <strong>R$ 9.3M de ganho financeiro direto gerado pela alta retenção do programa.</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section" style="border-color: #cbd5e1; background-color: #f8fafc; margin-top: 24px;">
+            <div class="impact-header" style="background-color: #475569;"><h2 style="color: white;">Cenário Hipotético: Conversão de 1 Milhão de Usuários do App Centauro</h2></div>
+            <div style="display: flex; gap: 20px; align-items: center; padding: 20px;">
+                <div>
+                    <div class="impact-val" style="color: #0f172a; font-size: 2rem;">~R$ 23.5M</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #475569; text-transform: uppercase;">Receita Mensal Transacionada</div>
+                </div>
+                <div style="width: 1px; background-color: #cbd5e1; align-self: stretch;"></div>
+                <div>
+                    <div class="impact-val" style="color: #0f172a; font-size: 2rem;">+ R$ 3.9M</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #475569; text-transform: uppercase;">Nova Receita (Lift) Mensal</div>
+                </div>
+                <div style="width: 1px; background-color: #cbd5e1; align-self: stretch;"></div>
+                <div class="impact-sub" style="margin-top: 0; line-height: 1.5; color: #334155; flex: 1;">
+                    Hoje, apenas ~4.6% dos usuários do App Centauro (3.0M MAU) engajam no Spoint. Se trouxermos 1 milhão desses usuários para o programa, fidelizaremos grande parte do tráfego.<br><br><strong>Matemática:</strong> Multiplicando a receita atual mensal pelo ganho de escala (1.000.000 / 138.900 = <strong>7.2x</strong>), projetamos <strong>~R$ 23.5 Milhões em vendas/mês</strong>. Excluindo o que esse grupo já gastaria organicamente, sobra um Lift (Dinheiro Novo) de <strong>R$ 3.9 Milhões retidos por mês</strong>.
+                </div>
+            </div>
+        </div>
+
+
+        <div class="insight-box" style="margin-top: 24px;">
+            <strong>Highlight:</strong> O comportamento de compra dos usuários com atribuição Spoint apresenta uma dinâmica clara: embora possuam um ticket médio por pedido menor, a altíssima frequência e taxa de recompra compensam com folga essa diferença, resultando em maior lucro bruto e spending total em praticamente todas as visões (Tiers).
+        </div>
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Lucro Bruto por Tier (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> Clientes com Spoint geram lucro bruto superior em todos os recortes, provando que o engajamento no programa é altamente rentável.</div>
+                <div class="chart-container"><canvas id="chartLucro"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Frequência Média de Compra</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A grande alavanca do programa. A frequência de compra chega a ser quase o dobro em relação à base não fidelizada.</div>
+                <div class="chart-container"><canvas id="chartFreq"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Spending Médio Anual (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> Impulsionados pela alta frequência, clientes Spoint terminam o ano gastando muito mais, especialmente no Top 10% (R$ 2.014).</div>
+                <div class="chart-container"><canvas id="chartSpending"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Ticket Médio (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> O ticket por pedido é menor para clientes Spoint, o que indica que eles diluem suas compras em mais visitas ao longo do ano.</div>
+                <div class="chart-container"><canvas id="chartTicket"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Itens por Pedido</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> O número de itens por carrinho também é ligeiramente inferior, corroborando o comportamento de compras menores e mais frequentes.</div>
+                <div class="chart-container"><canvas id="chartItens"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Margem Bruta Média (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A margem bruta é alguns pontos percentuais menor devido aos resgates e incentivos, mas o volume total de lucro compensa o investimento.</div>
+                <div class="chart-container"><canvas id="chartMargem"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Taxa de Recompra M-3 (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A retenção de curtíssimo prazo é significativamente alta: no Top 10%, 76.6% dos clientes Spoint voltam a comprar em até 3 meses.</div>
+                <div class="chart-container"><canvas id="chartRec3"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Taxa de Recompra M-6 (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> No semestre a fidelização se consolida, com a taxa de recompra do Spoint superando a base orgânica em até 25 pontos percentuais.</div>
+                <div class="chart-container"><canvas id="chartRec6"></canvas></div>
+            </div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1;">
+            <div class="matriz-header-wrapper"><h2 class="section-title" style="border:none; text-align:left; margin-bottom: 0;">Matriz de Comportamento por Tier (Percentil de Lucro Bruto)</h2></div>
+            <div class="insight-box" style="margin-top: 16px; margin-bottom: 16px; border-left-color: var(--color-cnto);">
+                <strong>Highlight:</strong> Clientes do Spoint no tier "Top 10%" são os mais valiosos: gastam em média R$ 2.014 e compram mais de 5 vezes ao ano.
+            </div>
+            <div style="font-size: 13px; color: #475569; margin-bottom: 20px; background-color: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid #e2e8f0; line-height: 1.6;">
+                <div style="font-weight: 600; color: #0f172a; margin-bottom: 8px;">Legenda dos Grupos:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div><span class="dot dot-spoint"></span><strong>Atribuição Spoint:</strong> Vendas realizadas com influência do Spoint</div>
+                    <div><span class="dot dot-no-spoint"></span><strong>Sem atribuição Spoint:</strong> Vendas realizadas por usuários do Spoint, mas sem influência do Spoint</div>
+                    <div><span class="dot dot-centauro"></span><strong>Centauro:</strong> Base geral de Centauro</div>
+                </div>
+            </div>
+            <div class="matriz-container">
+                <table class="matriz-table">
+                    <thead>
+                        <tr>
+                            <th>Tier de Lucro</th>
+                            <th>Grupo</th>
+                            <th>Lucro Bruto</th>
+                            <th>Frequência</th>
+                            <th>Spending</th>
+                            <th>Ticket</th>
+                            <th>Itens</th>
+                            <th>Margem</th>
+                            <th>Rec M-3</th>
+                            <th>Rec M-6</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matriz-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ROADMAP SPOINT 2026 -->
+        <div class="impact-section" style="margin-top: 40px; border-color: #22c55e;">
+            <div class="impact-header" style="background-color: #16a34a;"><h2 id="visao-2026" style="color: white;">Visão 2026: O programa de fidelidade Centauro através do Spoint</h2></div>
+            <div style="padding: 24px;">
+                <div class="insight-box" style="margin-bottom: 20px; border-left-color: #16a34a; background-color: #f0fdf4;">
+                    <p style="color: #0f172a; line-height: 1.6; margin: 0;">
+                        O plano para o Programa de Fidelidade Centauro (Q3/Q4) é desenhado para gerar impactos nos indicadores a nível de cliente. Deixamos de lado a visão de um programa de fidelidade isolado como é o App Spoint para implementar um motor de crescimento que força a recompra, eleva a frequência e protege a margem.
+                    </p>
+                </div>
+                
+                <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 12px;">Gaps e Oportunidades (Spoint vs App Centauro)</h3>
+                <div class="impact-grid" style="margin-bottom: 24px;">
+                    <div class="impact-card">
+                        <div class="impact-label">DAU/MAU</div>
+                        <div class="impact-val impact-highlight" style="color: #16a34a;">+4 p.p.</div>
+                        <div class="impact-sub">Spoint: 17% | App Centauro: 13%</div>
+                    </div>
+                    <div class="impact-card">
+                        <div class="impact-label">Frequência</div>
+                        <div class="impact-val impact-highlight" style="color: #16a34a;">+65%</div>
+                        <div class="impact-sub">Spoint: 2,2x | App Centauro: 1,3x</div>
+                    </div>
+                    <div class="impact-card">
+                        <div class="impact-label">Ticket Médio (TKM)</div>
+                        <div class="impact-val impact-highlight" style="color: #16a34a;">+R$ 16</div>
+                        <div class="impact-sub">Spoint: R$ 300 | App Centauro: R$ 284</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section" style="margin-top: 24px; border-color: #e2e8f0;">
+            <div class="impact-header" style="background-color: #334155;"><h2 style="color: white;">Pilar 1: "As Is" - Integração para Recompra Forçada (Esteira 1 / Q3)</h2></div>
+            <div style="padding: 24px;">
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 12px;">
+                    O lançamento do programa em Agosto/Setembro no App Centauro não é apenas uma integração de tech; é a criação de uma mecânica incorporada na jornada de compra para garantir a recompra. O objetivo é estabelecer a base para um ciclo de consumo recorrente.
+                </p>
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 12px;">
+                    <strong>Mecânica Tangível:</strong> Ao gerar pontos com prazo de validade a cada compra ou treino, o programa cria o efeito "pontos/dinheiro na mão". Para não perder o benefício que conquistou, o cliente é forçado a realizar uma nova compra, encurtando o ciclo de retorno e aumentando a frequência.
+                </p>
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 24px;">
+                    <strong>O que é sucesso (Projeção até Dez/26):</strong> Esta primeira fase, por si só, tem a meta de gerar ~R$ 72,5 milhões em receita com influência do programa, registrando mais de 237 mil pedidos à base e capturando cerca de 1 milhão de membros para o programa.
+                </p>
+
+                <h3 style="font-size: 1rem; color: #0f172a; margin-bottom: 12px;">Impacto Projetado (Jul/26 até Dez/26)</h3>
+                <table class="matriz-table" style="margin-bottom: 24px;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #475569; color: white;">Mês</th>
+                            <th style="background-color: #475569; color: white;">Evento Chave</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Membros (Acumulado)</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Pedidos com influência do programa</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Receita com influência do programa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Setembro</td><td>Go-Live</td><td style="text-align: right;">545.000</td><td style="text-align: right;">+33.100</td><td style="text-align: right;">~R$ 10,0M</td></tr>
+                        <tr><td>Outubro</td><td>Estabilização</td><td style="text-align: right;">710.000</td><td style="text-align: right;">+43.600</td><td style="text-align: right;">~R$ 13,2M</td></tr>
+                        <tr><td>Novembro</td><td>Black Friday</td><td style="text-align: right;">950.000</td><td style="text-align: right;">+72.000</td><td style="text-align: right;">~R$ 22,1M</td></tr>
+                        <tr><td>Dezembro</td><td>Natal</td><td style="text-align: right;">1.150.000</td><td style="text-align: right;">+88.500</td><td style="text-align: right;">~R$ 27,2M</td></tr>
+                        <tr style="font-weight: bold; background-color: #f1f5f9;"><td>TOTAL</td><td>---</td><td style="text-align: right;">1.150.000</td><td style="text-align: right;">+237.200</td><td style="text-align: right;">~R$ 72,5M</td></tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+        <div class="impact-section" style="margin-top: 24px; border-color: #e2e8f0;">
+            <div class="impact-header" style="background-color: #334155;"><h2 style="color: white;">Pilar 2: Gamificação para Aumento de Spending e Recompra (Esteira 2 / Q3 e Q4)</h2></div>
+            <div style="padding: 24px;">
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 12px;">
+                    Com a base estabelecida, ativamos as alavancas de gamificação para manipular o comportamento de compra e elevar o ticket médio e diminuir o tempo de retorno do cliente. O foco é trocar descontos que destroem a margem por recompensas e experiências de status e pertencimento que protegem a rentabilidade.
+                </p>
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 12px;">
+                    <strong>Mecânica Tangível:</strong> Lançamos "Missões" e Grupos que condicionam o ganho de pontos à compra de itens combinados (cross-sell) ou com mecânicas que são influenciadas por grupos ou influenciadores. Em paralelo, atrelamos "Badges" exclusivas a produtos com margem cheia, fazendo o cliente comprar pelo prestígio no ranking da comunidade, e não pelo preço.
+                </p>
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 24px;">
+                    <strong>Dados de Sucesso (Projeção até Dez/26):</strong> As alavancas de ativação são projetadas para aumentar o Ticket Médio (TKM) em +R$16, elevar a frequência de compra anual para 2,2x e aumentar o engajamento diário do app (DAU/MAU) para 17%.
+                </p>
+                <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 12px;">Hipóteses e Apostas</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                    <ul style="color: #334155; line-height: 1.6; margin: 0; padding-left: 20px;">
+                        <li><strong>MGM:</strong> Indicação qualificada.</li>
+                        <li><strong>Missões:</strong> Desafios práticos de treino ou compra que bonificam o usuário.</li>
+                        <li><strong>Badges:</strong> Selos de conquista no perfil (nível e nicho esportivo).</li>
+                        <li><strong>Rankings:</strong> Placares de competição baseados em pontos/atividades.</li>
+                    </ul>
+                    <ul style="color: #334155; line-height: 1.6; margin: 0; padding-left: 20px;">
+                        <li><strong>Grupos:</strong> Comunidades focadas em nichos para engajamento e interação social.</li>
+                        <li><strong>Jogos e Eventos:</strong> Experiências exclusivas híbridas (X3M, ingressos, etc).</li>
+                        <li><strong>Coleta de Dados:</strong> Mapeamento de preferências esportivas do cliente.</li>
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="impact-section" style="margin-top: 24px; border-color: #e2e8f0;">
+            <div class="impact-header" style="background-color: #334155;"><h2 style="color: white;">Pilar 3: Aquisição Qualificada com Custo Zero (Esteira 3 / Q3 e Q4)</h2></div>
+            <div style="padding: 24px;">
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 12px;">
+                    Este pilar transforma o Spoint em um canal de aquisição B2B2C, trazendo novos clientes a um custo drasticamente menor que o da mídia paga e com um potencial de conversão muito superior.
+                </p>
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 12px;">
+                    <strong>Mecânica Tangível:</strong> Através de parcerias com MFIT Personal, Assessorias de Corrida e Social Commerce e outros parceiros de prática esportiva, acessamos milhões de usuários já engajados em seus nichos esportivos. A Centauro oferece benefícios exclusivos (pontos, descontos) para esses novos membros, forçando uma primeira compra rápida e garantindo a aquisição de um cliente de altíssima qualidade e recorrência.
+                </p>
+                <p style="color: #334155; line-height: 1.6; margin-bottom: 24px;">
+                    <strong>Dados de Sucesso (Projeção):</strong> O potencial de aquisição via parceiros é massivo, com a capacidade de trazer milhões de novos usuários qualificados, como 1 milhão de clientes via Assessorias de Corrida e 600 mil via MFIT Personal, com uma taxa de conversão em compra estimada em 10%.
+                </p>
+
+                <h3 style="font-size: 1rem; color: #0f172a; margin-bottom: 12px;">Impacto Projetado (Jul/26 até Dez/26)</h3>
+                <table class="matriz-table" style="margin-bottom: 24px;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #475569; color: white;">Parceria</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Novos clientes</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Compradores (10%)</th>
+                            <th style="background-color: #475569; color: white; text-align: right;">Receita com influência do programa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Social Commerce</td><td style="text-align: right;">180.000</td><td style="text-align: right;">18.000</td><td style="text-align: right;">R$ 5.400.000</td></tr>
+                        <tr><td>MFIT Personal</td><td style="text-align: right;">600.000</td><td style="text-align: right;">60.000</td><td style="text-align: right;">R$ 18.000.000</td></tr>
+                        <tr><td>Assessorias de corrida e outros parceiros de prática e academias</td><td style="text-align: right;">1.000.000</td><td style="text-align: right;">100.000</td><td style="text-align: right;">R$ 30.000.000</td></tr>
+                    </tbody>
+                </table>
+
+                <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 12px;">Alavancas de Aquisição</h3>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px;">
+                    <ul style="color: #334155; line-height: 1.6; margin: 0; padding-left: 20px;">
+                        <li><strong>Social Commerce:</strong> Ações de MGM e eventos virtuais/físicos (Desafios, treinos e seeding), atraindo novos clientes.</li>
+                        <li><strong>MFIT Personal:</strong> Canal direto com os profissionais da MFIT, promovendo o programa Spoint para os alunos.</li>
+                        <li><strong>Assessorias de corrida e outros parceiros de prática e academias:</strong> Conectar grandes assessorias e centros de treinamento do Brasil, oferecendo o Spoint.</li>
+                        <li><strong>Rankings:</strong> Placares de competição baseados em atividades.</li>
+                        <li><strong>Novos parceiros de prática:</strong> Conexão com aplicativos e ecossistemas de saúde e bem-estar.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-section" style="margin-top: 24px; border-color: #16a34a; background-color: #f0fdf4;">
+            <div style="padding: 24px;">
+                <p style="color: #0f172a; line-height: 1.6; margin: 0;">
+                    <strong>Em resumo:</strong> O plano para Q3 e Q4 executa uma estratégia financeira em três esteiras. Primeiro, cria um motor de recompra forçada (~R$ 72,5M). Em seguida, eleva o gasto por cliente (+R$16 por ticket). Por fim, adquire novos clientes de alta qualidade a um custo mais baixo. O Spoint deixa de ser um programa de engajamento e se torna uma máquina de crescimento através do Programa de Fidelidade Centauro com objetivos e impactos bem claros.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados Estruturados Reais Consolidados (2025-2026) (via BigQuery)
+        // Estrutura: [ { tier, inf, sinf, cnt } ]
+        const rawData = [
+            {
+                tier: 'Top 10%',
+                inf: { lucro: 501.7, freq: 5.29, spending: 2014.1, tkt: 380.5, itens: 1.71, margem: 42.1, rec3: 76.6, rec6: 83.6 },
+                sinf: { lucro: 406.8, freq: 2.93, spending: 1424.7, tkt: 486.0, itens: 1.76, margem: 46.0, rec3: 51.5, rec6: 60.2 },
+                cnt: { lucro: 422.4, freq: 3.57, spending: 1512.6, tkt: 423.5, itens: 1.79, margem: 45.4, rec3: 59.4, rec6: 66.6 }
+            },
+            {
+                tier: 'Top 25%',
+                inf: { lucro: 182.1, freq: 2.91, spending: 802.8, tkt: 276.0, itens: 1.46, margem: 39.2, rec3: 53.9, rec6: 62.8 },
+                sinf: { lucro: 177.9, freq: 1.96, spending: 674.8, tkt: 343.6, itens: 1.51, margem: 42.2, rec3: 32.9, rec6: 41.2 },
+                cnt: { lucro: 176.6, freq: 2.08, spending: 671.0, tkt: 322.0, itens: 1.48, margem: 42.3, rec3: 37.0, rec6: 45.1 }
+            },
+            {
+                tier: 'Top 50%',
+                inf: { lucro: 103.4, freq: 2.32, spending: 516.2, tkt: 222.3, itens: 1.38, margem: 37.1, rec3: 41.8, rec6: 51.1 },
+                sinf: { lucro: 100.8, freq: 1.53, spending: 427.3, tkt: 280.2, itens: 1.41, margem: 39.0, rec3: 19.3, rec6: 25.8 },
+                cnt: { lucro: 100.9, freq: 1.52, spending: 415.9, tkt: 272.8, itens: 1.34, margem: 39.3, rec3: 20.2, rec6: 25.5 }
+            },
+            {
+                tier: 'Top 75%',
+                inf: { lucro: 56.5, freq: 1.94, spending: 334.8, tkt: 172.7, itens: 1.34, margem: 33.9, rec3: 31.3, rec6: 40.6 },
+                sinf: { lucro: 56.5, freq: 1.34, spending: 280.0, tkt: 208.8, itens: 1.35, margem: 34.6, rec3: 13.8, rec6: 18.2 },
+                cnt: { lucro: 56.7, freq: 1.34, spending: 278.3, tkt: 208.0, itens: 1.29, margem: 34.4, rec3: 14.1, rec6: 18.1 }
+            },
+            {
+                tier: 'Top 90%',
+                inf: { lucro: 27.4, freq: 1.63, spending: 216.6, tkt: 132.6, itens: 1.30, margem: 31.6, rec3: 22.6, rec6: 30.4 },
+                sinf: { lucro: 27.5, freq: 1.25, spending: 171.9, tkt: 137.4, itens: 1.30, margem: 30.7, rec3: 10.7, rec6: 14.6 },
+                cnt: { lucro: 27.8, freq: 1.24, spending: 173.9, tkt: 140.7, itens: 1.25, margem: 29.6, rec3: 10.5, rec6: 13.7 }
+            },
+            {
+                tier: 'Bottom 10%',
+                inf: { lucro: 9.3, freq: 1.34, spending: 143.3, tkt: 106.7, itens: 1.23, margem: 20.9, rec3: 12.9, rec6: 17.7 },
+                sinf: { lucro: 9.8, freq: 1.13, spending: 103.9, tkt: 91.8, itens: 1.20, margem: 21.3, rec3: 5.9, rec6: 7.7 },
+                cnt: { lucro: 9.4, freq: 1.15, spending: 111.6, tkt: 97.1, itens: 1.20, margem: 18.4, rec3: 6.6, rec6: 8.6 }
+            }
+        ];
+
+        const matrizBody = document.getElementById('matriz-body');
+        
+        function rPct(inf, sinf) {
+            const d = ((inf/sinf)-1)*100;
+            const c = d >= 0 ? '#10b981' : '#ef4444';
+            return `<span style="font-size:11px; color:${c}; margin-left:4px; font-weight: 500;">(${d>0?'+':''}${d.toFixed(1)}%)</span>`;
+        }
+        function rPP(inf, sinf) {
+            const d = inf - sinf;
+            const c = d >= 0 ? '#10b981' : '#ef4444';
+            return `<span style="font-size:11px; color:${c}; margin-left:4px; font-weight: 500;">(${d>0?'+':''}${d.toFixed(1)}p.p)</span>`;
+        }
+
+        rawData.forEach((row, idx) => {
+            const trInf = document.createElement('tr');
+            trInf.style.backgroundColor = 'rgba(234, 179, 8, 0.05)'; // Tint Yellow
+            trInf.innerHTML = `
+                <td rowspan="3" class="tier-cell"><strong>${row.tier}</strong></td>
+                <td><span class="dot dot-spoint"></span>Atribuição Spoint</td>
+                <td class="numeric">R$ ${row.inf.lucro.toFixed(1)}${rPct(row.inf.lucro, row.sinf.lucro)}</td>
+                <td class="numeric">${row.inf.freq.toFixed(2)}${rPct(row.inf.freq, row.sinf.freq)}</td>
+                <td class="numeric">R$ ${row.inf.spending.toFixed(1)}${rPct(row.inf.spending, row.sinf.spending)}</td>
+                <td class="numeric">R$ ${row.inf.tkt.toFixed(1)}${rPct(row.inf.tkt, row.sinf.tkt)}</td>
+                <td class="numeric">${row.inf.itens.toFixed(2)}${rPct(row.inf.itens, row.sinf.itens)}</td>
+                <td class="numeric">${row.inf.margem.toFixed(1)}%${rPP(row.inf.margem, row.sinf.margem)}</td>
+                <td class="numeric"><strong>${row.inf.rec3.toFixed(1)}%${rPP(row.inf.rec3, row.sinf.rec3)}</strong></td>
+                <td class="numeric"><strong>${row.inf.rec6.toFixed(1)}%${rPP(row.inf.rec6, row.sinf.rec6)}</strong></td>
+            `;
+
+            const trSinf = document.createElement('tr');
+            trSinf.style.backgroundColor = 'rgba(148, 163, 184, 0.05)'; // Tint Gray
+            trSinf.innerHTML = `
+                <td><span class="dot dot-no-spoint"></span>Sem atribuição Spoint</td>
+                <td class="numeric">R$ ${row.sinf.lucro.toFixed(1)}</td>
+                <td class="numeric">${row.sinf.freq.toFixed(2)}</td>
+                <td class="numeric">R$ ${row.sinf.spending.toFixed(1)}</td>
+                <td class="numeric">R$ ${row.sinf.tkt.toFixed(1)}</td>
+                <td class="numeric">${row.sinf.itens.toFixed(2)}</td>
+                <td class="numeric">${row.sinf.margem.toFixed(1)}%</td>
+                <td class="numeric">${row.sinf.rec3.toFixed(1)}%</td>
+                <td class="numeric">${row.sinf.rec6.toFixed(1)}%</td>
+            `;
+
+            const trCnt = document.createElement('tr');
+            trCnt.style.backgroundColor = 'rgba(225, 29, 72, 0.05)'; // Tint Red
+            trCnt.innerHTML = `
+                <td><span class="dot dot-centauro"></span>Centauro</td>
+                <td class="numeric">R$ ${row.cnt.lucro.toFixed(1)}</td>
+                <td class="numeric">${row.cnt.freq.toFixed(2)}</td>
+                <td class="numeric">R$ ${row.cnt.spending.toFixed(1)}</td>
+                <td class="numeric">R$ ${row.cnt.tkt.toFixed(1)}</td>
+                <td class="numeric">${row.cnt.itens.toFixed(2)}</td>
+                <td class="numeric">${row.cnt.margem.toFixed(1)}%</td>
+                <td class="numeric">${row.cnt.rec3.toFixed(1)}%</td>
+                <td class="numeric">${row.cnt.rec6.toFixed(1)}%</td>
+            `;
+
+            matrizBody.appendChild(trInf);
+            matrizBody.appendChild(trSinf);
+            matrizBody.appendChild(trCnt);
+        });
+
+        // Configuração dos Gráficos (Chart.js)
+        Chart.register(ChartDataLabels);
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#718096';
+        
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { boxWidth: 12, usePointStyle: true, padding: 20 }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#2D3748',
+                    bodyColor: '#4A5568',
+                    borderColor: '#E2E8F0',
+                    borderWidth: 1,
+                    padding: 12,
+                    boxPadding: 6
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#EDF2F7' },
+                    border: { display: false }
+                },
+                x: {
+                    grid: { display: false },
+                    border: { display: false }
+                }
+            }
+        };
+
+        const tiers = rawData.map(d => d.tier);
+        
+        // Cores padronizadas
+        const colors = {
+            inf: '#eab308',   // Yellow
+            sinf: '#94a3b8',  // Gray
+            cnt: '#e11d48'    // Red
+        };
+
+        // Função auxiliar para criar datasets de forma simplificada
+        const createDatasets = (metric) => {
+            return [
+                {
+                    label: 'Atribuição Spoint',
+                    data: rawData.map(d => d.inf[metric]),
+                    borderColor: colors.inf,
+                    backgroundColor: colors.inf,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    datalabels: { align: 'top', offset: 6 }
+                },
+                {
+                    label: 'Sem atribuição Spoint',
+                    data: rawData.map(d => d.sinf[metric]),
+                    borderColor: colors.sinf,
+                    backgroundColor: colors.sinf,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    borderDash: [5, 5],
+                    datalabels: { align: 'bottom', offset: 6 }
+                },
+                {
+                    label: 'Centauro',
+                    data: rawData.map(d => d.cnt[metric]),
+                    borderColor: colors.cnt,
+                    backgroundColor: colors.cnt,
+                    tension: 0.4,
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    datalabels: { align: 'end', offset: 6 }
+                }
+            ];
+        };
+
+        // Renderização dos Gráficos (Com Datalabels)
+        const dlMoney = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => 'R$ ' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v.toFixed(0)) };
+        const dlNum = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => Number.isInteger(v) ? v : v.toFixed(1) };
+        const dlPct = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => v.toFixed(1) + '%' };
+
+        new Chart(document.getElementById('chartLucro'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('lucro') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlMoney, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: R$ ${ctx.raw.toFixed(2)}` }}}}
+        });
+
+        new Chart(document.getElementById('chartFreq'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('freq') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlNum, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} ped/ano` }}}}
+        });
+
+        new Chart(document.getElementById('chartSpending'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('spending') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlMoney, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: R$ ${ctx.raw.toFixed(2)}` }}}}
+        });
+
+        new Chart(document.getElementById('chartTicket'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('tkt') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlMoney, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: R$ ${ctx.raw.toFixed(2)}` }}}}
+        });
+
+        new Chart(document.getElementById('chartItens'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('itens') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlNum, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} itens` }}}}
+        });
+
+        new Chart(document.getElementById('chartMargem'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('margem') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlPct, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` }}}}
+        });
+
+        new Chart(document.getElementById('chartRec3'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('rec3') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlPct, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` }}}}
+        });
+
+        new Chart(document.getElementById('chartRec6'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('rec6') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlPct, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` }}}}
+        });
+    </script>
+</body>
+</html>
