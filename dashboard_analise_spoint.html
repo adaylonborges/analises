@@ -349,6 +349,11 @@
         </div>
         <div id="kpis" class="dashboard-grid">
             <div class="card">
+                <h2 style="margin-bottom: 12px;">Lucro Bruto por Tier (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> Clientes com Spoint geram lucro bruto superior em todos os recortes, provando que o engajamento no programa é altamente rentável.</div>
+                <div class="chart-container"><canvas id="chartLucro"></canvas></div>
+            </div>
+            <div class="card">
                 <h2 style="margin-bottom: 12px;">Frequência Média de Compra</h2>
                 <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A frequência de compra é superior em relação à base não fidelizada.</div>
                 <div class="chart-container"><canvas id="chartFreq"></canvas></div>
@@ -367,6 +372,11 @@
                 <h2 style="margin-bottom: 12px;">Itens por Pedido</h2>
                 <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> O número de itens por cesta é inferior para usuários Spoint, o que pode estar relacionado com o comportamento de compras com menos itens e menor TKM, porém mais frequentes.</div>
                 <div class="chart-container"><canvas id="chartItens"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Margem Bruta Média (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A margem bruta é alguns pontos percentuais menor devido aos resgates e incentivos, mas o volume total de lucro compensa o investimento.</div>
+                <div class="chart-container"><canvas id="chartMargem"></canvas></div>
             </div>
             <div class="card">
                 <h2 style="margin-bottom: 12px;">Taxa de Recompra M-3 (%)</h2>
@@ -399,6 +409,8 @@
                         <tr>
                             <th>Tier de Receita</th>
                             <th>Grupo</th>
+                            <th>Lucro</th>
+                            <th>Margem</th>
                             <th>Frequência</th>
                             <th>Spending</th>
                             <th>Ticket</th>
@@ -870,6 +882,8 @@
             trInf.innerHTML = `
                 <td rowspan="3" class="tier-cell"><strong>${row.tier}</strong></td>
                 <td><span class="dot dot-spoint"></span>Atribuição Spoint</td>
+                <td class="numeric">R$ ${row.inf.lucro.toFixed(1)}${rPct(row.inf.lucro, row.cnt.lucro)}</td>
+                <td class="numeric">${row.inf.margem.toFixed(1)}%${rPP(row.inf.margem, row.cnt.margem)}</td>
                 <td class="numeric">${row.inf.freq.toFixed(2)}${rPct(row.inf.freq, row.cnt.freq)}</td>
                 <td class="numeric">R$ ${row.inf.spending.toFixed(1)}${rPct(row.inf.spending, row.cnt.spending)}</td>
                 <td class="numeric">R$ ${row.inf.tkt.toFixed(1)}${rPct(row.inf.tkt, row.cnt.tkt)}</td>
@@ -882,6 +896,8 @@
             trSinf.style.backgroundColor = 'rgba(148, 163, 184, 0.05)'; // Tint Gray
             trSinf.innerHTML = `
                 <td><span class="dot dot-no-spoint"></span>Sem atribuição Spoint</td>
+                <td class="numeric">R$ ${row.sinf.lucro.toFixed(1)}</td>
+                <td class="numeric">${row.sinf.margem.toFixed(1)}%</td>
                 <td class="numeric">${row.sinf.freq.toFixed(2)}</td>
                 <td class="numeric">R$ ${row.sinf.spending.toFixed(1)}</td>
                 <td class="numeric">R$ ${row.sinf.tkt.toFixed(1)}</td>
@@ -894,6 +910,8 @@
             trCnt.style.backgroundColor = 'rgba(225, 29, 72, 0.05)'; // Tint Red
             trCnt.innerHTML = `
                 <td><span class="dot dot-centauro"></span>Centauro</td>
+                <td class="numeric">R$ ${row.cnt.lucro.toFixed(1)}</td>
+                <td class="numeric">${row.cnt.margem.toFixed(1)}%</td>
                 <td class="numeric">${row.cnt.freq.toFixed(2)}</td>
                 <td class="numeric">R$ ${row.cnt.spending.toFixed(1)}</td>
                 <td class="numeric">R$ ${row.cnt.tkt.toFixed(1)}</td>
@@ -995,6 +1013,12 @@
         const dlNum = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => Number.isInteger(v) ? v : v.toFixed(1) };
         const dlPct = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => v.toFixed(1) + '%' };
 
+        new Chart(document.getElementById('chartLucro'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('lucro') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlMoney, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: R$ ${ctx.raw.toFixed(2)}` }}}}
+        });
+
         new Chart(document.getElementById('chartFreq'), {
             type: 'line',
             data: { labels: tiers, datasets: createDatasets('freq') },
@@ -1017,6 +1041,12 @@
             type: 'line',
             data: { labels: tiers, datasets: createDatasets('itens') },
             options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlNum, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} itens` }}}}
+        });
+
+        new Chart(document.getElementById('chartMargem'), {
+            type: 'line',
+            data: { labels: tiers, datasets: createDatasets('margem') },
+            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlPct, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` }}}}
         });
 
         new Chart(document.getElementById('chartRec3'), {
