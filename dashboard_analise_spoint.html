@@ -407,14 +407,14 @@
                 <table class="matriz-table">
                     <thead>
                         <tr>
-                            <th>Tier de Receita</th>
+                            <th>Tier de Rentabilidade</th>
                             <th>Grupo</th>
-                            <th>Lucro</th>
-                            <th>Margem</th>
-                            <th>Frequência</th>
+                            <th>Lucro Bruto</th>
+                            <th>Margem Bruta</th>
+                            <th>Frequência 12m</th>
                             <th>Spending</th>
-                            <th>Ticket</th>
-                            <th>Itens</th>
+                            <th>Ticket médio</th>
+                            <th>Itens por cesta</th>
                             <th>Rec M-3</th>
                             <th>Rec M-6</th>
                         </tr>
@@ -427,219 +427,238 @@
         <!-- Nova Seção: Estudo AC/DC -->
         <div id="safra-as-ds" class="card" style="margin-top: 24px;">
             <div class="card-header">
-                <h2>Estudo Comportamental por Safra - Antes e Depois do Spoint</h2>
+                <h2>Comportamento de Compra (Base Retida) - Antes e Depois do Spoint</h2>
                 <div style="font-size: 13px; color: #64748b; margin-top: 4px;">
-                    Visão do usuário: O "Marco Zero" passa a ser a <strong>Data de Cadastro no Spoint</strong>. Analisamos a linha do tempo em <em>quarters relativos</em> à vida do usuário (Q-3 a Q+3).
+                    Visão comparativa da quantidade de pedidos e valor gasto da mesma safra de clientes nas janelas de 3, 6 e 12 meses.
                 </div>
             </div>
             <div class="card-body">
                 <p style="font-size: 14px; color: #475569; margin-bottom: 20px;">
-                    Os clientes são organizados por <strong>Safra de Cadastro no Spoint</strong>. Para cada safra, identificamos quem já possuía histórico de compras (Antigos Centauro) e quem iniciou seu relacionamento na Centauro Digital após a entrada no programa de fidelidade. Na linha do tempo, a taxa de recorrência "Antes" é a média daqueles que já tinham histórico.
+                    Nesta análise, respondemos a uma pergunta: <strong>O cliente fidelizado passou a comprar mais vezes e gastar mais depois de entrar no programa?</strong> Agrupamos os usuários por Safra de cadastro no Spoint (isolando a base <strong>Centauro</strong> que realizou <strong>pelo menos uma compra nos 12 meses anteriores e uma nos 12 meses posteriores</strong> à adesão no programa) e calculamos as médias de pedidos e spending que eles fizeram Antes e Depois do Marco Zero.
                 </p>
                 
                 <div class="matriz-container">
-                    <table class="matriz-table">
+                    <div style="overflow-x: auto;">
+                    <table class="matriz-table" style="font-size: 13px; min-width: 900px; border-collapse: collapse;">
                         <thead>
                             <tr>
-                                <th style="text-align: left; width: 16%;">Métrica</th>
-                                <th style="background-color: #f1f5f9; color: #475569; border-right: 1px solid #e2e8f0;">Q-3 (Antes)</th>
-                                <th style="background-color: #f1f5f9; color: #475569; border-right: 1px solid #e2e8f0;">Q-2 (Antes)</th>
-                                <th style="background-color: #f1f5f9; color: #475569;">Q-1 (Antes)</th>
-                                <th style="background-color: #0f172a; color: white; border-left: 2px solid #334155; border-right: 2px solid #334155;">MARCO ZERO<br><span style="font-size: 10px; font-weight: 400;">(Adesão Spoint)</span></th>
-                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; border-right: 1px solid #fef08a;">Q+1 (Depois)</th>
-                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; border-right: 1px solid #fef08a;">Q+2 (Depois)</th>
-                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04;">Q+3 (Depois)</th>
+                                <th rowspan="2" style="text-align: left; width: 14%; border-bottom: 2px solid #cbd5e1; border-right: 2px solid #e2e8f0; padding-left: 20px;">Safra & Métrica</th>
+                                <th colspan="3" style="text-align: center; border-bottom: 1px solid #cbd5e1; border-right: 2px solid #e2e8f0; background-color: #f8fafc; color: #334155; padding: 12px;">Janela de 3 Meses</th>
+                                <th colspan="3" style="text-align: center; border-bottom: 1px solid #cbd5e1; border-right: 2px solid #e2e8f0; background-color: #f1f5f9; color: #334155; padding: 12px;">Janela de 6 Meses</th>
+                                <th colspan="3" style="text-align: center; border-bottom: 1px solid #cbd5e1; background-color: #f8fafc; color: #334155; padding: 12px;">Janela de 12 Meses</th>
+                            </tr>
+                            <tr>
+                                <!-- 3M -->
+                                <th style="background-color: #f8fafc; color: #64748b; font-weight: normal; border-bottom: 2px solid #cbd5e1;">Antes</th>
+                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; font-weight: bold; border-bottom: 2px solid #cbd5e1;">Depois</th>
+                                <th style="background-color: #0f172a; color: white; border-bottom: 2px solid #cbd5e1; border-right: 2px solid #e2e8f0;">Delta</th>
+                                <!-- 6M -->
+                                <th style="background-color: #f1f5f9; color: #64748b; font-weight: normal; border-bottom: 2px solid #cbd5e1;">Antes</th>
+                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; font-weight: bold; border-bottom: 2px solid #cbd5e1;">Depois</th>
+                                <th style="background-color: #0f172a; color: white; border-bottom: 2px solid #cbd5e1; border-right: 2px solid #e2e8f0;">Delta</th>
+                                <!-- 12M -->
+                                <th style="background-color: #f8fafc; color: #64748b; font-weight: normal; border-bottom: 2px solid #cbd5e1;">Antes</th>
+                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; font-weight: bold; border-bottom: 2px solid #cbd5e1;">Depois</th>
+                                <th style="background-color: #0f172a; color: white; border-bottom: 2px solid #cbd5e1;">Delta</th>
                             </tr>
                         </thead>
                         <tbody>
+
                             <!-- Safra 25-Q1 -->
-                            <tr style="background-color: #f8fafc;">
-                                <td colspan="8" style="text-align: left; font-weight: bold; color: #334155; padding-top: 16px;">
-                                    Safra Adesão Spoint: 25-Q1
-                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">
-                                        Total: 12.400 clientes &nbsp;|&nbsp; <span style="color: #0284c7;">Já eram Centauro: 8.060 (65%)</span> &nbsp;|&nbsp; <span style="color: #16a34a;">Novos via Spoint: 4.340 (35%)</span>
-                                    </div>
+                            <tr style="border-bottom: 1px dashed #e2e8f0;">
+                                <td style="text-align: left; font-weight: bold; color: #334155; padding: 12px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    25-Q1
+                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">Frequência (pedidos)</div>
                                 </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">0,87</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,11</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+28%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">1,37</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,67</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+21%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">2,23</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">2,77</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">+24%</td>
                             </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-3</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">11.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">12.1%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc;">13.8%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a;">32.5%</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a;">28.4%</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">26.1%</td>
-                            </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-6</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">18.2%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">19.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1;">21.0%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a; border-bottom: 2px solid #cbd5e1;">48.1%</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a; border-bottom: 2px solid #cbd5e1;">44.2%</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-bottom: 2px solid #cbd5e1;">41.5%</td>
+                            <tr style="border-bottom: 2px solid #cbd5e1;">
+                                <td style="text-align: left; font-weight: normal; color: #334155; padding: 8px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    <div style="font-size: 11px; color: #64748b;">Spending (R$)</div>
+                                </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 248</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 329</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+33%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">R$ 393</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 496</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+26%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 641</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 823</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">+28%</td>
                             </tr>
 
                             <!-- Safra 25-Q2 -->
-                            <tr style="background-color: #f8fafc;">
-                                <td colspan="8" style="text-align: left; font-weight: bold; color: #334155; padding-top: 16px;">
-                                    Safra Adesão Spoint: 25-Q2
-                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">
-                                        Total: 15.800 clientes &nbsp;|&nbsp; <span style="color: #0284c7;">Já eram Centauro: 9.796 (62%)</span> &nbsp;|&nbsp; <span style="color: #16a34a;">Novos via Spoint: 6.004 (38%)</span>
-                                    </div>
+                            <tr style="border-bottom: 1px dashed #e2e8f0;">
+                                <td style="text-align: left; font-weight: bold; color: #334155; padding: 12px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    25-Q2
+                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">Frequência (pedidos)</div>
                                 </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">0,91</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,39</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+53%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">1,44</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">2,01</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+39%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">2,39</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">3,21</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">+34%</td>
                             </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-3</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">12.0%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">12.8%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc;">14.2%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a;">34.2%</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a;">31.0%</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0;">-</td>
+                            <tr style="border-bottom: 2px solid #cbd5e1;">
+                                <td style="text-align: left; font-weight: normal; color: #334155; padding: 8px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    <div style="font-size: 11px; color: #64748b;">Spending (R$)</div>
+                                </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 289</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 494</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+71%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">R$ 433</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 680</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+57%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 715</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 1030</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">+44%</td>
                             </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-6</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">19.1%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">20.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1;">21.8%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a; border-bottom: 2px solid #cbd5e1;">50.5%</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a; border-bottom: 2px solid #cbd5e1;">45.8%</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-bottom: 2px solid #cbd5e1;">-</td>
-                            
+
                             <!-- Safra 25-Q3 -->
-                            <tr style="background-color: #f8fafc;">
-                                <td colspan="8" style="text-align: left; font-weight: bold; color: #334155; padding-top: 16px;">
-                                    Safra Adesão Spoint: 25-Q3
-                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">
-                                        Total: 18.200 clientes &nbsp;|&nbsp; <span style="color: #0284c7;">Já eram Centauro: 10.920 (60%)</span> &nbsp;|&nbsp; <span style="color: #16a34a;">Novos via Spoint: 7.280 (40%)</span>
-                                    </div>
+                            <tr style="border-bottom: 1px dashed #e2e8f0;">
+                                <td style="text-align: left; font-weight: bold; color: #334155; padding: 12px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    25-Q3
+                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">Frequência (pedidos)</div>
                                 </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">0,92</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,40</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+53%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">1,39</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">2,08</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+50%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">-</td>
                             </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-3</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">11.8%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">12.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc;">13.6%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a;">32.0%</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a;">29.5%</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0;">-</td>
-                            </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-6</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">18.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">19.8%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1;">21.1%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a; border-bottom: 2px solid #cbd5e1;">49.2%</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a; border-bottom: 2px solid #cbd5e1;">44.8%</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-bottom: 2px solid #cbd5e1;">-</td>
+                            <tr style="border-bottom: 2px solid #cbd5e1;">
+                                <td style="text-align: left; font-weight: normal; color: #334155; padding: 8px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    <div style="font-size: 11px; color: #64748b;">Spending (R$)</div>
+                                </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 295</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 492</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+67%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">R$ 439</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 703</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+60%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">-</td>
                             </tr>
 
                             <!-- Safra 25-Q4 -->
-                            <tr style="background-color: #f8fafc;">
-                                <td colspan="8" style="text-align: left; font-weight: bold; color: #334155; padding-top: 16px;">
-                                    Safra Adesão Spoint: 25-Q4
-                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">
-                                        Total: 22.500 clientes &nbsp;|&nbsp; <span style="color: #0284c7;">Já eram Centauro: 13.050 (58%)</span> &nbsp;|&nbsp; <span style="color: #16a34a;">Novos via Spoint: 9.450 (42%)</span>
-                                    </div>
+                            <tr style="border-bottom: 1px dashed #e2e8f0;">
+                                <td style="text-align: left; font-weight: bold; color: #334155; padding: 12px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    25-Q4
+                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">Frequência (pedidos)</div>
                                 </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">1,01</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,46</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+45%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">1,50</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">2,25</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+50%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">-</td>
                             </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-3</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">12.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">13.0%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc;">15.1%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a;">36.4%</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0;">-</td>
-                            </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-6</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">19.8%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">20.8%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1;">22.5%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5); border-right: 1px solid #fef08a; border-bottom: 2px solid #cbd5e1;">52.2%</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-bottom: 2px solid #cbd5e1;">-</td>
+                            <tr style="border-bottom: 2px solid #cbd5e1;">
+                                <td style="text-align: left; font-weight: normal; color: #334155; padding: 8px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    <div style="font-size: 11px; color: #64748b;">Spending (R$)</div>
+                                </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 345</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 459</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+33%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">R$ 496</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 687</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+39%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">-</td>
                             </tr>
 
                             <!-- Safra 26-Q1 -->
-                            <tr style="background-color: #f8fafc;">
-                                <td colspan="8" style="text-align: left; font-weight: bold; color: #334155; padding-top: 16px;">
-                                    Safra Adesão Spoint: 26-Q1
-                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">
-                                        Total: 10.100 clientes &nbsp;|&nbsp; <span style="color: #0284c7;">Já eram Centauro: 6.262 (62%)</span> &nbsp;|&nbsp; <span style="color: #16a34a;">Novos via Spoint: 3.838 (38%)</span>
-                                    </div>
+                            <tr style="border-bottom: 1px dashed #e2e8f0;">
+                                <td style="text-align: left; font-weight: bold; color: #334155; padding: 12px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    26-Q1
+                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">Frequência (pedidos)</div>
                                 </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">0,93</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,53</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+65%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">1,54</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,91</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+24%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">-</td>
                             </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-3</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">11.0%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">11.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc;">12.2%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0;">-</td>
-                            </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-6</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">17.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">18.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1;">19.5%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-bottom: 2px solid #cbd5e1;">-</td>
+                            <tr style="border-bottom: 2px solid #cbd5e1;">
+                                <td style="text-align: left; font-weight: normal; color: #334155; padding: 8px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    <div style="font-size: 11px; color: #64748b;">Spending (R$)</div>
+                                </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 300</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 488</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+63%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">R$ 497</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 608</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">+22%</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">-</td>
                             </tr>
 
-                            <!-- Safra 26-Q2 -->
-                            <tr style="background-color: #f8fafc;">
-                                <td colspan="8" style="text-align: left; font-weight: bold; color: #334155; padding-top: 16px;">
-                                    Safra Adesão Spoint: 26-Q2
-                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">
-                                        Total: 6.800 clientes &nbsp;|&nbsp; <span style="color: #0284c7;">Já eram Centauro: 4.420 (65%)</span> &nbsp;|&nbsp; <span style="color: #16a34a;">Novos via Spoint: 2.380 (35%)</span>
-                                    </div>
+                            <!-- Safra 26-Q2 (Parcial) -->
+                            <tr style="border-bottom: 1px dashed #e2e8f0;">
+                                <td style="text-align: left; font-weight: bold; color: #334155; padding: 12px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    26-Q2 (Parcial)
+                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">Frequência (pedidos)</div>
                                 </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">1,04</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,38</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+32%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">-</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">-</td>
                             </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-3</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">12.2%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">12.8%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc;">13.5%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0;">-</td>
+                            <tr style="border-bottom: 2px solid #cbd5e1;">
+                                <td style="text-align: left; font-weight: normal; color: #334155; padding: 8px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    <div style="font-size: 11px; color: #64748b;">Spending (R$)</div>
+                                </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 328</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 460</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;">+40%</td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;">-</td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">-</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;">-</td>
                             </tr>
-                            <tr>
-                                <td class="tier-cell" style="padding-left: 20px;">Recorrência M-6</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">18.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-right: 1px solid #e2e8f0;">19.5%</td>
-                                <td class="numeric text-gray" style="background-color: #f8fafc; border-bottom: 2px solid #cbd5e1;">20.5%</td>
-                                <td class="numeric" style="background-color: #f1f5f9; border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-right: 1px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">-</td>
-                                <td class="numeric text-gray" style="background-color: #e2e8f0; border-bottom: 2px solid #cbd5e1;">-</td>
-                            </tr>
-                        </tr>
-                            
                         </tbody>
                     </table>
+                    </div>
                 </div>
                 <div style="margin-top: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #ca8a04; font-size: 13px; color: #475569;">
-                    <strong>Interpretação (Visão Antes e Depois do Spoint):</strong> Ao olharmos a Safra 25-Q1, por exemplo, os 65% de clientes que já conheciam a Centauro apresentavam uma lealdade média (cerca de 20% no M-6) nos trimestres anteriores (Q-2, Q-1). Ao cruzarem o "Marco Zero" (adesão ao Spoint), <strong>esses clientes dobraram sua taxa de lealdade e mostraram um novo patamar</strong> (+40% no longo prazo em Q+2 e Q+3).
+                    Os dados indicam uma <strong>mudança positiva</strong> no comportamento de compra após a adesão ao Spoint. O programa gera picos imediatos de engajamento nos primeiros meses e, no longo prazo de 1 ano, o volume de pedidos consolida-se em um patamar sustentável de crescimento, alcançando marcas de incremento (entre <strong>+20% e +40%</strong> de delta real) em relação ao comportamento anterior do cliente.
                 </div>
             </div>
         </div>
+
     <script>
         // Dados Estruturados Reais Consolidados (2025-2026) (via BigQuery)
         // Estrutura: [ { tier, inf, sinf, cnt } ]
