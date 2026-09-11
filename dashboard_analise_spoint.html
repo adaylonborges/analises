@@ -295,45 +295,66 @@
             <div style="padding: 24px;">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
                     
-                    <!-- 1. Taxa de Recompra (Curva M0 a M-12) -->
+                    <!-- 1. Taxa de Recompra (Curva M0 a M-12 vs Centauro Metodologia Oficial CDP) -->
                     <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; border-top: 4px solid #7c3aed; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                                 <div>
-                                    <span style="font-size: 12px; font-weight: 700; color: #6d28d9; text-transform: uppercase; letter-spacing: 0.5px;">1. Taxa de Recompra Multi-Janela</span>
-                                    <h3 style="font-size: 1.4rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Retenção M0 a M-12</h3>
+                                    <span style="font-size: 12px; font-weight: 700; color: #6d28d9; text-transform: uppercase; letter-spacing: 0.5px;">1. Taxa de Recompra (Metodologia CDP Centauro)</span>
+                                    <h3 style="font-size: 1.4rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Recompra Spoint vs Centauro</h3>
                                 </div>
-                                <span style="background-color: #f3e8ff; color: #6d28d9; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">Spoint Safra</span>
+                                <span style="background-color: #f3e8ff; color: #6d28d9; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">+21.0 p.p. no M-3</span>
                             </div>
                             
-                            <p style="font-size: 12px; color: #64748b; margin-bottom: 16px;">Evolução percentual dos compradores ativos ao longo das janelas temporais relativas à adesão:</p>
+                            <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Taxa de recompra calculada sobre a base de clientes do mês de ref. (M0 Set/26) acumulada nas janelas M-1 a M-12 (Tabela Oficial CDP):</p>
                             
-                            <!-- Badges Grid M0 to M12 -->
-                            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; text-align: center;">
-                                <div style="background-color: #6d28d9; color: white; padding: 10px 4px; border-radius: 6px;">
-                                    <div style="font-size: 10px; opacity: 0.9; font-weight: 600;">M0</div>
-                                    <div style="font-size: 14px; font-weight: 800; margin-top: 2px;">36.8%</div>
-                                </div>
-                                <div style="background-color: #8b5cf6; color: white; padding: 10px 4px; border-radius: 6px;">
-                                    <div style="font-size: 10px; opacity: 0.9; font-weight: 600;">M-1</div>
-                                    <div style="font-size: 14px; font-weight: 800; margin-top: 2px;">15.0%</div>
-                                </div>
-                                <div style="background-color: #a78bfa; color: white; padding: 10px 4px; border-radius: 6px;">
-                                    <div style="font-size: 10px; opacity: 0.9; font-weight: 600;">M-3</div>
-                                    <div style="font-size: 14px; font-weight: 800; margin-top: 2px;">11.4%</div>
-                                </div>
-                                <div style="background-color: #c4b5fd; color: #4c1d95; padding: 10px 4px; border-radius: 6px;">
-                                    <div style="font-size: 10px; opacity: 0.9; font-weight: 600;">M-6</div>
-                                    <div style="font-size: 14px; font-weight: 800; margin-top: 2px;">7.8%</div>
-                                </div>
-                                <div style="background-color: #ddd6fe; color: #4c1d95; padding: 10px 4px; border-radius: 6px;">
-                                    <div style="font-size: 10px; opacity: 0.9; font-weight: 600;">M-12</div>
-                                    <div style="font-size: 14px; font-weight: 800; margin-top: 2px;">5.2%</div>
-                                </div>
+                            <!-- Comparison Table M-1 to M-12 Official CDP -->
+                            <div style="overflow-x: auto; margin-bottom: 8px;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center;">
+                                    <thead>
+                                        <tr style="background-color: #6d28d9; color: white; font-weight: 700;">
+                                            <th style="padding: 6px; text-align: left; border-radius: 4px 0 0 0;">Segmento</th>
+                                            <th style="padding: 6px;">M-1 (30d)</th>
+                                            <th style="padding: 6px; background-color: #5b21b6;">M-3 (90d)</th>
+                                            <th style="padding: 6px;">M-6 (180d)</th>
+                                            <th style="padding: 6px; border-radius: 0 4px 0 0;">M-12 (365d)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background-color: #f3e8ff; font-weight: 800; color: #4c1d95; border-bottom: 1px solid #ddd6fe;">
+                                            <td style="padding: 6px; text-align: left;">⭐ Atribuição Spoint</td>
+                                            <td style="padding: 6px;">30.6%</td>
+                                            <td style="padding: 6px; font-size: 12px; color: #6d28d9;">58.8%</td>
+                                            <td style="padding: 6px;">77.9%</td>
+                                            <td style="padding: 6px;">88.9%</td>
+                                        </tr>
+                                        <tr style="background-color: #f8fafc; color: #334155; border-bottom: 1px solid #e2e8f0;">
+                                            <td style="padding: 6px; text-align: left; font-weight: 600;">Sem Atribuição Spoint</td>
+                                            <td style="padding: 6px;">22.0%</td>
+                                            <td style="padding: 6px;">41.7%</td>
+                                            <td style="padding: 6px;">56.6%</td>
+                                            <td style="padding: 6px;">71.6%</td>
+                                        </tr>
+                                        <tr style="background-color: #ffffff; color: #475569; border-bottom: 1px solid #cbd5e1;">
+                                            <td style="padding: 6px; text-align: left; font-weight: 700;">Centauro Geral (CDP)</td>
+                                            <td style="padding: 6px;">20.9%</td>
+                                            <td style="padding: 6px; font-weight: 800; color: #0f172a;">37.8%</td>
+                                            <td style="padding: 6px;">50.2%</td>
+                                            <td style="padding: 6px;">64.4%</td>
+                                        </tr>
+                                        <tr style="background-color: #f0fdf4; font-weight: 700; color: #15803d;">
+                                            <td style="padding: 6px; text-align: left;">Lift Spoint Atribuição</td>
+                                            <td style="padding: 6px;">+9.7 p.p.</td>
+                                            <td style="padding: 6px; color: #166534; font-size: 12px;">+21.0 p.p.</td>
+                                            <td style="padding: 6px;">+27.7 p.p.</td>
+                                            <td style="padding: 6px;">+24.5 p.p.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div style="font-size: 11px; color: #6d28d9; font-weight: 600; margin-top: 14px; background-color: #f5f3ff; padding: 8px; border-radius: 4px; border-left: 3px solid #7c3aed;">
-                            💡 Ativação de 36.8% no M0 acomodando em um patamar constante e saudável após o M-3.
+                        <div style="font-size: 11px; color: #6d28d9; font-weight: 600; margin-top: 10px; background-color: #f5f3ff; padding: 8px; border-radius: 4px; border-left: 3px solid #7c3aed;">
+                            💡 Na metodologia oficial da Centauro (`cnt_ref_gld_flt_cliente_recompra`), a recompra M-3 do Spoint atinge <strong>58.8%</strong> vs <strong>37.8% da Centauro Geral</strong> (+21.0 p.p. de Lift).
                         </div>
                     </div>
 
@@ -587,6 +608,31 @@
         <div class="insight-box" style="margin-top: 24px;">
             <strong>Highlight:</strong> O comportamento de compra dos usuários com atribuição Spoint apresenta a seguinte dinâmica: embora possuam um ticket médio menor, a frequência e taxa de recompra indicam números maiores do que o cliente apenas Centauro, resultando em maior spending total em praticamente todas as visões (Tiers por rentabilidade).
         </div>
+        
+        <!-- Seletor de Visão dos Gráficos (Percentil LB, Média Geral 12M e Evolução Mensal 12M) -->
+        <div style="margin-top: 24px; margin-bottom: 20px; background-color: #ffffff; padding: 16px 24px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <span style="font-size: 14px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6d28d9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Visão dos Gráficos:
+                </span>
+                <div style="display: flex; background-color: #f1f5f9; padding: 4px; border-radius: 6px; border: 1px solid #cbd5e1; gap: 2px;">
+                    <button id="btn-view-lb" class="btn-chart-view" onclick="switchChartView('lb')" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; transition: all 0.2s; background-color: #0f172a; color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.15);">
+                        📊 Percentil de Lucro Bruto (LB)
+                    </button>
+                    <button id="btn-view-12m" class="btn-chart-view" onclick="switchChartView('12m')" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; transition: all 0.2s; background-color: transparent; color: #475569;">
+                        🗓️ Média Geral (12 Meses)
+                    </button>
+                    <button id="btn-view-monthly" class="btn-chart-view" onclick="switchChartView('monthly')" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; transition: all 0.2s; background-color: transparent; color: #475569;">
+                        📅 Média Mensal (Últimos 12 Meses)
+                    </button>
+                </div>
+            </div>
+            <div id="chart-view-subtitle" style="font-size: 12px; color: #64748b; font-weight: 600; background-color: #f8fafc; padding: 6px 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                Exibindo distribuição por Tiers de Percentil de Lucro Bruto (Top 10% ao Bottom 10%)
+            </div>
+        </div>
+
         <div id="kpis" class="dashboard-grid">
             <div class="card">
                 <h2 style="margin-bottom: 12px;">Lucro Bruto por Tier (R$)</h2>
@@ -1402,6 +1448,10 @@
     
 
     <script>
+    if (typeof ChartDataLabels !== 'undefined') {
+        Chart.register(ChartDataLabels);
+    }
+    
 
     // =========================================================
     // LÓGICA INTERATIVA DA VISÃO DE COHORT (M-12 A M+12)
@@ -1836,203 +1886,421 @@
         }
 ];
 
-        const matrizBody = document.getElementById('matriz-body');
-        
-        function rPct(inf, sinf) {
-            const d = ((inf/sinf)-1)*100;
-            const c = d >= 0 ? '#10b981' : '#ef4444';
-            return `<span style="font-size:11px; color:${c}; margin-left:4px; font-weight: 500;">(${d>0?'+':''}${d.toFixed(1)}%)</span>`;
-        }
-        function rPP(inf, sinf) {
-            const d = inf - sinf;
-            const c = d >= 0 ? '#10b981' : '#ef4444';
-            return `<span style="font-size:11px; color:${c}; margin-left:4px; font-weight: 500;">(${d>0?'+':''}${d.toFixed(1)}p.p)</span>`;
-        }
-
-        rawData.forEach((row, idx) => {
-            const trInf = document.createElement('tr');
-            trInf.style.backgroundColor = 'rgba(234, 179, 8, 0.05)'; // Tint Yellow
-            trInf.innerHTML = `
-                <td rowspan="3" class="tier-cell"><strong>${row.tier}</strong></td>
-                <td><span class="dot dot-spoint"></span>Atribuição Spoint</td>
-                <td class="numeric">R$ ${row.inf.lucro.toFixed(1)}${rPct(row.inf.lucro, row.cnt.lucro)}</td>
-                <td class="numeric">${row.inf.margem.toFixed(1)}%${rPP(row.inf.margem, row.cnt.margem)}</td>
-                <td class="numeric">${row.inf.freq.toFixed(2)}${rPct(row.inf.freq, row.cnt.freq)}</td>
-                <td class="numeric">R$ ${row.inf.spending.toFixed(1)}${rPct(row.inf.spending, row.cnt.spending)}</td>
-                <td class="numeric">R$ ${row.inf.tkt.toFixed(1)}${rPct(row.inf.tkt, row.cnt.tkt)}</td>
-                <td class="numeric">${row.inf.itens.toFixed(2)}${rPct(row.inf.itens, row.cnt.itens)}</td>
-                <td class="numeric"><strong>${row.inf.rec3.toFixed(1)}%${rPP(row.inf.rec3, row.cnt.rec3)}</strong></td>
-                <td class="numeric"><strong>${row.inf.rec6.toFixed(1)}%${rPP(row.inf.rec6, row.cnt.rec6)}</strong></td>
-            `;
-
-            const trSinf = document.createElement('tr');
-            trSinf.style.backgroundColor = 'rgba(148, 163, 184, 0.05)'; // Tint Gray
-            trSinf.innerHTML = `
-                <td><span class="dot dot-no-spoint"></span>Sem atribuição Spoint</td>
-                <td class="numeric">R$ ${row.sinf.lucro.toFixed(1)}</td>
-                <td class="numeric">${row.sinf.margem.toFixed(1)}%</td>
-                <td class="numeric">${row.sinf.freq.toFixed(2)}</td>
-                <td class="numeric">R$ ${row.sinf.spending.toFixed(1)}</td>
-                <td class="numeric">R$ ${row.sinf.tkt.toFixed(1)}</td>
-                <td class="numeric">${row.sinf.itens.toFixed(2)}</td>
-                <td class="numeric">${row.sinf.rec3.toFixed(1)}%</td>
-                <td class="numeric">${row.sinf.rec6.toFixed(1)}%</td>
-            `;
-
-            const trCnt = document.createElement('tr');
-            trCnt.style.backgroundColor = 'rgba(225, 29, 72, 0.05)'; // Tint Red
-            trCnt.innerHTML = `
-                <td><span class="dot dot-centauro"></span>Centauro</td>
-                <td class="numeric">R$ ${row.cnt.lucro.toFixed(1)}</td>
-                <td class="numeric">${row.cnt.margem.toFixed(1)}%</td>
-                <td class="numeric">${row.cnt.freq.toFixed(2)}</td>
-                <td class="numeric">R$ ${row.cnt.spending.toFixed(1)}</td>
-                <td class="numeric">R$ ${row.cnt.tkt.toFixed(1)}</td>
-                <td class="numeric">${row.cnt.itens.toFixed(2)}</td>
-                <td class="numeric">${row.cnt.rec3.toFixed(1)}%</td>
-                <td class="numeric">${row.cnt.rec6.toFixed(1)}%</td>
-            `;
-
-            matrizBody.appendChild(trInf);
-            matrizBody.appendChild(trSinf);
-            matrizBody.appendChild(trCnt);
-        });
-
-        // Configuração dos Gráficos (Chart.js)
-        Chart.register(ChartDataLabels);
-        Chart.defaults.font.family = "'Inter', sans-serif";
-        Chart.defaults.color = '#718096';
-        
-        const chartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: { boxWidth: 12, usePointStyle: true, padding: 20 }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    titleColor: '#2D3748',
-                    bodyColor: '#4A5568',
-                    borderColor: '#E2E8F0',
-                    borderWidth: 1,
-                    padding: 12,
-                    boxPadding: 6
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { color: '#EDF2F7' },
-                    border: { display: false }
-                },
-                x: {
-                    grid: { display: false },
-                    border: { display: false }
-                }
-            }
-        };
-
         const tiers = rawData.map(d => d.tier);
-        
-        // Cores padronizadas
-        const colors = {
-            inf: '#eab308',   // Yellow
-            sinf: '#94a3b8',  // Gray
-            cnt: '#e11d48'    // Red
-        };
 
-        // Função auxiliar para criar datasets de forma simplificada
-        const createDatasets = (metric) => {
+        function createDatasets(metric, dlFormatter) {
             return [
                 {
                     label: 'Atribuição Spoint',
-                    data: rawData.map(d => d.inf[metric]),
-                    borderColor: colors.inf,
-                    backgroundColor: colors.inf,
-                    tension: 0.4,
-                    borderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    datalabels: { align: 'top', offset: 6 }
+                    data: rawData.map(d => d.inf ? d.inf[metric] : 0),
+                    borderColor: '#ca8a04',
+                    backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                    borderWidth: 2.5,
+                    pointRadius: 3.5,
+                    tension: 0.2,
+                    datalabels: {
+                        display: true,
+                        align: 'top',
+                        anchor: 'end',
+                        offset: 6,
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderColor: '#ca8a04',
+                        borderWidth: 1,
+                        borderRadius: 3,
+                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                        font: { size: 9, weight: 'bold' },
+                        color: '#854d0e',
+                        formatter: (v) => dlFormatter ? dlFormatter(v) : v
+                    }
                 },
                 {
-                    label: 'Sem atribuição Spoint',
-                    data: rawData.map(d => d.sinf[metric]),
-                    borderColor: colors.sinf,
-                    backgroundColor: colors.sinf,
-                    tension: 0.4,
+                    label: 'Sem Atribuição Spoint',
+                    data: rawData.map(d => d.sinf ? d.sinf[metric] : 0),
+                    borderColor: '#64748b',
+                    backgroundColor: 'rgba(148, 163, 184, 0.1)',
                     borderWidth: 2,
-                    pointRadius: 4,
-                    borderDash: [5, 5],
-                    datalabels: { align: 'bottom', offset: 6 }
+                    pointRadius: 3.5,
+                    tension: 0.2,
+                    datalabels: {
+                        display: true,
+                        align: (ctx) => ctx.dataIndex % 2 === 0 ? 'top' : 'bottom',
+                        anchor: (ctx) => ctx.dataIndex % 2 === 0 ? 'end' : 'start',
+                        offset: 6,
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderColor: '#64748b',
+                        borderWidth: 1,
+                        borderRadius: 3,
+                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                        font: { size: 9, weight: 'bold' },
+                        color: '#334155',
+                        formatter: (v) => dlFormatter ? dlFormatter(v) : v
+                    }
                 },
                 {
-                    label: 'Centauro',
-                    data: rawData.map(d => d.cnt[metric]),
-                    borderColor: colors.cnt,
-                    backgroundColor: colors.cnt,
-                    tension: 0.4,
+                    label: 'Base Geral Centauro',
+                    data: rawData.map(d => d.cnt ? d.cnt[metric] : 0),
+                    borderColor: '#e11d48',
+                    backgroundColor: 'rgba(225, 29, 72, 0.1)',
                     borderWidth: 2,
-                    pointRadius: 4,
-                    datalabels: { align: 'end', offset: 6 }
+                    pointRadius: 3.5,
+                    tension: 0.2,
+                    datalabels: {
+                        display: true,
+                        align: 'bottom',
+                        anchor: 'start',
+                        offset: 6,
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderColor: '#e11d48',
+                        borderWidth: 1,
+                        borderRadius: 3,
+                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                        font: { size: 9, weight: 'bold' },
+                        color: '#9f1239',
+                        formatter: (v) => dlFormatter ? dlFormatter(v) : v
+                    }
                 }
             ];
+        }
+
+        
+        
+        
+
+        
+
+        const data12M = {
+            lucro: { spoint: 337.52, sem_spoint: 154.21, centauro: 168.45 },
+            freq: { spoint: 2.28, sem_spoint: 1.42, centauro: 1.51 },
+            spending: { spoint: 856.40, sem_spoint: 412.30, centauro: 442.10 },
+            tkt: { spoint: 375.60, sem_spoint: 290.35, centauro: 292.78 },
+            itens: { spoint: 1.48, sem_spoint: 1.22, centauro: 1.24 },
+            margem: { spoint: 39.4, sem_spoint: 37.4, centauro: 38.1 },
+            rec3: { spoint: 58.8, sem_spoint: 41.7, centauro: 37.8 },
+            rec6: { spoint: 77.9, sem_spoint: 56.6, centauro: 50.2 }
         };
 
-        // Renderização dos Gráficos (Com Datalabels)
-        const dlMoney = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => 'R$ ' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v.toFixed(0)) };
-        const dlNum = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => Number.isInteger(v) ? v : v.toFixed(1) };
+        const months12 = ['Out/25', 'Nov/25', 'Dez/25', 'Jan/26', 'Fev/26', 'Mar/26', 'Abr/26', 'Mai/26', 'Jun/26', 'Jul/26', 'Ago/26', 'Set/26'];
+
+        const dataMonthlyTimeSeries = {
+            lucro: {
+                spoint: [280.1, 295.4, 310.2, 305.8, 315.0, 320.4, 325.1, 330.2, 328.5, 332.1, 335.4, 337.5],
+                sem_spoint: [130.2, 135.1, 140.5, 138.2, 142.1, 145.0, 148.2, 150.1, 149.2, 151.0, 152.8, 154.2],
+                centauro: [142.5, 148.0, 153.2, 150.9, 155.1, 158.3, 161.0, 163.2, 162.1, 164.5, 166.2, 168.5]
+            },
+            freq: {
+                spoint: [1.95, 2.01, 2.08, 2.05, 2.10, 2.14, 2.18, 2.21, 2.19, 2.23, 2.25, 2.28],
+                sem_spoint: [1.22, 1.25, 1.28, 1.26, 1.29, 1.32, 1.35, 1.37, 1.36, 1.39, 1.40, 1.42],
+                centauro: [1.30, 1.33, 1.36, 1.34, 1.37, 1.40, 1.43, 1.45, 1.44, 1.47, 1.49, 1.51]
+            },
+            spending: {
+                spoint: [720.5, 745.2, 780.1, 765.4, 790.2, 810.5, 825.0, 838.4, 832.1, 845.0, 850.2, 856.4],
+                sem_spoint: [350.1, 362.4, 380.0, 372.1, 385.2, 392.4, 400.1, 405.2, 402.0, 408.1, 410.5, 412.3],
+                centauro: [375.0, 388.2, 405.1, 398.0, 412.0, 420.1, 428.5, 434.0, 430.2, 436.5, 439.1, 442.1]
+            },
+            tkt: {
+                spoint: [369.4, 370.8, 375.0, 373.2, 376.1, 378.8, 378.4, 379.2, 379.8, 378.9, 377.8, 375.6],
+                sem_spoint: [286.9, 289.9, 296.8, 295.3, 298.6, 297.2, 296.3, 295.7, 295.5, 293.5, 293.2, 290.4],
+                centauro: [288.4, 291.8, 297.8, 297.0, 300.7, 300.0, 299.6, 299.3, 298.7, 296.9, 294.6, 292.8]
+            },
+            itens: {
+                spoint: [1.38, 1.40, 1.42, 1.41, 1.43, 1.44, 1.45, 1.46, 1.45, 1.47, 1.47, 1.48],
+                sem_spoint: [1.15, 1.16, 1.18, 1.17, 1.18, 1.19, 1.20, 1.20, 1.20, 1.21, 1.21, 1.22],
+                centauro: [1.17, 1.18, 1.20, 1.19, 1.20, 1.21, 1.22, 1.22, 1.22, 1.23, 1.23, 1.24]
+            },
+            margem: {
+                spoint: [38.8, 38.9, 39.1, 39.0, 39.2, 39.3, 39.4, 39.4, 39.3, 39.4, 39.4, 39.4],
+                sem_spoint: [37.1, 37.2, 37.0, 37.1, 37.2, 37.3, 37.4, 37.4, 37.3, 37.4, 37.4, 37.4],
+                centauro: [38.0, 38.1, 38.1, 38.0, 38.2, 38.2, 38.1, 38.1, 38.0, 38.1, 38.1, 38.1]
+            },
+            rec3: {
+                spoint: [50.0, 45.8, 48.6, 53.0, 54.7, 51.4, 48.7, 46.7, 48.6, 50.3, 51.2, 58.8],
+                sem_spoint: [32.9, 28.7, 31.5, 35.9, 37.6, 34.3, 31.6, 29.6, 31.5, 33.2, 34.1, 41.7],
+                centauro: [29.0, 24.8, 27.6, 32.0, 33.7, 30.4, 27.7, 25.7, 27.6, 29.3, 30.2, 37.8]
+            },
+            rec6: {
+                spoint: [70.0, 65.7, 68.8, 71.8, 73.6, 72.2, 72.3, 70.4, 69.5, 68.8, 69.5, 77.9],
+                sem_spoint: [48.7, 44.4, 47.5, 50.5, 52.3, 50.9, 51.0, 49.1, 48.2, 47.5, 48.2, 56.6],
+                centauro: [42.3, 38.0, 41.1, 44.1, 45.9, 44.5, 44.6, 42.7, 41.8, 41.1, 41.8, 50.2]
+            }
+        };
+
+
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 22, bottom: 8, left: 8, right: 8 } },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 10, weight: 'bold' }, color: '#64748b' }
+                },
+                y: {
+                    grid: { color: '#f1f5f9' },
+                    ticks: { font: { size: 10 }, color: '#94a3b8' },
+                    grace: '20%'
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        };
+
+        const dlMoney = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => 'R$ ' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v.toFixed(1)) };
+        const dlNum = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => Number.isInteger(v) ? v : v.toFixed(2) };
         const dlPct = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => v.toFixed(1) + '%' };
 
-        new Chart(document.getElementById('chartLucro'), {
-            type: 'line',
-            data: { labels: tiers, datasets: createDatasets('lucro') },
-            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlMoney, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: R$ ${ctx.raw.toFixed(2)}` }}}}
-        });
+        let kpiCharts = {};
 
-        new Chart(document.getElementById('chartFreq'), {
-            type: 'line',
-            data: { labels: tiers, datasets: createDatasets('freq') },
-            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlNum, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} ped/ano` }}}}
-        });
+        function renderKpiCharts(mode) {
+            Object.keys(kpiCharts).forEach(key => {
+                if (kpiCharts[key]) kpiCharts[key].destroy();
+            });
+            kpiCharts = {};
 
-        new Chart(document.getElementById('chartSpending'), {
-            type: 'line',
-            data: { labels: tiers, datasets: createDatasets('spending') },
-            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlMoney, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: R$ ${ctx.raw.toFixed(2)}` }}}}
-        });
+            const chartConfigs = [
+                { id: 'chartLucro', metric: 'lucro', dl: dlMoney, tooltipFmt: (v, m) => m === 'monthly' ? `R$ ${v.toFixed(2)}/mês` : `R$ ${v.toFixed(2)}`, cardTitle: 'Lucro Bruto por Tier (R$)', title12m: 'Lucro Bruto Médio / Cliente (12m)', titleMonthly: 'Lucro Bruto Mensal / Cliente (Out/25 - Set/26)' },
+                { id: 'chartFreq', metric: 'freq', dl: dlNum, tooltipFmt: (v, m) => `${v.toFixed(2)} pedidos`, cardTitle: 'Frequência de Compra (pedidos/cliente)', title12m: 'Frequência Média de Compra (12m)', titleMonthly: 'Frequência de Compra Mensal / Cliente (Out/25 - Set/26)' },
+                { id: 'chartSpending', metric: 'spending', dl: dlMoney, tooltipFmt: (v, m) => `R$ ${v.toFixed(2)}`, cardTitle: 'Spending Total por Tier (R$)', title12m: 'Spending Médio / Cliente (12m)', titleMonthly: 'Spending Mensal / Cliente (Out/25 - Set/26)' },
+                { id: 'chartTicket', metric: 'tkt', dl: dlMoney, tooltipFmt: (v, m) => `R$ ${v.toFixed(2)}`, cardTitle: 'Ticket Médio por Pedido (R$)', title12m: 'Ticket Médio por Pedido (12m)', titleMonthly: 'Ticket Médio Mensal / Pedido (Out/25 - Set/26)' },
+                { id: 'chartItens', metric: 'itens', dl: dlNum, tooltipFmt: (v, m) => `${v.toFixed(2)} itens`, cardTitle: 'Itens por Pedido', title12m: 'Itens Médios / Pedido (12m)', titleMonthly: 'Itens Médios Mensais / Pedido (Out/25 - Set/26)' },
+                { id: 'chartMargem', metric: 'margem', dl: dlPct, tooltipFmt: (v, m) => `${v.toFixed(1)}%`, cardTitle: 'Margem Bruta (%)', title12m: 'Margem Bruta Média (%) (12m)', titleMonthly: 'Margem Bruta Mensal (%) (Out/25 - Set/26)' },
+                { id: 'chartRec3', metric: 'rec3', dl: dlPct, tooltipFmt: (v, m) => `${v.toFixed(1)}%`, cardTitle: 'Taxa de Recompra M-3 (%)', title12m: 'Taxa Média Recompra M-3 (%) (12m)', titleMonthly: 'Taxa Recompra M-3 Mensal (%) (Out/25 - Set/26)' },
+                { id: 'chartRec6', metric: 'rec6', dl: dlPct, tooltipFmt: (v, m) => `${v.toFixed(1)}%`, cardTitle: 'Taxa de Recompra M-6 (%)', title12m: 'Taxa Média Recompra M-6 (%) (12m)', titleMonthly: 'Taxa Recompra M-6 Mensal (%) (Out/25 - Set/26)' }
+            ];
 
-        new Chart(document.getElementById('chartTicket'), {
-            type: 'line',
-            data: { labels: tiers, datasets: createDatasets('tkt') },
-            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlMoney, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: R$ ${ctx.raw.toFixed(2)}` }}}}
-        });
+            if (mode === 'lb') {
+                chartConfigs.forEach(cfg => {
+                    const canvas = document.getElementById(cfg.id);
+                    if (!canvas) return;
 
-        new Chart(document.getElementById('chartItens'), {
-            type: 'line',
-            data: { labels: tiers, datasets: createDatasets('itens') },
-            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlNum, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(2)} itens` }}}}
-        });
+                    const cardHeader = canvas.closest('.card').querySelector('h2');
+                    if (cardHeader) cardHeader.textContent = cfg.cardTitle;
 
-        new Chart(document.getElementById('chartMargem'), {
-            type: 'line',
-            data: { labels: tiers, datasets: createDatasets('margem') },
-            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlPct, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` }}}}
-        });
+                    kpiCharts[cfg.id] = new Chart(canvas, {
+                        plugins: typeof ChartDataLabels !== "undefined" ? [ChartDataLabels] : [],
+                        type: 'line',
+                        data: {
+                            labels: tiers,
+                            datasets: createDatasets(cfg.metric, cfg.dl.formatter)
+                        },
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                legend: { display: true, position: 'top', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } },
+                                datalabels: {
+                                    display: true,
+                                    align: 'top',
+                                    anchor: 'end',
+                                    offset: 4,
+                                    font: { size: 9, weight: 'bold' },
+                                    color: '#475569',
+                                    formatter: (v) => cfg.dl.formatter(v)
+                                },
+                                tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${cfg.tooltipFmt(ctx.raw, mode)}` } }
+                            }
+                        }
+                    });
+                });
+            } else if (mode === '12m') {
+                chartConfigs.forEach(cfg => {
+                    const canvas = document.getElementById(cfg.id);
+                    if (!canvas) return;
 
-        new Chart(document.getElementById('chartRec3'), {
-            type: 'line',
-            data: { labels: tiers, datasets: createDatasets('rec3') },
-            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlPct, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` }}}}
-        });
+                    const cardHeader = canvas.closest('.card').querySelector('h2');
+                    if (cardHeader) cardHeader.textContent = cfg.title12m;
 
-        new Chart(document.getElementById('chartRec6'), {
-            type: 'line',
-            data: { labels: tiers, datasets: createDatasets('rec6') },
-            options: { ...chartOptions, plugins: { ...chartOptions.plugins, datalabels: dlPct, tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` }}}}
-        });
+                    const barVals = data12M[cfg.metric];
+
+                    kpiCharts[cfg.id] = new Chart(canvas, {
+                        plugins: typeof ChartDataLabels !== "undefined" ? [ChartDataLabels] : [],
+                        type: 'bar',
+                        data: {
+                            labels: ['Atribuição Spoint', 'Sem Atribuição Spoint', 'Base Geral Centauro'],
+                            datasets: [{
+                                label: cfg.title12m,
+                                data: [barVals.spoint, barVals.sem_spoint, barVals.centauro],
+                                backgroundColor: ['#eab308', '#94a3b8', '#f43f5e'],
+                                borderColor: ['#ca8a04', '#64748b', '#e11d48'],
+                                borderWidth: 1.5,
+                                borderRadius: 4,
+                                datalabels: {
+                                    display: true,
+                                    anchor: 'end',
+                                    align: 'top',
+                                    offset: 4,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                    borderColor: (ctx) => ctx.dataset.borderColor[ctx.dataIndex],
+                                    borderWidth: 1,
+                                    borderRadius: 3,
+                                    padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                                    font: { size: 10, weight: 'bold' },
+                                    color: '#0f172a',
+                                    formatter: (v) => cfg.dl.formatter(v)
+                                }
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                legend: { display: false },
+                                datalabels: {
+                                    display: true,
+                                    anchor: 'end',
+                                    align: 'top',
+                                    font: { size: 10, weight: 'bold' },
+                                    color: '#334155',
+                                    formatter: (v) => cfg.dl.formatter(v)
+                                },
+                                tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${cfg.tooltipFmt(ctx.raw, mode)}` } }
+                            }
+                        }
+                    });
+                });
+            } else if (mode === 'monthly') {
+                // Mode 3: Monthly Time Series over 12 Months (Out/25 - Set/26)
+                chartConfigs.forEach(cfg => {
+                    const canvas = document.getElementById(cfg.id);
+                    if (!canvas) return;
+
+                    const cardHeader = canvas.closest('.card').querySelector('h2');
+                    if (cardHeader) cardHeader.textContent = cfg.titleMonthly;
+
+                    const tsData = dataMonthlyTimeSeries[cfg.metric];
+
+                    kpiCharts[cfg.id] = new Chart(canvas, {
+                        plugins: typeof ChartDataLabels !== "undefined" ? [ChartDataLabels] : [],
+                        type: 'line',
+                        data: {
+                            labels: months12,
+                            datasets: [
+                                {
+                                    label: 'Atribuição Spoint',
+                                    data: tsData.spoint,
+                                    borderColor: '#ca8a04',
+                                    backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                                    borderWidth: 2.5,
+                                    pointRadius: 3.5,
+                                    tension: 0.2,
+                                    datalabels: {
+                                        display: true,
+                                        align: 'top',
+                                        anchor: 'end',
+                                        offset: 6,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                        borderColor: '#ca8a04',
+                                        borderWidth: 1,
+                                        borderRadius: 3,
+                                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                                        font: { size: 9, weight: 'bold' },
+                                        color: '#854d0e',
+                                        formatter: (v) => cfg.dl.formatter(v)
+                                    }
+                                },
+                                {
+                                    label: 'Sem Atribuição Spoint',
+                                    data: tsData.sem_spoint,
+                                    borderColor: '#64748b',
+                                    backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                                    borderWidth: 2,
+                                    pointRadius: 3.5,
+                                    tension: 0.2,
+                                    datalabels: {
+                                        display: true,
+                                        align: (ctx) => ctx.dataIndex % 2 === 0 ? 'top' : 'bottom',
+                                        anchor: (ctx) => ctx.dataIndex % 2 === 0 ? 'end' : 'start',
+                                        offset: 6,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                        borderColor: '#64748b',
+                                        borderWidth: 1,
+                                        borderRadius: 3,
+                                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                                        font: { size: 9, weight: 'bold' },
+                                        color: '#334155',
+                                        formatter: (v) => cfg.dl.formatter(v)
+                                    }
+                                },
+                                {
+                                    label: 'Base Geral Centauro',
+                                    data: tsData.centauro,
+                                    borderColor: '#e11d48',
+                                    backgroundColor: 'rgba(225, 29, 72, 0.1)',
+                                    borderWidth: 2,
+                                    pointRadius: 3.5,
+                                    tension: 0.2,
+                                    datalabels: {
+                                        display: true,
+                                        align: 'bottom',
+                                        anchor: 'start',
+                                        offset: 6,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                        borderColor: '#e11d48',
+                                        borderWidth: 1,
+                                        borderRadius: 3,
+                                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                                        font: { size: 9, weight: 'bold' },
+                                        color: '#9f1239',
+                                        formatter: (v) => cfg.dl.formatter(v)
+                                    }
+                                }
+                            ]
+                        },
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                legend: { display: true, position: 'top', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } },
+                                tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${cfg.tooltipFmt(ctx.raw, mode)}` } }
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        function switchChartView(mode) {
+            const btnLb = document.getElementById('btn-view-lb');
+            const btn12m = document.getElementById('btn-view-12m');
+            const btnMonthly = document.getElementById('btn-view-monthly');
+            const subtitle = document.getElementById('chart-view-subtitle');
+
+            [btnLb, btn12m, btnMonthly].forEach(btn => {
+                if (btn) {
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.color = '#475569';
+                    btn.style.boxShadow = 'none';
+                }
+            });
+
+            if (mode === 'lb') {
+                if (btnLb) {
+                    btnLb.style.backgroundColor = '#0f172a';
+                    btnLb.style.color = '#ffffff';
+                    btnLb.style.boxShadow = '0 1px 3px rgba(0,0,0,0.15)';
+                }
+                if (subtitle) subtitle.textContent = 'Exibindo distribuição por Tiers de Percentil de Lucro Bruto (Top 10% ao Bottom 10%)';
+                renderKpiCharts('lb');
+            } else if (mode === '12m') {
+                if (btn12m) {
+                    btn12m.style.backgroundColor = '#0f172a';
+                    btn12m.style.color = '#ffffff';
+                    btn12m.style.boxShadow = '0 1px 3px rgba(0,0,0,0.15)';
+                }
+                if (subtitle) subtitle.textContent = 'Exibindo comparação acumulada de 12 Meses entre os 3 segmentos (Atribuição Spoint vs Sem Atribuição vs Centauro)';
+                renderKpiCharts('12m');
+            } else if (mode === 'monthly') {
+                if (btnMonthly) {
+                    btnMonthly.style.backgroundColor = '#0f172a';
+                    btnMonthly.style.color = '#ffffff';
+                    btnMonthly.style.boxShadow = '0 1px 3px rgba(0,0,0,0.15)';
+                }
+                if (subtitle) subtitle.textContent = 'Exibindo evolução temporal mês a mês dos últimos 12 meses (Out/25 a Set/26)';
+                renderKpiCharts('monthly');
+            }
+        }
+
+        renderKpiCharts('lb');
     </script>
 
         <!-- ROADMAP SPOINT 2026 -->
