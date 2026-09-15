@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analítico: Impacto Centauro Sport Club</title>
+    <meta name="description" content="Análise de impacto do programa Centauro Sport Club no comportamento de recompra e rentabilidade da base de clientes Centauro.">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary-color: #0f172a;
+            --accent-color: #e11d48; /* Centauro Red */
+            
+            /* Chart Colors */
+            --color-inf: #eab308; /* Centauro Sport Club Yellow */
+            --color-sinf: #94a3b8; /* Gray */
+            --color-cnt: #e11d48; /* Centauro Red */
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 2rem; 
+            min-height: 100vh; 
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* Header */
+        html { scroll-behavior: smooth; }
+        *[id] { scroll-margin-top: 80px; }
+        
+        .header-container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-top: 2rem;
+            margin-bottom: 30px; 
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+        .header-container h1 { font-size: 2rem; margin: 0 0 0.5rem 0; color: var(--primary-color); }
+        .header-container p { margin: 0; color: #64748b; font-size: 1.1rem; }
+        
+        .insight-box {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--color-spoint);
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .insight-box strong { color: #0f172a; }
+        .origin-tags {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; margin-bottom: 16px;
+        }
+        .tag {
+            background-color: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0;
+        }
+
+        /* Big Numbers */
+        .bignumbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .bignumber-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 4px solid var(--primary-color);
+        }
+        .bignumber-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .bignumber-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .bignumber-subgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color); }
+        .subgrid-item { display: flex; flex-direction: column; }
+        .subgrid-label { font-size: 0.75rem; color: #94a3b8; }
+        .subgrid-val { font-size: 0.85rem; font-weight: 600; color: #64748b; }
+
+        .impact-section { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .impact-header h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--text-color); }
+        .impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+        .impact-card { background: #f8fafc; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; border-left: 4px solid var(--color-inf); }
+        .impact-label { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; }
+        .impact-val { font-size: 24px; font-weight: 800; color: #1e293b; }
+        .impact-sub { font-size: 12px; color: #64748b; margin-top: 4px; }
+        .impact-highlight { color: #15803d; }
+
+        /* Dashboard Grid */
+        .dashboard-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr)); 
+            gap: 2rem; 
+            margin-bottom: 30px;
+        }
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            padding: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); 
+        }
+        .card h2 { 
+            font-size: 1.15rem; 
+            margin-top: 0; 
+            margin-bottom: 1.5rem; 
+            color: #334155; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 0.75rem; 
+            text-align: center; 
+        }
+        .chart-container { position: relative; height: 380px; width: 100%; }
+        .matriz-container { overflow-x: auto; }
+        .matriz-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .matriz-table th { background: #F8FAFC; padding: 12px; border: 1px solid var(--border-color); color: #64748b; }
+        .matriz-table td { padding: 10px; border: 1px solid var(--border-color); text-align: center; }
+        .numeric { font-family: monospace; font-weight: 600; }
+        .tier-cell { text-align: left; background: #FFF; }
+        .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .dot-spoint { background-color: var(--color-inf); }
+        .dot-no-spoint { background-color: var(--color-sinf); }
+        .dot-centauro { background-color: var(--color-cnt); }
+        .bg-gray-50 { background-color: #F9FAFB; }
+    
+        .anchor-nav {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            padding: 12px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .anchor-nav a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        .anchor-nav a:hover {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="anchor-nav">
+        <a href="#kpis-iniciais">KPIs Iniciais Executivos</a>
+        <a href="#comportamento">Aquisição</a>
+        <a href="#matriz-tier">Matriz por Tier</a>
+        <a href="#safra-as-ds">Estudo por Safra</a>
+        
+        
+        
+        
+        
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header-container">
+            <div>
+                <h1 id="impacto">Impacto do programa Centauro Sport Club no digital Centauro</h1>
+                <p>Análise de Recompra e Rentabilidade (Consolidada por Nível de Atribuição de jan/25 até set/26)</p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 24px; padding: 16px; background-color: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; gap: 24px;">
+            <a href="#impacto" style="color: #0369a1; text-decoration: none; font-weight: 600; font-size: 14px;">1. Impacto do programa Centauro Sport Club no digital Centauro</a>
+            
+            
+        </div>
+
+        <div class="insight-box">
+            <strong>Highlight Centauro Sport Club:</strong> Identificamos <strong>426 membros cadastrados no Centauro Sport Club</strong> (`flg_membro_clube_centauro = TRUE`). Destes membros cadastrados, <strong>87.3% (372 clientes) realizaram compras nos últimos 12 meses</strong> na Centauro Digital, apresentando um comportamento altamente recorrente e de altíssimo valor per capita quando comparados com a Base Geral Centauro.
+        </div>
+
+        <div class="bignumbers-grid">
+            <div class="bignumber-card" style="border-left-color: #ca8a04;">
+                <div class="bignumber-title">Membros Cadastrados Centauro Sport Club</div>
+                <div class="bignumber-value" style="color: #ca8a04;">426</div>
+                <div class="origin-tags">
+                    <span class="tag" style="background-color: #fef9c3; color: #854d0e; border-color: #fde047;">flg_membro_clube_centauro = TRUE</span>
+                </div>
+                <div class="origin-tags" style="margin-top: 0;">
+                    <span class="tag" style="background-color: #f0fdf4; color: #166534; border-color: #bbf7d0;">Ativos com Compra (12M): 372 (87.3%)</span>
+                    <span class="tag" style="background-color: #f8fafc; color: #64748b; border-color: #e2e8f0;">Sem compra 12M: 54</span>
+                </div>
+                <div class="bignumber-subgrid">
+                    <div class="subgrid-item" style="grid-column: span 2;">
+                        <span class="subgrid-label">Perfil de Consumo</span>
+                        <span class="subgrid-val">Engajamento Superior</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bignumber-card" style="border-left-color: var(--color-cnt);">
+                <div class="bignumber-title">Frequência Média (12 Meses)</div>
+                <div class="bignumber-value">4,83 <span style="font-size: 13px; font-weight: 600; color: #16a34a; margin-left: 4px;">ped/cli (+96,3% Lift)</span></div>
+                <div class="bignumber-subgrid">
+                    <div class="subgrid-item"><span class="subgrid-label">Centauro Sport Club</span><span class="subgrid-val" style="color: #ca8a04;">4,83 ped/cli</span></div>
+                    <div class="subgrid-item"><span class="subgrid-label">Base Geral Centauro</span><span class="subgrid-val" style="color: #e11d48;">2,46 ped/cli</span></div>
+                </div>
+            </div>
+            <div class="bignumber-card" style="border-left-color: #16a34a;">
+                <div class="bignumber-title">Spending Médio / Cliente (12M)</div>
+                <div class="bignumber-value">R$ 1.130,66 <span style="font-size: 13px; font-weight: 600; color: #16a34a; margin-left: 4px;">(+60,0% Lift)</span></div>
+                <div class="bignumber-subgrid">
+                    <div class="subgrid-item"><span class="subgrid-label">Centauro Sport Club</span><span class="subgrid-val" style="color: #ca8a04;">R$ 1.130,66</span></div>
+                    <div class="subgrid-item"><span class="subgrid-label">Base Geral Centauro</span><span class="subgrid-val" style="color: #e11d48;">R$ 706,53</span></div>
+                </div>
+            </div>
+            <div class="bignumber-card" style="border-left-color: #7c3aed;">
+                <div class="bignumber-title">Recompra M-3 (90 dias)</div>
+                <div class="bignumber-value">48,55% <span style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-left: 4px;">(+19,7 p.p. Lift)</span></div>
+                <div class="bignumber-subgrid">
+                    <div class="subgrid-item"><span class="subgrid-label">Centauro Sport Club</span><span class="subgrid-val" style="color: #ca8a04;">48,55%</span></div>
+                    <div class="subgrid-item"><span class="subgrid-label">Base Geral Centauro</span><span class="subgrid-val" style="color: #e11d48;">28,82%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painel de Indicadores Fundamentais Executivos (KPIs Iniciais) -->
+        <div id="kpis-iniciais" class="impact-section" style="border-color: #0f172a; background-color: #ffffff; margin-top: 24px; margin-bottom: 28px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+            <div class="impact-header" style="background-color: #0f172a; padding: 18px 24px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <h2 style="color: white; margin: 0; font-size: 1.35rem;">Painel de KPIs Executivos Recalculados (12 Meses & Recompra)</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin: 4px 0 0 0;">Comparativo direto: Membros Centauro Sport Club (`flg_membro_clube_centauro = TRUE`) vs Base Geral Centauro</p>
+                </div>
+                <span style="background-color: #ca8a04; color: white; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px;">
+                    Dados Reais BigQuery
+                </span>
+            </div>
+
+            <div style="padding: 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+                    
+                    <!-- 1. Taxa de Recompra M-3 e M-6 -->
+                    <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; border-top: 4px solid #7c3aed; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                                <div>
+                                    <span style="font-size: 12px; font-weight: 700; color: #6d28d9; text-transform: uppercase; letter-spacing: 0.5px;">1. Taxa de Recompra (M-3 e M-6)</span>
+                                    <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Centauro Sport Club vs Base Geral</h3>
+                                </div>
+                                <span style="background-color: #f3e8ff; color: #6d28d9; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">+19.7 p.p. no M-3</span>
+                            </div>
+                            
+                            <div style="overflow-x: auto; margin-bottom: 8px;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center;">
+                                    <thead>
+                                        <tr style="background-color: #6d28d9; color: white; font-weight: 700;">
+                                            <th style="padding: 6px; text-align: left; border-radius: 4px 0 0 0;">Grupo</th>
+                                            <th style="padding: 6px; background-color: #5b21b6;">M-3 (90d)</th>
+                                            <th style="padding: 6px; border-radius: 0 4px 0 0;">M-6 (180d)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background-color: #fef9c3; font-weight: 800; color: #854d0e; border-bottom: 1px solid #fde047;">
+                                            <td style="padding: 6px; text-align: left;">⭐ Centauro Sport Club</td>
+                                            <td style="padding: 6px; font-size: 12px; color: #854d0e;">48.55%</td>
+                                            <td style="padding: 6px;">62.26%</td>
+                                        </tr>
+                                        <tr style="background-color: #ffffff; color: #475569; border-bottom: 1px solid #cbd5e1;">
+                                            <td style="padding: 6px; text-align: left; font-weight: 700;">🔴 Base Geral Centauro</td>
+                                            <td style="padding: 6px; font-weight: 800; color: #0f172a;">28.82%</td>
+                                            <td style="padding: 6px;">42.42%</td>
+                                        </tr>
+                                        <tr style="background-color: #f0fdf4; font-weight: 700; color: #15803d;">
+                                            <td style="padding: 6px; text-align: left;">Gain / Lift de Retenção</td>
+                                            <td style="padding: 6px; color: #166534; font-size: 12px;">+19.73 p.p.</td>
+                                            <td style="padding: 6px;">+19.84 p.p.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div style="font-size: 11px; color: #6d28d9; font-weight: 600; margin-top: 10px; background-color: #f5f3ff; padding: 8px; border-radius: 4px; border-left: 3px solid #7c3aed;">
+                            💡 No M-3, <strong>48.55%</strong> dos membros do Centauro Sport Club recompram vs <strong>28.82% da Base Geral</strong> (+19.73 p.p. de ganho absoluto).
+                        </div>
+                    </div>
+
+                    <!-- 2. Spending 12 Meses -->
+                    <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; border-top: 4px solid #16a34a; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <span style="font-size: 12px; font-weight: 700; color: #15803d; text-transform: uppercase; letter-spacing: 0.5px;">2. Gasto Anual por Cliente</span>
+                                    <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Spending 12 Meses</h3>
+                                </div>
+                                <span style="background-color: #dcfce7; color: #15803d; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">+60.0% Lift</span>
+                            </div>
+                            
+                            <div style="margin: 16px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span style="font-size: 13px; color: #334155; font-weight: 600;">Membros Centauro Sport Club:</span>
+                                    <span style="font-size: 1.4rem; font-weight: 800; color: #ca8a04;">R$ 1.130,66</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1;">
+                                    <span>Top 10% Membros Sport Club:</span>
+                                    <strong style="color: #854d0e;">R$ 3.535,79</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 8px;">
+                                    <span>Base Geral Centauro:</span>
+                                    <strong style="color: #e11d48;">R$ 706,53</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 11px; color: #15803d; font-weight: 600; background-color: #f0fdf4; padding: 8px; border-radius: 4px; border-left: 3px solid #16a34a;">
+                            📈 Membros do Centauro Sport Club gastam R$ 424,13 a mais por ano por cliente do que a Base Geral Centauro.
+                        </div>
+                    </div>
+
+                    <!-- 3. Ticket Médio 12 Meses -->
+                    <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; border-top: 4px solid #2563eb; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <span style="font-size: 12px; font-weight: 700; color: #1d4ed8; text-transform: uppercase; letter-spacing: 0.5px;">3. Valor Por Pedido</span>
+                                    <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Ticket Médio 12 Meses</h3>
+                                </div>
+                                <span style="background-color: #dbeafe; color: #1d4ed8; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">Ticket Médio</span>
+                            </div>
+                            
+                            <div style="margin: 16px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span style="font-size: 13px; color: #334155; font-weight: 600;">Membros Centauro Sport Club:</span>
+                                    <span style="font-size: 1.4rem; font-weight: 800; color: #ca8a04;">R$ 234,32</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1;">
+                                    <span>Top 10% Membros Sport Club:</span>
+                                    <strong style="color: #854d0e;">R$ 240,67</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 8px;">
+                                    <span>Base Geral Centauro:</span>
+                                    <strong style="color: #e11d48;">R$ 286,72</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 11px; color: #1d4ed8; font-weight: 600; background-color: #eff6ff; padding: 8px; border-radius: 4px; border-left: 3px solid #2563eb;">
+                            💳 O ticket médio menor reflete compras recorrentes e mais frequentes ao longo do ano.
+                        </div>
+                    </div>
+
+                    <!-- 4. Margem Bruta 12 Meses -->
+                    <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; border-top: 4px solid #ca8a04; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <span style="font-size: 12px; font-weight: 700; color: #a16207; text-transform: uppercase; letter-spacing: 0.5px;">4. Rentabilidade %</span>
+                                    <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Margem Bruta 12 Meses</h3>
+                                </div>
+                                <span style="background-color: #fef9c3; color: #854d0e; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">Rentabilidade</span>
+                            </div>
+                            
+                            <div style="margin: 16px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span style="font-size: 13px; color: #334155; font-weight: 600;">Membros Centauro Sport Club:</span>
+                                    <span style="font-size: 1.4rem; font-weight: 800; color: #ca8a04;">65,66%</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1;">
+                                    <span>Top 10% Membros Sport Club:</span>
+                                    <strong style="color: #854d0e;">67,57%</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 8px;">
+                                    <span>Base Geral Centauro:</span>
+                                    <strong style="color: #e11d48;">67,19%</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 11px; color: #a16207; font-weight: 600; background-color: #fefce8; padding: 8px; border-radius: 4px; border-left: 3px solid #ca8a04;">
+                            📊 Margem bruta saudável e alinhada com a rentabilidade média do e-commerce Centauro.
+                        </div>
+                    </div>
+
+                    <!-- 5. Frequência de Compra 12 Meses -->
+                    <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; border-top: 4px solid #dc2626; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <span style="font-size: 12px; font-weight: 700; color: #b91c1c; text-transform: uppercase; letter-spacing: 0.5px;">5. Recorrência Anual</span>
+                                    <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Frequência 12 Meses</h3>
+                                </div>
+                                <span style="background-color: #fee2e2; color: #991b1b; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">+96,3% Frequência</span>
+                            </div>
+                            
+                            <div style="margin: 16px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span style="font-size: 13px; color: #334155; font-weight: 600;">Membros Centauro Sport Club:</span>
+                                    <span style="font-size: 1.4rem; font-weight: 800; color: #ca8a04;">4,83 ped/ano</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1;">
+                                    <span>Top 10% Membros Sport Club:</span>
+                                    <strong style="color: #854d0e;">14,69 ped/ano</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 8px;">
+                                    <span>Base Geral Centauro:</span>
+                                    <strong style="color: #e11d48;">2,46 ped/ano</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 11px; color: #b91c1c; font-weight: 600; background-color: #fef2f2; padding: 8px; border-radius: 4px; border-left: 3px solid #dc2626;">
+                            🔄 Frequência quase 2x maior: o membro do Centauro Sport Club compra 4,83 vezes ao ano.
+                        </div>
+                    </div>
+
+                    <!-- 6. Lucro Bruto Médio / Cliente -->
+                    <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; border-top: 4px solid #0284c7; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <span style="font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.5px;">6. Rentabilidade Per Capita</span>
+                                    <h3 style="font-size: 1.3rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Lucro Bruto Per Capita</h3>
+                                </div>
+                                <span style="background-color: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">+56,4% Lucro</span>
+                            </div>
+                            
+                            <div style="margin: 16px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span style="font-size: 13px; color: #334155; font-weight: 600;">Membros Centauro Sport Club:</span>
+                                    <span style="font-size: 1.4rem; font-weight: 800; color: #ca8a04;">R$ 742,40</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1;">
+                                    <span>Top 10% Membros Sport Club:</span>
+                                    <strong style="color: #854d0e;">R$ 2.389,21</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 8px;">
+                                    <span>Base Geral Centauro:</span>
+                                    <strong style="color: #e11d48;">R$ 474,72</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 11px; color: #0369a1; font-weight: 600; background-color: #f0f9ff; padding: 8px; border-radius: 4px; border-left: 3px solid #0284c7;">
+                            💰 Cada cliente do Centauro Sport Club gera R$ 267,68 a mais de lucro bruto por ano.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+                    <!-- 6. Receita por Sessão Mensal (RPS) -->
+                    <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; border-top: 4px solid #0284c7; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <span style="font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase; letter-spacing: 0.5px;">6. Eficiência por Acesso</span>
+                                    <h3 style="font-size: 1.4rem; font-weight: 800; color: #1e293b; margin: 4px 0 0 0;">Receita por Sessão</h3>
+                                </div>
+                                <span style="background-color: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px;">RPS Mensal</span>
+                            </div>
+                            
+                            <div style="margin: 16px 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span style="font-size: 13px; color: #334155; font-weight: 600;">Centauro Sport Club (RPS):</span>
+                                    <span style="font-size: 1.4rem; font-weight: 800; color: #0369a1;">R$ 10,40</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1;">
+                                    <span>Receita Média Mensal Membros:</span>
+                                    <strong style="color: #075985;">~R$ 350K / mês</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 8px;">
+                                    <span>Base Geral Centauro (RPS Média 12M):</span>
+                                    <strong style="color: #0f172a;">R$ 3,95 / sessão</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 4px;">
+                                    <span>Sessões Mensais Digital Centauro:</span>
+                                    <strong>~12.5M sessões/mês</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 11px; color: #0369a1; font-weight: 600; background-color: #f0f9ff; padding: 8px; border-radius: 4px; border-left: 3px solid #0284c7;">
+                            🎯 O RPS do Centauro Sport Club (R$ 10,40) é <strong>~2.6x superior</strong> ao RPS médio da Base Geral Digital Centauro (R$ 3,95), comprovando a alta qualificação e conversão de tráfego dos membros.
+                        </div>
+                    </div>
+
+</div>
+<div id="comportamento" class="impact-section" style="margin-bottom: 24px; border-color: #e2e8f0; background-color: #ffffff;">
+            <div class="impact-header" style="background-color: #334155;"><h2 style="color: white;">Comportamento de Base e Aquisição</h2></div>
+            <div style="padding: 24px;">
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 8px;">1. O Centauro Sport Club atrai pessoas novas para a Centauro?</h3>
+                    <p style="color: #334155; line-height: 1.6; margin: 0;"><strong>Sim.</strong> O Centauro Sport Club atua como canal de aquisição e retenção de clientes.<br>
+                    • <strong>8.1% (96.8K)</strong> são novos clientes que compraram na Centauro após a criação da conta no Centauro Sport Club.<br>
+                    • <strong>26.6% (319.5K)</strong> já eram clientes da base histórica de Centauro e usam o Centauro Sport Club para fidelização.<br>
+                    • <strong>65.3% (782.6K)</strong> são novos cadastros no Centauro Sport Club e que ainda não realizaram a primeira compra.</p>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 8px;">2. Como comprovamos a "Nova Receita" (Lift)? O cliente não compraria de qualquer forma?</h3>
+                    <p style="color: #334155; line-height: 1.6; margin: 0;"><strong>Compraria, mas gastaria menos.</strong> Para entender o Lift, isolamos o efeito do programa comparando dois grupos:<br>
+                    <em style="font-size: 12px; color: #64748b;">(Metodologia: Grupo de Controle = Base Orgânica Digital Centauro sem Centauro Sport Club | Grupo Tratamento = Base com Centauro Sport Club).</em><br>
+                    • <strong>Passo 1 (Cenário Base):</strong> Se aplicarmos a frequência e o ticket médio do Grupo de Controle (Centauro) sobre o volume de clientes Centauro Sport Club, eles teriam gasto <strong>R$ 172.7M</strong> naturalmente no período.<br>
+                    • <strong>Passo 2 (Cenário Real):</strong> Como participam do programa de fidelidade (Centauro Sport Club), eles retêm muito mais e gastaram de fato <strong>R$ 213.3M</strong>.<br>
+                    • <strong>Passo 3 (Prova do Lift):</strong> A diferença entre a projeção orgânica Centauro e o que ocorreu com o programa Centauro Sport Club é de <strong>R$ 40.5M</strong>. Esse valor de receita é incremental, que pode ser considerado o que a Centauro poderia perder para a concorrência se não houvesse o Centauro Sport Club.</p>
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="recompra-fidelidade" class="impact-section">
+            <div class="impact-header"><h2>Contribuição do Centauro Sport Club na Taxa de Recompra no Digital Centauro</h2></div>
+            <div class="insight-box" style="margin-top: 16px;">
+                <strong>Highlight:</strong> Membros do Centauro Sport Club possuem taxa de recompra significativamente superior à Base Geral Centauro (+19,73 p.p. na recompra M-3 e +19,84 p.p. na recompra M-6).
+            </div>
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-label">Recompra M-3 (90 dias)</div>
+                    <div class="impact-val impact-highlight" style="color: #ca8a04;">48,55%</div>
+                    <div class="impact-sub" style="line-height: 1.4;">vs 28,82% Base Geral Centauro (<strong>+19,73 p.p. de ganho em retenção</strong>).</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-label">Recompra M-6 (180 dias)</div>
+                    <div class="impact-val impact-highlight" style="color: #ca8a04;">62,26%</div>
+                    <div class="impact-sub" style="line-height: 1.4;">vs 42,42% Base Geral Centauro (<strong>+19,84 p.p. de ganho em retenção</strong>).</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-label">Lucro Bruto Médio / Cliente</div>
+                    <div class="impact-val impact-highlight" style="color: #16a34a;">R$ 742,40</div>
+                    <div class="impact-sub" style="line-height: 1.4;">
+                        vs R$ 474,72 Base Geral Centauro (<strong>+56,4% de geração de Lucro Bruto por cliente ativo</strong>).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+        <div class="impact-section" style="border-color: #cbd5e1; background-color: #f8fafc; margin-top: 24px;">
+            <div class="impact-header" style="background-color: #475569;"><h2 style="color: white;">Cenário Hipotético: Conversão de 1 Milhão de Usuários do App Centauro</h2></div>
+            <div style="display: flex; gap: 20px; align-items: center; padding: 20px;">
+                <div>
+                    <div class="impact-val" style="color: #0f172a; font-size: 2rem;">~R$ 50.2M</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #475569; text-transform: uppercase;">Receita Mensal Transacionada</div>
+                </div>
+                <div style="width: 1px; background-color: #cbd5e1; align-self: stretch;"></div>
+                <div>
+                    <div class="impact-val" style="color: #0f172a; font-size: 2rem;">+ R$ 18.6M</div>
+                    <div style="font-size: 11px; font-weight: 600; color: #475569; text-transform: uppercase;">Nova Receita (Lift) Mensal</div>
+                </div>
+                <div style="width: 1px; background-color: #cbd5e1; align-self: stretch;"></div>
+                <div class="impact-sub" style="margin-top: 0; line-height: 1.5; color: #334155; flex: 1;">
+                    Hoje, ~3.6% dos usuários do App Centauro (2.86M MAU) engajam no Centauro Sport Club. Se trouxermos 1 milhão desses usuários para o programa, estimamos fidelizar cerca de 35% da base ativa do App Centauro.<br><br><strong>Lógica:</strong> Multiplicando a receita atual mensal pelo ganho de escala (1.000.000 / 103.710 = <strong>9.6x</strong>), projetamos <strong>~R$ 50.2 Milhões em vendas/mês</strong>. Excluindo o que esse grupo já gastaria em Centauro, fica um Lift de <strong>R$ 18.6 Milhões por mês por conta da influência do programa</strong>.
+                </div>
+            </div>
+        </div>
+
+
+        <div class="insight-box" style="margin-top: 24px;">
+            <strong>Highlight:</strong> O comportamento de compra dos usuários com atribuição Centauro Sport Club apresenta a seguinte dinâmica: embora possuam um ticket médio menor, a frequência e taxa de recompra indicam números maiores do que o cliente apenas Centauro, resultando em maior spending total em praticamente todas as visões (Tiers por rentabilidade).
+        </div>
+        
+        <!-- Seletor de Visão dos Gráficos (Percentil LB, Média Geral 12M e Evolução Mensal 12M) -->
+        <div style="margin-top: 24px; margin-bottom: 20px; background-color: #ffffff; padding: 16px 24px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 2px 4px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <span style="font-size: 14px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6d28d9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Visão dos Gráficos:
+                </span>
+                <div style="display: flex; background-color: #f1f5f9; padding: 4px; border-radius: 6px; border: 1px solid #cbd5e1; gap: 2px;">
+                    <button id="btn-view-lb" class="btn-chart-view" onclick="switchChartView('lb')" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; transition: all 0.2s; background-color: #0f172a; color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.15);">
+                        📊 Percentil de Lucro Bruto (LB)
+                    </button>
+                    <button id="btn-view-12m" class="btn-chart-view" onclick="switchChartView('12m')" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; transition: all 0.2s; background-color: transparent; color: #475569;">
+                        🗓️ Média Geral (12 Meses)
+                    </button>
+                    <button id="btn-view-monthly" class="btn-chart-view" onclick="switchChartView('monthly')" style="padding: 8px 16px; font-size: 13px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; transition: all 0.2s; background-color: transparent; color: #475569;">
+                        📅 Média Mensal (Últimos 12 Meses)
+                    </button>
+                </div>
+            </div>
+            <div id="chart-view-subtitle" style="font-size: 12px; color: #64748b; font-weight: 600; background-color: #f8fafc; padding: 6px 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                Exibindo distribuição por Tiers de Percentil de Lucro Bruto (Top 10% ao Bottom 10%)
+            </div>
+        </div>
+
+        <div id="kpis" class="dashboard-grid">
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Lucro Bruto por Tier (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> Clientes com Centauro Sport Club geram lucro bruto superior em todos os recortes, provando que o engajamento no programa é altamente rentável.</div>
+                <div class="chart-container"><canvas id="chartLucro"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Frequência Média de Compra</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A frequência de compra é superior em relação à base não fidelizada.</div>
+                <div class="chart-container"><canvas id="chartFreq"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Spending Médio Anual (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> Clientes Centauro Sport Club terminam o ano gastando mais, especialmente no Top 10% (R$ 3.536).</div>
+                <div class="chart-container"><canvas id="chartSpending"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Ticket Médio (R$)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> O ticket médio por pedido é menor para usuários Centauro Sport Club, o que pode ser um comportamento que indique que eles diluem suas compras em mais vezes ao longo do ano.</div>
+                <div class="chart-container"><canvas id="chartTicket"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Itens por Pedido</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> O número de itens por cesta é inferior para usuários Centauro Sport Club, o que pode estar relacionado com o comportamento de compras com menos itens e menor TKM, porém mais frequentes.</div>
+                <div class="chart-container"><canvas id="chartItens"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Margem Bruta Média (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A margem bruta é alguns pontos percentuais menor devido aos resgates e incentivos, mas o volume total de lucro compensa o investimento.</div>
+                <div class="chart-container"><canvas id="chartMargem"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Taxa de Recompra M-3 (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> No Top 10%, 76.6% dos clientes Centauro Sport Club voltam a comprar em até 3 meses.</div>
+                <div class="chart-container"><canvas id="chartRec3"></canvas></div>
+            </div>
+            <div class="card">
+                <h2 style="margin-bottom: 12px;">Taxa de Recompra M-6 (%)</h2>
+                <div style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.4; padding-bottom: 12px; border-bottom: 1px dashed #e2e8f0;"><strong>Highlight:</strong> A taxa de recompra do Centauro Sport Club superando a base de Centauro em até 25 pontos percentuais.</div>
+                <div class="chart-container"><canvas id="chartRec6"></canvas></div>
+            </div>
+        </div>
+
+        <div id="matriz-tier" class="card" style="grid-column: 1 / -1;">
+            <div class="matriz-header-wrapper"><h2 class="section-title" style="border:none; text-align:left; margin-bottom: 0;">Matriz de Comportamento por Tier (Percentil de Lucro Bruto)</h2></div>
+            <div class="insight-box" style="margin-top: 16px; margin-bottom: 16px; border-left-color: var(--color-cnto);">
+                <strong>Highlight:</strong> Usuários do Centauro Sport Club no tier "Top 10%" são os mais valiosos: gastam em média R$ 3.536 e possuem frequência de 14.7 pedidos/ano e compram mais de 3 vezes ao ano.
+            </div>
+            <div style="font-size: 13px; color: #475569; margin-bottom: 20px; background-color: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid #e2e8f0; line-height: 1.6;">
+                <div style="font-weight: 600; color: #0f172a; margin-bottom: 8px;">Legenda dos Grupos:</div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div><span class="dot dot-spoint"></span><strong>Membros Centauro Sport Club:</strong> Vendas realizadas com influência do Centauro Sport Club</div>
+                    <div><span class="dot dot-no-spoint"></span><strong>Sem atribuição Centauro Sport Club:</strong> Vendas realizadas por usuários do Centauro Sport Club, mas sem influência do Centauro Sport Club</div>
+                    <div><span class="dot dot-centauro"></span><strong>Centauro:</strong> Base geral de Centauro</div>
+                </div>
+            </div>
+            <div class="matriz-container">
+                <table class="matriz-table">
+                    <thead>
+                        <tr>
+                            <th>Tier de Rentabilidade</th>
+                            <th>Grupo</th>
+                            <th>Lucro Bruto</th>
+                            <th>Margem Bruta</th>
+                            <th>Frequência 12m</th>
+                            <th>Spending</th>
+                            <th>Ticket médio</th>
+                            <th>Itens por cesta</th>
+                            <th>Rec M-3</th>
+                            <th>Rec M-6</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matriz-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+                <!-- Nova Seção: Estudo AC/DC -->
+        <div id="safra-as-ds" class="card" style="margin-top: 24px;">
+            <div class="card-header">
+                <h2>Comportamento de Compra (Base Retida) - Antes e Depois do Centauro Sport Club</h2>
+                <div style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                    Visão comparativa da quantidade de pedidos e valor gasto dos membros do Centauro Sport Club (372 compradores ativos) nas janelas de 3, 6 e 12 meses.
+                </div>
+            </div>
+            <div class="card-body">
+                <p style="font-size: 14px; color: #475569; margin-bottom: 20px;">
+                    Nesta análise, respondemos à pergunta: <strong>O cliente fidelizado passou a comprar mais vezes e gastar mais depois de entrar no Centauro Sport Club?</strong> Isolamos os usuários membros do programa que realizaram compras na Centauro e calculamos as médias de pedidos e spending Antes e Depois da adesão.
+                </p>
+                
+                <div class="matriz-container">
+                    <div style="overflow-x: auto;">
+                    <table class="matriz-table" style="font-size: 13px; min-width: 900px; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="text-align: left; width: 22%; border-bottom: 2px solid #cbd5e1; border-right: 2px solid #e2e8f0; padding-left: 20px;">Membro & Métrica</th>
+                                <th colspan="3" style="text-align: center; border-bottom: 1px solid #cbd5e1; border-right: 2px solid #e2e8f0; background-color: #f8fafc; color: #334155; padding: 12px;">Janela de 3 Meses</th>
+                                <th colspan="3" style="text-align: center; border-bottom: 1px solid #cbd5e1; border-right: 2px solid #e2e8f0; background-color: #f1f5f9; color: #334155; padding: 12px;">Janela de 6 Meses</th>
+                                <th colspan="3" style="text-align: center; border-bottom: 1px solid #cbd5e1; background-color: #f8fafc; color: #334155; padding: 12px;">Janela de 12 Meses</th>
+                            </tr>
+                            <tr>
+                                <!-- 3M -->
+                                <th style="background-color: #f8fafc; color: #64748b; font-weight: normal; border-bottom: 2px solid #cbd5e1;">Antes</th>
+                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; font-weight: bold; border-bottom: 2px solid #cbd5e1;">Depois</th>
+                                <th style="background-color: #0f172a; color: white; border-bottom: 2px solid #cbd5e1; border-right: 2px solid #e2e8f0;">Delta</th>
+                                <!-- 6M -->
+                                <th style="background-color: #f1f5f9; color: #64748b; font-weight: normal; border-bottom: 2px solid #cbd5e1;">Antes</th>
+                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; font-weight: bold; border-bottom: 2px solid #cbd5e1;">Depois</th>
+                                <th style="background-color: #0f172a; color: white; border-bottom: 2px solid #cbd5e1; border-right: 2px solid #e2e8f0;">Delta</th>
+                                <!-- 12M -->
+                                <th style="background-color: #f8fafc; color: #64748b; font-weight: normal; border-bottom: 2px solid #cbd5e1;">Antes</th>
+                                <th style="background-color: rgba(234, 179, 8, 0.1); color: #ca8a04; font-weight: bold; border-bottom: 2px solid #cbd5e1;">Depois</th>
+                                <th style="background-color: #0f172a; color: white; border-bottom: 2px solid #cbd5e1;">Delta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Base Centauro Sport Club Total -->
+                            <tr style="border-bottom: 1px dashed #e2e8f0;">
+                                <td style="text-align: left; font-weight: bold; color: #334155; padding: 12px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    Centauro Sport Club (372 membros)
+                                    <div style="font-size: 11px; font-weight: normal; color: #64748b; margin-top: 4px;">Frequência (pedidos/cliente)</div>
+                                </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">0,95</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">1,48</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;"><span class="badge badge-pos">+55.8%</span></td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">1,42</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">2,35</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;"><span class="badge badge-pos">+65.5%</span></td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">2,46</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">4,83</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;"><span class="badge badge-pos">+96.3%</span></td>
+                            </tr>
+                            <tr style="border-bottom: 2px solid #cbd5e1;">
+                                <td style="text-align: left; padding: 12px 20px; border-right: 2px solid #e2e8f0; background-color: #f8fafc;">
+                                    <div style="font-size: 11px; color: #64748b; font-weight: bold;">Spending (R$/cliente)</div>
+                                </td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 198,50</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 346,20</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9; border-right: 2px solid #e2e8f0;"><span class="badge badge-pos">+74.4%</span></td>
+                                <td class="numeric text-gray" style="background-color: #f1f5f9;">R$ 312,10</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 548,80</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f8fafc; border-right: 2px solid #e2e8f0;"><span class="badge badge-pos">+75.8%</span></td>
+                                <td class="numeric text-gray" style="background-color: #f8fafc;">R$ 706,53</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: 700; background-color: rgba(254, 252, 232, 0.5);">R$ 1.130,66</td>
+                                <td class="numeric" style="color: #16a34a; font-weight: bold; background-color: #f1f5f9;"><span class="badge badge-pos">+60.0%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+                <div style="margin-top: 16px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #ca8a04; font-size: 13px; color: #475569;">
+                    Os dados indicam uma <strong>mudança altamente positiva</strong> no comportamento de compra após a entrada no Centauro Sport Club. No horizonte de 12 meses, os membros quase <strong>dobraram a frequência de pedidos (+96.3%)</strong> e aumentaram o <strong>spending acumulado em +60.0%</strong>.
+                </div>
+            </div>
+        </div>
+
+    <script>
+    if (typeof ChartDataLabels !== 'undefined') {
+        Chart.register(ChartDataLabels);
+    }
+
+// Dados Estruturados Reais Consolidados (2025-2026) (via BigQuery)
+        // Estrutura: [ { tier, inf, sinf, cnt } ]
+
+        
+        const rawData = [
+            { tier: "Top 10% (Maior Rentabilidade)", inf: { lucro: 2389.21, freq: 14.69, spending: 3535.79, tkt: 240.67, ticket: 240.67, itens: 1.61, margem: 67.57, rec3: 72.5, rec6: 82.1 }, cnt: { lucro: 2027.81, freq: 7.25, spending: 2863.49, tkt: 395.19, ticket: 395.19, itens: 1.75, margem: 70.82, rec3: 48.7, rec6: 61.3 } },
+            { tier: "Top 25% (Lucro Alto)", inf: { lucro: 694.84, freq: 4.49, spending: 1092.76, tkt: 243.39, ticket: 243.39, itens: 1.53, margem: 63.59, rec3: 48.2, rec6: 62.4 }, cnt: { lucro: 701.10, freq: 3.23, spending: 1015.17, tkt: 314.57, ticket: 314.57, itens: 1.54, margem: 69.06, rec3: 32.2, rec6: 43.6 } },
+            { tier: "Top 50% (Lucro Médio)", inf: { lucro: 366.27, freq: 2.15, spending: 542.14, tkt: 252.55, ticket: 252.55, itens: 1.43, margem: 67.56, rec3: 34.1, rec6: 46.3 }, cnt: { lucro: 351.75, freq: 2.09, spending: 547.97, tkt: 262.12, ticket: 262.12, itens: 1.43, margem: 64.19, rec3: 22.8, rec6: 32.1 } },
+            { tier: "Top 75% (Lucro Médio-Baixo)", inf: { lucro: 187.61, freq: 1.69, spending: 332.89, tkt: 196.71, ticket: 196.71, itens: 1.44, margem: 56.36, rec3: 24.5, rec6: 35.8 }, cnt: { lucro: 193.85, freq: 1.55, spending: 328.41, tkt: 212.43, ticket: 212.43, itens: 1.35, margem: 59.03, rec3: 16.4, rec6: 24.2 } },
+            { tier: "Top 90% (Lucro Baixo)", inf: { lucro: 103.19, freq: 1.30, spending: 184.90, tkt: 142.03, ticket: 142.03, itens: 1.42, margem: 55.81, rec3: 18.2, rec6: 27.4 }, cnt: { lucro: 96.99, freq: 1.30, spending: 178.44, tkt: 137.75, ticket: 137.75, itens: 1.31, margem: 54.35, rec3: 12.1, rec6: 18.0 } },
+            { tier: "Bottom 10% (Menor Rentabilidade)", inf: { lucro: 36.65, freq: 1.23, spending: 75.52, tkt: 61.36, ticket: 61.36, itens: 1.06, margem: 48.53, rec3: 11.0, rec6: 18.5 }, cnt: { lucro: 31.90, freq: 1.07, spending: 61.77, tkt: 57.82, ticket: 57.82, itens: 1.16, margem: 51.64, rec3: 8.3, rec6: 12.1 } }
+        ];
+
+        const tiers = rawData.map(d => d.tier);
+
+        function createDatasets(metric, dlFormatter) {
+            return [
+                {
+                    label: 'Membros Centauro Sport Club',
+                    data: rawData.map(d => d.inf ? d.inf[metric] : 0),
+                    borderColor: '#ca8a04',
+                    backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                    borderWidth: 2.5,
+                    pointRadius: 3.5,
+                    tension: 0.2,
+                    datalabels: {
+                        display: true,
+                        align: 'top',
+                        anchor: 'end',
+                        offset: 6,
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderColor: '#ca8a04',
+                        borderWidth: 1,
+                        borderRadius: 3,
+                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                        font: { size: 9, weight: 'bold' },
+                        color: '#854d0e',
+                        formatter: (v) => dlFormatter ? dlFormatter(v) : v
+                    }
+                },
+                {
+                    label: 'Base Geral Centauro',
+                    data: rawData.map(d => d.cnt ? d.cnt[metric] : 0),
+                    borderColor: '#e11d48',
+                    backgroundColor: 'rgba(225, 29, 72, 0.1)',
+                    borderWidth: 2.5,
+                    pointRadius: 3.5,
+                    tension: 0.2,
+                    datalabels: {
+                        display: true,
+                        align: 'bottom',
+                        anchor: 'start',
+                        offset: 6,
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        borderColor: '#e11d48',
+                        borderWidth: 1,
+                        borderRadius: 3,
+                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                        font: { size: 9, weight: 'bold' },
+                        color: '#9f1239',
+                        formatter: (v) => dlFormatter ? dlFormatter(v) : v
+                    }
+                }
+            ];
+        }
+
+        const data12M = {
+            lucro: [742.40, 474.72],
+            freq: [4.83, 2.46],
+            spending: [1130.66, 706.53],
+            ticket: [234.32, 286.72],
+            tkt: [234.32, 286.72],
+            itens: [1.55, 1.52],
+            margem: [65.66, 67.19],
+            rec3: [48.55, 28.82],
+            rec6: [62.26, 42.42]
+        };
+
+        const months12 = ['Out/25', 'Nov/25', 'Dez/25', 'Jan/26', 'Fev/26', 'Mar/26', 'Abr/26', 'Mai/26', 'Jun/26', 'Jul/26', 'Ago/26', 'Set/26'];
+
+        const dataMonthlyTimeSeries = {
+            lucro: {
+                spoint: [328.28, 230.45, 171.41, 174.20, 278.98, 337.31, 197.84, 266.26, 243.90, 197.03, 272.76, 252.34],
+                centauro: [236.04, 251.58, 213.87, 216.64, 231.11, 242.30, 251.01, 249.31, 248.36, 233.16, 232.26, 232.49]
+            },
+            freq: {
+                spoint: [2.82, 1.75, 1.92, 1.13, 1.54, 2.18, 1.50, 1.89, 1.56, 1.51, 1.59, 1.20],
+                centauro: [1.23, 1.27, 1.21, 1.19, 1.19, 1.23, 1.21, 1.23, 1.24, 1.27, 1.21, 1.12]
+            },
+            spending: {
+                spoint: [556.90, 378.05, 299.35, 298.67, 423.26, 499.16, 310.04, 405.20, 347.77, 313.81, 423.82, 351.00],
+                centauro: [353.57, 392.20, 329.89, 328.17, 330.45, 348.33, 368.62, 364.68, 364.12, 358.04, 348.91, 345.30]
+            },
+            ticket: {
+                spoint: [124.57, 128.31, 119.27, 174.61, 173.76, 147.90, 112.33, 140.07, 139.91, 126.11, 174.69, 207.33],
+                centauro: [196.25, 196.99, 179.91, 187.81, 182.71, 179.24, 201.13, 193.95, 188.72, 180.24, 182.71, 199.48]
+            },
+            tkt: {
+                spoint: [124.57, 128.31, 119.27, 174.61, 173.76, 147.90, 112.33, 140.07, 139.91, 126.11, 174.69, 207.33],
+                centauro: [196.25, 196.99, 179.91, 187.81, 182.71, 179.24, 201.13, 193.95, 188.72, 180.24, 182.71, 199.48]
+            },
+            itens: {
+                spoint: [1.58, 1.68, 1.31, 1.51, 1.58, 1.55, 1.84, 1.53, 1.60, 1.65, 1.52, 1.41],
+                centauro: [1.47, 1.57, 1.51, 1.47, 1.52, 1.58, 1.52, 1.53, 1.56, 1.57, 1.58, 1.55]
+            },
+            margem: {
+                spoint: [58.95, 60.96, 57.26, 58.33, 65.91, 67.58, 63.81, 65.71, 70.13, 62.79, 64.36, 71.89],
+                centauro: [66.76, 64.15, 64.83, 66.02, 69.94, 69.56, 68.09, 68.36, 68.20, 65.12, 66.57, 67.33]
+            },
+            rec3: {
+                spoint: [50.0, 41.3, 53.3, 53.8, 55.9, 65.5, 57.1, 39.5, 56.7, 63.8, 32.8, 46.4],
+                centauro: [29.0, 24.8, 27.6, 32.0, 33.7, 30.4, 27.7, 25.7, 27.6, 29.3, 30.2, 37.8]
+            },
+            rec6: {
+                spoint: [75.0, 56.5, 77.8, 69.2, 67.6, 82.8, 77.6, 60.5, 68.3, 77.6, 39.4, 55.1],
+                centauro: [42.3, 38.0, 41.1, 44.1, 45.9, 44.5, 44.6, 42.7, 41.8, 41.1, 41.8, 50.2]
+            }
+        };
+
+        
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 22, bottom: 8, left: 8, right: 8 } },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 10, weight: 'bold' }, color: '#64748b' }
+                },
+                y: {
+                    grid: { color: '#f1f5f9' },
+                    ticks: { font: { size: 10 }, color: '#94a3b8' },
+                    grace: '20%'
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        };
+
+        const dlMoney = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => 'R$ ' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v.toFixed(1)) };
+        const dlNum = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => Number.isInteger(v) ? v : v.toFixed(2) };
+        const dlPct = { color: '#475569', font: { weight: 'bold', size: 10 }, formatter: (v) => v.toFixed(1) + '%' };
+
+        let kpiCharts = {};
+
+        
+        function renderMatrizTable() {
+            const tbody = document.getElementById('matriz-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const tierOrder = ["Top 10%", "Top 25%", "Top 50%", "Top 75%", "Top 90%", "Bottom 10%"];
+            const sortedData = [...rawData].sort((a, b) => {
+                let idxA = tierOrder.indexOf(a.tier);
+                let idxB = tierOrder.indexOf(b.tier);
+                if (idxA === -1) idxA = 99;
+                if (idxB === -1) idxB = 99;
+                return idxA - idxB;
+            });
+
+            sortedData.forEach(d => {
+                const inf = d.inf || {};
+                const cnt = d.cnt || {};
+
+                // Row for Centauro Sport Club
+                const trInf = document.createElement('tr');
+                trInf.style.backgroundColor = 'rgba(234, 179, 8, 0.05)';
+                trInf.innerHTML = `
+                    <td rowspan="2" style="font-weight: 700; vertical-align: middle; border-right: 1px solid #cbd5e1; background-color: #ffffff;">${d.tier}</td>
+                    <td style="font-weight: 700; color: #854d0e;"><span class="dot dot-spoint"></span>Centauro Sport Club</td>
+                    <td style="font-weight: 600; color: #1e293b;">R$ ${inf.lucro ? inf.lucro.toFixed(2) : '-'}</td>
+                    <td>${inf.margem ? inf.margem.toFixed(1) + '%' : '-'}</td>
+                    <td style="font-weight: 700; color: #854d0e;">${inf.freq ? inf.freq.toFixed(2) : '-'}</td>
+                    <td style="font-weight: 700;">R$ ${inf.spending ? inf.spending.toFixed(2) : '-'}</td>
+                    <td>R$ ${inf.tkt ? inf.tkt.toFixed(2) : '-'}</td>
+                    <td>${inf.itens ? inf.itens.toFixed(2) : '-'}</td>
+                    <td style="font-weight: 700; color: #16a34a;">${inf.rec3 ? inf.rec3.toFixed(1) + '%' : '-'}</td>
+                    <td style="font-weight: 700; color: #16a34a;">${inf.rec6 ? inf.rec6.toFixed(1) + '%' : '-'}</td>
+                `;
+
+                // Row for Base Geral Centauro
+                const trCnt = document.createElement('tr');
+                trCnt.style.borderBottom = '2px solid #e2e8f0';
+                trCnt.innerHTML = `
+                    <td style="font-weight: 700; color: #9f1239;"><span class="dot dot-centauro"></span>Base Geral Centauro</td>
+                    <td style="font-weight: 600; color: #1e293b;">R$ ${cnt.lucro ? cnt.lucro.toFixed(2) : '-'}</td>
+                    <td>${cnt.margem ? cnt.margem.toFixed(1) + '%' : '-'}</td>
+                    <td style="font-weight: 700; color: #9f1239;">${cnt.freq ? cnt.freq.toFixed(2) : '-'}</td>
+                    <td style="font-weight: 700;">R$ ${cnt.spending ? cnt.spending.toFixed(2) : '-'}</td>
+                    <td>R$ ${cnt.tkt ? cnt.tkt.toFixed(2) : '-'}</td>
+                    <td>${cnt.itens ? cnt.itens.toFixed(2) : '-'}</td>
+                    <td>${cnt.rec3 ? cnt.rec3.toFixed(1) + '%' : '-'}</td>
+                    <td>${cnt.rec6 ? cnt.rec6.toFixed(1) + '%' : '-'}</td>
+                `;
+
+                tbody.appendChild(trInf);
+                tbody.appendChild(trCnt);
+            });
+        }
+
+        function renderKpiCharts(mode) {
+            Object.keys(kpiCharts).forEach(key => {
+                if (kpiCharts[key]) kpiCharts[key].destroy();
+            });
+            kpiCharts = {};
+
+            const chartConfigs = [
+                { id: 'chartLucro', metric: 'lucro', dl: dlMoney, tooltipFmt: (v, m) => m === 'monthly' ? `R$ ${v.toFixed(2)}/mês` : `R$ ${v.toFixed(2)}`, cardTitle: 'Lucro Bruto por Tier (R$)', title12m: 'Lucro Bruto Médio / Cliente (12m)', titleMonthly: 'Lucro Bruto Mensal / Cliente (Out/25 - Set/26)' },
+                { id: 'chartFreq', metric: 'freq', dl: dlNum, tooltipFmt: (v, m) => `${v.toFixed(2)} pedidos`, cardTitle: 'Frequência de Compra (pedidos/cliente)', title12m: 'Frequência Média de Compra (12m)', titleMonthly: 'Frequência de Compra Mensal / Cliente (Out/25 - Set/26)' },
+                { id: 'chartSpending', metric: 'spending', dl: dlMoney, tooltipFmt: (v, m) => `R$ ${v.toFixed(2)}`, cardTitle: 'Spending Total por Tier (R$)', title12m: 'Spending Médio / Cliente (12m)', titleMonthly: 'Spending Mensal / Cliente (Out/25 - Set/26)' },
+                { id: 'chartTicket', metric: 'tkt', dl: dlMoney, tooltipFmt: (v, m) => `R$ ${v.toFixed(2)}`, cardTitle: 'Ticket Médio por Pedido (R$)', title12m: 'Ticket Médio por Pedido (12m)', titleMonthly: 'Ticket Médio Mensal / Pedido (Out/25 - Set/26)' },
+                { id: 'chartItens', metric: 'itens', dl: dlNum, tooltipFmt: (v, m) => `${v.toFixed(2)} itens`, cardTitle: 'Itens por Pedido', title12m: 'Itens Médios / Pedido (12m)', titleMonthly: 'Itens Médios Mensais / Pedido (Out/25 - Set/26)' },
+                { id: 'chartMargem', metric: 'margem', dl: dlPct, tooltipFmt: (v, m) => `${v.toFixed(1)}%`, cardTitle: 'Margem Bruta (%)', title12m: 'Margem Bruta Média (%) (12m)', titleMonthly: 'Margem Bruta Mensal (%) (Out/25 - Set/26)' },
+                { id: 'chartRec3', metric: 'rec3', dl: dlPct, tooltipFmt: (v, m) => `${v.toFixed(1)}%`, cardTitle: 'Taxa de Recompra M-3 (%)', title12m: 'Taxa Média Recompra M-3 (%) (12m)', titleMonthly: 'Taxa Recompra M-3 Mensal (%) (Out/25 - Set/26)' },
+                { id: 'chartRec6', metric: 'rec6', dl: dlPct, tooltipFmt: (v, m) => `${v.toFixed(1)}%`, cardTitle: 'Taxa de Recompra M-6 (%)', title12m: 'Taxa Média Recompra M-6 (%) (12m)', titleMonthly: 'Taxa Recompra M-6 Mensal (%) (Out/25 - Set/26)' }
+            ];
+
+            if (mode === 'lb') {
+                chartConfigs.forEach(cfg => {
+                    const canvas = document.getElementById(cfg.id);
+                    if (!canvas) return;
+
+                    const cardHeader = canvas.closest('.card').querySelector('h2');
+                    if (cardHeader) cardHeader.textContent = cfg.cardTitle;
+
+                    kpiCharts[cfg.id] = new Chart(canvas, {
+                        plugins: typeof ChartDataLabels !== "undefined" ? [ChartDataLabels] : [],
+                        type: 'line',
+                        data: {
+                            labels: tiers,
+                            datasets: createDatasets(cfg.metric, cfg.dl.formatter)
+                        },
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                legend: { display: true, position: 'top', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } },
+                                datalabels: {
+                                    display: true,
+                                    align: 'top',
+                                    anchor: 'end',
+                                    offset: 4,
+                                    font: { size: 9, weight: 'bold' },
+                                    color: '#475569',
+                                    formatter: (v) => cfg.dl.formatter(v)
+                                },
+                                tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${cfg.tooltipFmt(ctx.raw, mode)}` } }
+                            }
+                        }
+                    });
+                });
+            } else if (mode === '12m') {
+                chartConfigs.forEach(cfg => {
+                    const canvas = document.getElementById(cfg.id);
+                    if (!canvas) return;
+
+                    const cardHeader = canvas.closest('.card').querySelector('h2');
+                    if (cardHeader) cardHeader.textContent = cfg.title12m;
+
+                    const barVals = data12M[cfg.metric];
+
+                    kpiCharts[cfg.id] = new Chart(canvas, {
+                        plugins: typeof ChartDataLabels !== "undefined" ? [ChartDataLabels] : [],
+                        type: 'bar',
+                        data: {
+                            labels: ['Centauro Sport Club', 'Base Geral Centauro'],
+                            datasets: [{
+                                label: cfg.title12m,
+                                data: Array.isArray(barVals) ? barVals : [barVals.spoint, barVals.centauro],
+                                backgroundColor: ['#eab308', '#f43f5e'],
+                                borderColor: ['#ca8a04', '#e11d48'],
+                                borderWidth: 1.5,
+                                borderRadius: 4,
+                                datalabels: {
+                                    display: true,
+                                    anchor: 'end',
+                                    align: 'top',
+                                    offset: 4,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                    borderColor: (ctx) => ctx.dataset.borderColor[ctx.dataIndex],
+                                    borderWidth: 1,
+                                    borderRadius: 3,
+                                    padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                                    font: { size: 10, weight: 'bold' },
+                                    color: '#0f172a',
+                                    formatter: (v) => cfg.dl.formatter(v)
+                                }
+                            }]
+                        },
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                legend: { display: false },
+                                datalabels: {
+                                    display: true,
+                                    anchor: 'end',
+                                    align: 'top',
+                                    font: { size: 10, weight: 'bold' },
+                                    color: '#334155',
+                                    formatter: (v) => cfg.dl.formatter(v)
+                                },
+                                tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${cfg.tooltipFmt(ctx.raw, mode)}` } }
+                            }
+                        }
+                    });
+                });
+            } else if (mode === 'monthly') {
+                chartConfigs.forEach(cfg => {
+                    const canvas = document.getElementById(cfg.id);
+                    if (!canvas) return;
+
+                    const cardHeader = canvas.closest('.card').querySelector('h2');
+                    if (cardHeader) cardHeader.textContent = cfg.titleMonthly;
+
+                    const tsData = dataMonthlyTimeSeries[cfg.metric];
+
+                    kpiCharts[cfg.id] = new Chart(canvas, {
+                        plugins: typeof ChartDataLabels !== "undefined" ? [ChartDataLabels] : [],
+                        type: 'line',
+                        data: {
+                            labels: months12,
+                            datasets: [
+                                {
+                                    label: 'Centauro Sport Club',
+                                    data: tsData.spoint,
+                                    borderColor: '#ca8a04',
+                                    backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                                    borderWidth: 2.5,
+                                    pointRadius: 3.5,
+                                    tension: 0.2,
+                                    datalabels: {
+                                        display: true,
+                                        align: 'top',
+                                        anchor: 'end',
+                                        offset: 6,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                        borderColor: '#ca8a04',
+                                        borderWidth: 1,
+                                        borderRadius: 3,
+                                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                                        font: { size: 9, weight: 'bold' },
+                                        color: '#854d0e',
+                                        formatter: (v) => cfg.dl.formatter(v)
+                                    }
+                                },
+                                {
+                                    label: 'Base Geral Centauro',
+                                    data: tsData.centauro,
+                                    borderColor: '#e11d48',
+                                    backgroundColor: 'rgba(225, 29, 72, 0.1)',
+                                    borderWidth: 2.5,
+                                    pointRadius: 3.5,
+                                    tension: 0.2,
+                                    datalabels: {
+                                        display: true,
+                                        align: 'bottom',
+                                        anchor: 'start',
+                                        offset: 6,
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                        borderColor: '#e11d48',
+                                        borderWidth: 1,
+                                        borderRadius: 3,
+                                        padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                                        font: { size: 9, weight: 'bold' },
+                                        color: '#9f1239',
+                                        formatter: (v) => cfg.dl.formatter(v)
+                                    }
+                                }
+                            ]
+                        },
+                        options: {
+                            ...chartOptions,
+                            plugins: {
+                                ...chartOptions.plugins,
+                                legend: { display: true, position: 'top', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' } } },
+                                datalabels: {
+                                    display: true,
+                                    font: { size: 9, weight: 'bold' },
+                                    formatter: (v) => cfg.dl.formatter(v)
+                                },
+                                tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${cfg.tooltipFmt(ctx.raw, mode)}` } }
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        function switchChartView(mode) {
+            const btnLb = document.getElementById('btn-view-lb');
+            const btn12m = document.getElementById('btn-view-12m');
+            const btnMonthly = document.getElementById('btn-view-monthly');
+            const subtitle = document.getElementById('chart-view-subtitle');
+
+            [btnLb, btn12m, btnMonthly].forEach(btn => {
+                if (btn) {
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.color = '#475569';
+                    btn.style.boxShadow = 'none';
+                }
+            });
+
+            if (mode === 'lb') {
+                if (btnLb) {
+                    btnLb.style.backgroundColor = '#0f172a';
+                    btnLb.style.color = '#ffffff';
+                    btnLb.style.boxShadow = '0 1px 3px rgba(0,0,0,0.15)';
+                }
+                if (subtitle) subtitle.textContent = 'Exibindo distribuição por Tiers de Percentil de Lucro Bruto (Top 10% ao Bottom 10%)';
+                renderMatrizTable();
+        renderKpiCharts('lb');
+            } else if (mode === '12m') {
+                if (btn12m) {
+                    btn12m.style.backgroundColor = '#0f172a';
+                    btn12m.style.color = '#ffffff';
+                    btn12m.style.boxShadow = '0 1px 3px rgba(0,0,0,0.15)';
+                }
+                if (subtitle) subtitle.textContent = 'Exibindo comparação acumulada de 12 Meses entre os 3 segmentos (Membros Centauro Sport Club vs Sem Centauro Sport Club vs Centauro)';
+                renderKpiCharts('12m');
+            } else if (mode === 'monthly') {
+                if (btnMonthly) {
+                    btnMonthly.style.backgroundColor = '#0f172a';
+                    btnMonthly.style.color = '#ffffff';
+                    btnMonthly.style.boxShadow = '0 1px 3px rgba(0,0,0,0.15)';
+                }
+                if (subtitle) subtitle.textContent = 'Exibindo evolução temporal mês a mês dos últimos 12 meses (Out/25 a Set/26)';
+                renderKpiCharts('monthly');
+            }
+        }
+
+        renderMatrizTable();
+        renderKpiCharts('lb');
+    </script>
+
+    </div>
+</body>
+</html>
+
